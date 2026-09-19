@@ -386,6 +386,10 @@ namespace BackendAwSmartstay.API.Migrations
                         .HasColumnType("varchar(200)")
                         .HasColumnName("guest_email");
 
+                    b.Property<int?>("GuestId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
                     b.Property<string>("GuestName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -404,14 +408,10 @@ namespace BackendAwSmartstay.API.Migrations
                         .HasColumnType("int")
                         .HasColumnName("status");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
-
                     b.HasKey("Id")
                         .HasName("p_k_bookings");
 
-                    b.HasIndex("UserId")
+                    b.HasIndex("GuestId")
                         .HasDatabaseName("i_x_bookings_user_id");
 
                     b.ToTable("bookings");
