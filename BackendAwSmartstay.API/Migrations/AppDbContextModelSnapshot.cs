@@ -417,6 +417,120 @@ namespace BackendAwSmartstay.API.Migrations
                     b.ToTable("bookings");
                 });
 
+            modelBuilder.Entity("BackendAwSmartstay.API.IAM.Domain.Model.Aggregates.AccountToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTimeOffset?>("ConsumedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("consumed_at");
+
+                    b.Property<DateTimeOffset>("ExpiresAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("expires_at");
+
+                    b.Property<DateTimeOffset>("IssuedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("issued_at");
+
+                    b.Property<string>("Purpose")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)")
+                        .HasColumnName("purpose");
+
+                    b.Property<DateTimeOffset?>("RevokedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("revoked_at");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)")
+                        .HasColumnName("token_hash");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_account_tokens");
+
+                    b.HasIndex("TokenHash")
+                        .IsUnique()
+                        .HasDatabaseName("i_x_account_tokens__token_hash");
+
+                    b.HasIndex("UserId", "Purpose")
+                        .HasDatabaseName("i_x_account_tokens__user_id__purpose");
+
+                    b.ToTable("account_tokens", (string)null);
+                });
+
+            modelBuilder.Entity("BackendAwSmartstay.API.IAM.Domain.Model.Aggregates.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTimeOffset>("ExpiresAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("expires_at");
+
+                    b.Property<Guid>("FamilyId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("family_id");
+
+                    b.Property<DateTimeOffset>("IssuedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("issued_at");
+
+                    b.Property<string>("RevocationReason")
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)")
+                        .HasColumnName("revocation_reason");
+
+                    b.Property<DateTimeOffset?>("RevokedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("revoked_at");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)")
+                        .HasColumnName("token_hash");
+
+                    b.Property<int>("TokenVersion")
+                        .HasColumnType("int")
+                        .HasColumnName("token_version");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_refresh_tokens");
+
+                    b.HasIndex("FamilyId")
+                        .HasDatabaseName("i_x_refresh_tokens__family_id");
+
+                    b.HasIndex("TokenHash")
+                        .IsUnique()
+                        .HasDatabaseName("i_x_refresh_tokens__token_hash");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("i_x_refresh_tokens__user_id");
+
+                    b.ToTable("refresh_tokens", (string)null);
+                });
+
             modelBuilder.Entity("BackendAwSmartstay.API.IAM.Domain.Model.Aggregates.User", b =>
                 {
                     b.Property<int>("Id")
@@ -442,9 +556,39 @@ namespace BackendAwSmartstay.API.Migrations
                         .HasColumnType("varchar(254)")
                         .HasColumnName("email");
 
+                    b.Property<bool>("EmailVerified")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false)
+                        .HasColumnName("email_verified");
+
+                    b.Property<DateTimeOffset?>("EmailVerifiedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("email_verified_at");
+
+                    b.Property<int>("FailedSignInAttempts")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0)
+                        .HasColumnName("failed_sign_in_attempts");
+
+                    b.Property<string>("FirstName")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("first_name");
+
                     b.Property<int?>("HotelId")
                         .HasColumnType("int")
                         .HasColumnName("hotel_id");
+
+                    b.Property<string>("LastName")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("last_name");
+
+                    b.Property<DateTimeOffset?>("LockedUntil")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("locked_until");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
@@ -731,6 +875,26 @@ namespace BackendAwSmartstay.API.Migrations
                     b.Navigation("Hotel");
 
                     b.Navigation("RoomType");
+                });
+
+            modelBuilder.Entity("BackendAwSmartstay.API.IAM.Domain.Model.Aggregates.AccountToken", b =>
+                {
+                    b.HasOne("BackendAwSmartstay.API.IAM.Domain.Model.Aggregates.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("f_k_account_tokens_users__user_id");
+                });
+
+            modelBuilder.Entity("BackendAwSmartstay.API.IAM.Domain.Model.Aggregates.RefreshToken", b =>
+                {
+                    b.HasOne("BackendAwSmartstay.API.IAM.Domain.Model.Aggregates.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("f_k_refresh_tokens_users__user_id");
                 });
 
             modelBuilder.Entity("BackendAwSmartstay.Domain.Profiles.Domain.Model.Aggregates.GuestProfile", b =>
