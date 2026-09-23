@@ -146,6 +146,12 @@ namespace BackendAwSmartstay.API.Migrations
                         .HasColumnType("int")
                         .HasColumnName("room_type_id");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("status");
+
                     b.HasKey("Id")
                         .HasName("p_k_rooms");
 
@@ -165,7 +171,8 @@ namespace BackendAwSmartstay.API.Migrations
                             Description = "Room 101 - Standard view.",
                             HotelId = 1,
                             Price = 85.00m,
-                            RoomTypeId = 1
+                            RoomTypeId = 1,
+                            Status = "Available"
                         },
                         new
                         {
@@ -174,7 +181,8 @@ namespace BackendAwSmartstay.API.Migrations
                             Description = "Room 102 - Plaza view with balcony.",
                             HotelId = 1,
                             Price = 150.00m,
-                            RoomTypeId = 2
+                            RoomTypeId = 2,
+                            Status = "Available"
                         },
                         new
                         {
@@ -183,7 +191,8 @@ namespace BackendAwSmartstay.API.Migrations
                             Description = "Suite 201 - Panoramic mountain view.",
                             HotelId = 2,
                             Price = 320.00m,
-                            RoomTypeId = 3
+                            RoomTypeId = 3,
+                            Status = "Available"
                         });
                 });
 
