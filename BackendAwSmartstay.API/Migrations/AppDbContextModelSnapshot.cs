@@ -363,6 +363,81 @@ namespace BackendAwSmartstay.API.Migrations
                         });
                 });
 
+            modelBuilder.Entity("BackendAwSmartstay.API.Audit.Domain.Model.Aggregates.AuditEntry", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("varchar(40)")
+                        .HasColumnName("action");
+
+                    b.Property<string>("ActorEmail")
+                        .HasMaxLength(254)
+                        .HasColumnType("varchar(254)")
+                        .HasColumnName("actor_email");
+
+                    b.Property<int?>("ActorUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("actor_user_id");
+
+                    b.Property<string>("Details")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)")
+                        .HasColumnName("details");
+
+                    b.Property<int?>("HotelId")
+                        .HasColumnType("int")
+                        .HasColumnName("hotel_id");
+
+                    b.Property<string>("IpAddress")
+                        .HasMaxLength(45)
+                        .HasColumnType("varchar(45)")
+                        .HasColumnName("ip_address");
+
+                    b.Property<DateTimeOffset>("OccurredAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("occurred_at");
+
+                    b.Property<string>("Outcome")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("outcome");
+
+                    b.Property<string>("TargetEmail")
+                        .HasMaxLength(254)
+                        .HasColumnType("varchar(254)")
+                        .HasColumnName("target_email");
+
+                    b.Property<int?>("TargetUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("target_user_id");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_audit_entries");
+
+                    b.HasIndex("ActorUserId")
+                        .HasDatabaseName("i_x_audit_entries__actor_user_id");
+
+                    b.HasIndex("OccurredAt")
+                        .HasDatabaseName("i_x_audit_entries__occurred_at");
+
+                    b.HasIndex("TargetUserId")
+                        .HasDatabaseName("i_x_audit_entries__target_user_id");
+
+                    b.HasIndex("HotelId", "OccurredAt")
+                        .HasDatabaseName("i_x_audit_entries__hotel_id__occurred_at");
+
+                    b.ToTable("audit_entries", (string)null);
+                });
+
             modelBuilder.Entity("BackendAwSmartstay.API.Bookings.Domain.Model.Aggregates.Booking", b =>
                 {
                     b.Property<int>("Id")
