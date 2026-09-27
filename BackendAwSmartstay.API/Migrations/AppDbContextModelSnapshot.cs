@@ -721,6 +721,105 @@ namespace BackendAwSmartstay.API.Migrations
                     b.ToTable("users", (string)null);
                 });
 
+            modelBuilder.Entity("BackendAwSmartstay.API.Marketing.Domain.Model.Aggregates.DemoRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AccommodationType")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("accommodation_type");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(254)
+                        .HasColumnType("varchar(254)")
+                        .HasColumnName("email");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("first_name");
+
+                    b.Property<DateTimeOffset?>("FollowedUpAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("followed_up_at");
+
+                    b.Property<string>("HotelName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("hotel_name");
+
+                    b.Property<string>("JobTitle")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("varchar(60)")
+                        .HasColumnName("job_title");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("last_name");
+
+                    b.Property<string>("Message")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)")
+                        .HasColumnName("message");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(16)
+                        .HasColumnType("varchar(16)")
+                        .HasColumnName("phone");
+
+                    b.Property<string>("Profile")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("profile");
+
+                    b.Property<DateTimeOffset>("ReceivedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("received_at");
+
+                    b.Property<string>("ReferralSource")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("referral_source");
+
+                    b.Property<string>("RoomsRange")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("rooms_range");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("status");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_demo_requests");
+
+                    b.HasIndex("Email")
+                        .HasDatabaseName("i_x_demo_requests__email");
+
+                    b.HasIndex("Status", "ReceivedAt")
+                        .HasDatabaseName("i_x_demo_requests__status__received_at");
+
+                    b.ToTable("demo_requests", (string)null);
+                });
+
             modelBuilder.Entity("BackendAwSmartstay.API.Payments.Domain.Model.Aggregates.Payment", b =>
                 {
                     b.Property<int>("Id")
