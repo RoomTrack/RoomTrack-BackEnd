@@ -555,6 +555,42 @@ namespace BackendAwSmartstay.API.Migrations
                     b.ToTable("account_tokens", (string)null);
                 });
 
+            modelBuilder.Entity("BackendAwSmartstay.API.IAM.Domain.Model.Aggregates.MfaRecoveryCode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CodeHash")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("code_hash");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTimeOffset?>("UsedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("used_at");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_mfa_recovery_codes");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("i_x_mfa_recovery_codes__user_id");
+
+                    b.ToTable("mfa_recovery_codes", (string)null);
+                });
+
             modelBuilder.Entity("BackendAwSmartstay.API.IAM.Domain.Model.Aggregates.RefreshToken", b =>
                 {
                     b.Property<int>("Id")
@@ -673,6 +709,30 @@ namespace BackendAwSmartstay.API.Migrations
                     b.Property<DateTimeOffset?>("LockedUntil")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("locked_until");
+
+                    b.Property<bool>("MfaEnabled")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false)
+                        .HasColumnName("mfa_enabled");
+
+                    b.Property<DateTimeOffset?>("MfaEnabledAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("mfa_enabled_at");
+
+                    b.Property<long?>("MfaLastUsedTimeStep")
+                        .HasColumnType("bigint")
+                        .HasColumnName("mfa_last_used_time_step");
+
+                    b.Property<string>("MfaPendingSecretProtected")
+                        .HasMaxLength(1024)
+                        .HasColumnType("varchar(1024)")
+                        .HasColumnName("mfa_pending_secret_protected");
+
+                    b.Property<string>("MfaSecretProtected")
+                        .HasMaxLength(1024)
+                        .HasColumnType("varchar(1024)")
+                        .HasColumnName("mfa_secret_protected");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
@@ -1091,6 +1151,16 @@ namespace BackendAwSmartstay.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("f_k_account_tokens_users__user_id");
+                });
+
+            modelBuilder.Entity("BackendAwSmartstay.API.IAM.Domain.Model.Aggregates.MfaRecoveryCode", b =>
+                {
+                    b.HasOne("BackendAwSmartstay.API.IAM.Domain.Model.Aggregates.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("f_k_mfa_recovery_codes_users__user_id");
                 });
 
             modelBuilder.Entity("BackendAwSmartstay.API.IAM.Domain.Model.Aggregates.RefreshToken", b =>
