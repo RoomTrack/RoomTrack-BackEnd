@@ -1039,6 +1039,29 @@ namespace BackendAwSmartstay.API.Migrations
                     b.ToTable("staff_assignments", (string)null);
                 });
 
+            modelBuilder.Entity("Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FriendlyName")
+                        .HasColumnType("longtext")
+                        .HasColumnName("friendly_name");
+
+                    b.Property<string>("Xml")
+                        .HasColumnType("longtext")
+                        .HasColumnName("xml");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_data_protection_keys");
+
+                    b.ToTable("data_protection_keys");
+                });
+
             modelBuilder.Entity("BackendAwSmartstay.API.Accommodations.Domain.Model.Aggregates.Room", b =>
                 {
                     b.HasOne("BackendAwSmartstay.API.Accommodations.Domain.Model.Aggregates.Hotel", "Hotel")
