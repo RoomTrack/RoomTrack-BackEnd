@@ -138,6 +138,10 @@ namespace BackendAwSmartstay.API.Migrations
                         .HasColumnType("int")
                         .HasColumnName("hotel_id");
 
+                    b.Property<DateTimeOffset?>("MaintenanceAlertSentAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("maintenance_alert_sent_at");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)")
                         .HasColumnName("price");
@@ -151,6 +155,10 @@ namespace BackendAwSmartstay.API.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)")
                         .HasColumnName("status");
+
+                    b.Property<DateTimeOffset>("StatusChangedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("status_changed_at");
 
                     b.HasKey("Id")
                         .HasName("p_k_rooms");
@@ -172,7 +180,8 @@ namespace BackendAwSmartstay.API.Migrations
                             HotelId = 1,
                             Price = 85.00m,
                             RoomTypeId = 1,
-                            Status = "Available"
+                            Status = "Available",
+                            StatusChangedAt = new DateTimeOffset(new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0))
                         },
                         new
                         {
@@ -182,7 +191,8 @@ namespace BackendAwSmartstay.API.Migrations
                             HotelId = 1,
                             Price = 150.00m,
                             RoomTypeId = 2,
-                            Status = "Available"
+                            Status = "Available",
+                            StatusChangedAt = new DateTimeOffset(new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0))
                         },
                         new
                         {
@@ -192,7 +202,8 @@ namespace BackendAwSmartstay.API.Migrations
                             HotelId = 2,
                             Price = 320.00m,
                             RoomTypeId = 3,
-                            Status = "Available"
+                            Status = "Available",
+                            StatusChangedAt = new DateTimeOffset(new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0))
                         });
                 });
 
@@ -323,6 +334,63 @@ namespace BackendAwSmartstay.API.Migrations
                             Id = 6,
                             Name = "Resort"
                         });
+                });
+
+            modelBuilder.Entity("BackendAwSmartstay.API.Accommodations.Domain.Model.Entities.RoomStatusChange", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTimeOffset>("ChangedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("changed_at");
+
+                    b.Property<string>("ChangedByEmail")
+                        .HasMaxLength(254)
+                        .HasColumnType("varchar(254)")
+                        .HasColumnName("changed_by_email");
+
+                    b.Property<int?>("ChangedByUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("changed_by_user_id");
+
+                    b.Property<string>("FromStatus")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("from_status");
+
+                    b.Property<int>("HotelId")
+                        .HasColumnType("int")
+                        .HasColumnName("hotel_id");
+
+                    b.Property<string>("Origin")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("origin");
+
+                    b.Property<int>("RoomId")
+                        .HasColumnType("int")
+                        .HasColumnName("room_id");
+
+                    b.Property<string>("ToStatus")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("to_status");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_room_status_changes");
+
+                    b.HasIndex("RoomId", "ChangedAt")
+                        .HasDatabaseName("i_x_room_status_changes__room_id__changed_at");
+
+                    b.ToTable("room_status_changes", (string)null);
                 });
 
             modelBuilder.Entity("BackendAwSmartstay.API.Accommodations.Domain.Model.Entities.RoomType", b =>
@@ -1213,6 +1281,16 @@ namespace BackendAwSmartstay.API.Migrations
                     b.Navigation("Hotel");
 
                     b.Navigation("RoomType");
+                });
+
+            modelBuilder.Entity("BackendAwSmartstay.API.Accommodations.Domain.Model.Entities.RoomStatusChange", b =>
+                {
+                    b.HasOne("BackendAwSmartstay.API.Accommodations.Domain.Model.Aggregates.Room", null)
+                        .WithMany()
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("f_k_room_status_changes_rooms__room_id");
                 });
 
             modelBuilder.Entity("BackendAwSmartstay.API.IAM.Domain.Model.Aggregates.AccountToken", b =>
