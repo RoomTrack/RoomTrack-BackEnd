@@ -623,6 +623,125 @@ namespace BackendAwSmartstay.API.Migrations
                     b.ToTable("bookings");
                 });
 
+            modelBuilder.Entity("BackendAwSmartstay.API.Bookings.Domain.Model.Aggregates.DigitalCheckIn", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AccessCodeProtected")
+                        .IsRequired()
+                        .HasMaxLength(1024)
+                        .HasColumnType("varchar(1024)")
+                        .HasColumnName("access_code_protected");
+
+                    b.Property<DateTimeOffset>("AccessCodeValidUntil")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("access_code_valid_until");
+
+                    b.Property<int>("BookingId")
+                        .HasColumnType("int")
+                        .HasColumnName("booking_id");
+
+                    b.Property<DateTimeOffset>("CompletedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("completed_at");
+
+                    b.Property<string>("DocumentContentType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("document_content_type");
+
+                    b.Property<string>("DocumentFileId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)")
+                        .HasColumnName("document_file_id");
+
+                    b.Property<string>("DocumentNumber")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("document_number");
+
+                    b.Property<long>("DocumentSizeBytes")
+                        .HasColumnType("bigint")
+                        .HasColumnName("document_size_bytes");
+
+                    b.Property<string>("DocumentType")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("document_type");
+
+                    b.Property<int?>("GuestUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("guest_user_id");
+
+                    b.Property<string>("Nationality")
+                        .IsRequired()
+                        .HasMaxLength(2)
+                        .HasColumnType("varchar(2)")
+                        .HasColumnName("nationality");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("status");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_digital_check_ins");
+
+                    b.HasIndex("BookingId")
+                        .IsUnique()
+                        .HasDatabaseName("i_x_digital_check_ins__booking_id");
+
+                    b.ToTable("digital_check_ins", (string)null);
+                });
+
+            modelBuilder.Entity("BackendAwSmartstay.API.Bookings.Infrastructure.Storage.StoredDocument", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)")
+                        .HasColumnName("id");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("content_type");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at");
+
+                    b.Property<byte[]>("ProtectedContent")
+                        .IsRequired()
+                        .HasColumnType("longblob")
+                        .HasColumnName("protected_content");
+
+                    b.Property<string>("Purpose")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("purpose");
+
+                    b.Property<long>("SizeBytes")
+                        .HasColumnType("bigint")
+                        .HasColumnName("size_bytes");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_stored_documents");
+
+                    b.ToTable("stored_documents", (string)null);
+                });
+
             modelBuilder.Entity("BackendAwSmartstay.API.IAM.Domain.Model.Aggregates.AccountToken", b =>
                 {
                     b.Property<int>("Id")
@@ -1291,6 +1410,16 @@ namespace BackendAwSmartstay.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("f_k_room_status_changes_rooms__room_id");
+                });
+
+            modelBuilder.Entity("BackendAwSmartstay.API.Bookings.Domain.Model.Aggregates.DigitalCheckIn", b =>
+                {
+                    b.HasOne("BackendAwSmartstay.API.Bookings.Domain.Model.Aggregates.Booking", null)
+                        .WithMany()
+                        .HasForeignKey("BookingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("f_k_digital_check_ins_bookings__booking_id");
                 });
 
             modelBuilder.Entity("BackendAwSmartstay.API.IAM.Domain.Model.Aggregates.AccountToken", b =>
