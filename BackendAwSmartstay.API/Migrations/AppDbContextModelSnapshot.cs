@@ -142,6 +142,12 @@ namespace BackendAwSmartstay.API.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("maintenance_alert_sent_at");
 
+                    b.Property<string>("Number")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)")
+                        .HasColumnName("number");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)")
                         .HasColumnName("price");
@@ -163,11 +169,12 @@ namespace BackendAwSmartstay.API.Migrations
                     b.HasKey("Id")
                         .HasName("p_k_rooms");
 
-                    b.HasIndex("HotelId")
-                        .HasDatabaseName("i_x_rooms__hotel_id");
-
                     b.HasIndex("RoomTypeId")
                         .HasDatabaseName("i_x_rooms__room_type_id");
+
+                    b.HasIndex("HotelId", "Number")
+                        .IsUnique()
+                        .HasDatabaseName("i_x_rooms__hotel_id__number");
 
                     b.ToTable("rooms", (string)null);
 
@@ -178,6 +185,7 @@ namespace BackendAwSmartstay.API.Migrations
                             Amenities = "[\"Wifi\",\"TV\"]",
                             Description = "Room 101 - Standard view.",
                             HotelId = 1,
+                            Number = "101",
                             Price = 85.00m,
                             RoomTypeId = 1,
                             Status = "Available",
@@ -189,6 +197,7 @@ namespace BackendAwSmartstay.API.Migrations
                             Amenities = "[\"Wifi\",\"TV\",\"Minibar\"]",
                             Description = "Room 102 - Plaza view with balcony.",
                             HotelId = 1,
+                            Number = "102",
                             Price = 150.00m,
                             RoomTypeId = 2,
                             Status = "Available",
@@ -200,6 +209,7 @@ namespace BackendAwSmartstay.API.Migrations
                             Amenities = "[\"Jacuzzi\",\"Wifi\",\"Desayuno\",\"Chimenea\"]",
                             Description = "Suite 201 - Panoramic mountain view.",
                             HotelId = 2,
+                            Number = "201",
                             Price = 320.00m,
                             RoomTypeId = 3,
                             Status = "Available",
