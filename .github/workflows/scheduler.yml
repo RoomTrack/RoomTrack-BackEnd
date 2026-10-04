@@ -1,6 +1,7 @@
-# Scheduler externo: Render free duerme el servicio, así que los trabajos periódicos
-# los dispara GitHub Actions contra endpoints protegidos con X-Cron-Key.
-# Requiere: secret CRON_API_KEY (= Cron__ApiKey en Render) y variable API_BASE_URL.
+# Scheduler externo: los trabajos periódicos los dispara GitHub Actions contra endpoints protegidos con X-Cron-Key,
+# a través del API gateway (que los enruta al servicio dueño de cada uno). Los e-mails ya no necesitan un job:
+# los entrega el notifications-worker en cuanto llegan a RabbitMQ.
+# Requiere: secret CRON_API_KEY (= Cron__ApiKey de los servicios) y variable API_BASE_URL (URL del gateway + /api/v1).
 name: scheduler
 
 on:
@@ -24,18 +25,14 @@ jobs:
         run: |
           curl --fail --silent --show-error --retry 5 --retry-delay 15 --retry-all-errors --max-time 90 "${API_BASE_URL%/api/v1}/health"
 
-      - name: Expire unpaid bookings (US-07)
+      - name: Expire unpaid bookings
         run: |
           curl --fail --silent --show-error --retry 3 --retry-delay 10 --max-time 60 -X POST -H "X-Cron-Key: ${CRON_API_KEY}" "${API_BASE_URL}/bookings/expire-pending"
 
-      - name: Alert rooms in maintenance over 24 h (US-06)
+      - name: Alert rooms in maintenance over 24 h
         run: |
           curl --fail --silent --show-error --retry 3 --retry-delay 10 --max-time 60 -X POST -H "X-Cron-Key: ${CRON_API_KEY}" "${API_BASE_URL}/rooms/maintenance-alerts"
 
-      - name: Follow up demo requests (US-27)
+      - name: Follow up demo requests
         run: |
           curl --fail --silent --show-error --retry 3 --retry-delay 10 --max-time 60 -X POST -H "X-Cron-Key: ${CRON_API_KEY}" "${API_BASE_URL}/demo-requests/follow-ups"
-
-      - name: Deliver pending e-mails (outbox)
-        run: |
-          curl --fail --silent --show-error --retry 3 --retry-delay 10 --max-time 120 -X POST -H "X-Cron-Key: ${CRON_API_KEY}" "${API_BASE_URL}/emails/dispatch"

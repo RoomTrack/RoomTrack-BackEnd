@@ -1,0 +1,50 @@
+using BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates;
+using BackendAwRoomTrack.API.Accommodations.Domain.Model.Queries;
+using BackendAwRoomTrack.API.Accommodations.Domain.Repositories;
+using BackendAwRoomTrack.API.Accommodations.Domain.Services;
+
+namespace BackendAwRoomTrack.API.Accommodations.Application.Internal.QueryServices;
+
+
+public class RoomQueryService(IRoomRepository roomRepository, IRoomStatusChangeRepository roomStatusChangeRepository)
+    : IRoomQueryService
+{
+    public Task<IReadOnlyList<Room>> Handle(GetRoomMapQuery query) => roomRepository.ListByHotelAsync(query.HotelId);
+
+    public Task<IReadOnlyList<Domain.Model.Entities.RoomStatusChange>> Handle(GetRoomStatusHistoryQuery query) =>
+        roomStatusChangeRepository.ListByRoomAsync(query.RoomId, Math.Clamp(query.Limit, 1, 500));
+
+    /// <summary>
+    /// Provides query handling services for retrieving room information, 
+    /// including fetching rooms by ID, type, or listing all available rooms.
+    /// </summary>
+    public async Task<Room?> Handle(GetRoomByIdQuery query)
+    {
+        // Retrieves a room based on the provided room identifier.
+        return await roomRepository.FindByIdAsync(query.RoomId);  
+       
+    }
+  
+    /// <summary>
+    /// Retrieves a list of all rooms available in the system.
+    /// </summary>
+    /// <param name="query">Query used to trigger the operation.</param>
+    /// <returns>An enumerable collection of <see cref="Room"/>.</returns>
+    public async Task<IEnumerable<Room>> Handle(GetAllRoomsQuery query)
+    {
+        return await roomRepository.ListAsync();
+    }
+
+    public Task<IEnumerable<Room>> Handle(GetRoomsOfferedForBookingQuery query) =>
+        roomRepository.FindOfferedForBookingAsync(query.HotelId);
+
+    public async Task<IEnumerable<Room>> Handle(GetRoomsByTypeQuery query)
+    {
+        // Retrieves all rooms that belong to a specific room type.
+        var rooms = await roomRepository.ListAsync();
+        return rooms.Where(r => r.RoomTypeId == query.RoomTypeId);
+    }        
+
+ 
+}
+

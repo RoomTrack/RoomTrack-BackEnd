@@ -1,0 +1,56 @@
+using BackendAwRoomTrack.API.Marketing.Application.Internal.Configuration;
+using BackendAwRoomTrack.API.Marketing.Application.OutboundServices;
+using BackendAwRoomTrack.API.Marketing.Domain.Model.Aggregates;
+using BackendAwRoomTrack.API.Marketing.Domain.Model.Commands;
+using BackendAwRoomTrack.API.Marketing.Domain.Model.ValueObjects;
+using BackendAwRoomTrack.API.Marketing.Domain.Repositories;
+using BackendAwRoomTrack.API.Marketing.Domain.Services;
+using BackendAwRoomTrack.API.Shared.Domain.Repositories;
+using Microsoft.Extensions.Options;
+
+namespace BackendAwRoomTrack.API.Marketing.Application.Internal.CommandServices;
+
+public class DemoRequestCommandService(
+    IDemoRequestRepository demoRequestRepository,
+    IDemoRequestNotificationService notifications,
+    IUnitOfWork unitOfWork,
+    IOptions<DemoRequestSettings> settings,
+    TimeProvider timeProvider,
+    ILogger<DemoRequestCommandService> logger) : IDemoRequestCommandService
+{
+    public async Task<DemoRequest> Handle(SubmitDemoRequestCommand command)
+    {
+        var contact = new ContactDetails(command.FirstName, command.LastName, command.Email, command.Phone);
+        var request = DemoRequest.Submit(contact, command.HotelName, command.JobTitle, command.AccommodationType,
+            command.RoomsRange, command.ReferralSource, command.Profile, command.Message, timeProvider.GetUtcNow());
+
+        // The e-mails show the request number: saved first, then enlisted in the outbox in the same transaction.
+        await unitOfWork.ExecuteInTransactionAsync(async () =>
+        {
+            await demoRequestRepository.AddAsync(request);
+            await unitOfWork.CompleteAsync();
+            await notifications.SendConfirmationAsync(request);
+            await notifications.NotifySalesTeamAsync(request);
+            await unitOfWork.CompleteAsync();
+        });
+        return request;
+    }
+
+    public async Task<int> Handle(SendDemoFollowUpsCommand command)
+    {
+        var now = timeProvider.GetUtcNow();
+        var waiting = await demoRequestRepository.FindWaitingSinceAsync(now - settings.Value.FollowUpAfter);
+        var due = waiting.Where(request => request.IsDueForFollowUp(now, settings.Value.FollowUpAfter)).ToList();
+        if (due.Count == 0) return 0;
+
+        // Marked and enlisted in the outbox in one commit: a second run (or a retry of the cron job) never sends the
+        // reminder twice, and a marked request always has its reminder.
+        var followedUp = due.Where(request => request.MarkFollowedUp(now)).ToList();
+        foreach (var request in followedUp)
+            await notifications.SendFollowUpAsync(request);
+        await unitOfWork.CompleteAsync();
+
+        logger.LogInformation("Demo follow-up sent to {Count} request(s).", followedUp.Count);
+        return followedUp.Count;
+    }
+}
