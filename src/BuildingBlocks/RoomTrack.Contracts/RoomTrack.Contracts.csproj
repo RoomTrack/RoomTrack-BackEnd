@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <!--
+        Published language shared by the services: the ACL ports one service consumes from another (implemented by
+        the owner in-process and by the consumers as HTTP clients) and the integration messages sent over RabbitMQ.
+        No dependencies on purpose: changing a contract must be a deliberate, visible change.
+    -->
+
+</Project>

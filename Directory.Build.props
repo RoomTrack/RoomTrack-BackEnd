@@ -1,0 +1,11 @@
+<Project>
+    <!-- Common settings of every project of the solution (building blocks, services, gateway and tests). -->
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <!-- XML comments feed the OpenAPI documents; undocumented members are not an error. -->
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);1591</NoWarn>
+    </PropertyGroup>
+</Project>

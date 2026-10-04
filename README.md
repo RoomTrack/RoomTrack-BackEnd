@@ -1,97 +1,213 @@
-# SmartStay — Backend API
+# RoomTrack — Backend (microservicios)
 
-API REST de SmartStay (ASP.NET Core 9, MySQL 8). Documentación interactiva en `/scalar` una vez que la API está en marcha.
+API REST de RoomTrack (ASP.NET Core 9, MySQL 8, RabbitMQ) organizada como **microservicios**: un API gateway,
+cinco servicios con su propia base de datos y un worker de notificaciones. Los clientes solo hablan con el gateway;
+la documentación de todos los servicios está en `http://localhost:8080/docs`.
+
+## Arquitectura
+
+```
+                        clientes (web, landing, app)
+                                    │  /api/v1/*
+                            ┌───────▼────────┐
+                            │  API gateway   │  YARP: enrutamiento, CORS, Swagger UI unificado
+                            └───────┬────────┘
+        ┌──────────────┬────────────┼─────────────┬───────────────┐
+        ▼              ▼            ▼             ▼               ▼
+   identity      accommodations  bookings      profiles       analytics
+   IAM + Audit   hoteles, hab.,  reservas,     huéspedes,     métricas
+                 media, IoT      check-in,     staff, demo    (read model)
+                                 pagos         requests
+        │              │            │             │               ▲
+        └──── HTTP interno (/internal/v1, X-Internal-Key) ────────┘│
+        │              │            │             │               │
+        └──────────────┴──── RabbitMQ (MassTransit) ───────────────┘
+                 eventos de integración + SendEmail
+                                    │
+                         ┌──────────▼───────────┐
+                         │ notifications-worker │ → Brevo / SMTP / log
+                         └──────────────────────┘
+```
+
+| Servicio | Bounded contexts | Base de datos | Rutas públicas (`/api/v1/...`) |
+|---|---|---|---|
+| `identity-service` | IAM, Audit | `roomtrack_identity` | `authentication`, `users`, `audit-logs` |
+| `accommodations-service` | Accommodations, Media, emulador IoT | `roomtrack_accommodations` | `hotels`, `rooms`, `room-types`, `accommodations/options`, `media`, `io-t-emulator` |
+| `bookings-service` | Bookings, Payments | `roomtrack_bookings` | `bookings`, `payments`, `rooms/available` |
+| `profiles-service` | Profiles, Marketing | `roomtrack_profiles` | `guests`, `staff`, `demo-requests` |
+| `analytics-service` | Analytics | `roomtrack_analytics` | `analytics` |
+| `notifications-worker` | entrega de correos | — (solo RabbitMQ) | — |
+| `gateway` | — | — | todas las anteriores + `/docs` y `/health` |
+
+### Estructura del repositorio
+
+```
+src/
+  BuildingBlocks/
+    RoomTrack.Contracts/       Lenguaje publicado: puertos ACL entre servicios y mensajes de RabbitMQ
+    RoomTrack.BuildingBlocks/  Infraestructura común: DbContext base, unit of work, errores (ProblemDetails),
+                               JWT y políticas, API interna + clientes HTTP, MassTransit, OpenAPI, rate limiting
+  Services/<Servicio>/RoomTrack.<Servicio>.API/   un proyecto ASP.NET Core por servicio
+  Services/Notifications/RoomTrack.Notifications.Worker/
+  Gateway/RoomTrack.Gateway/
+tests/RoomTrack.<Servicio>.API.Tests/
+deploy/mysql/init/             crea un esquema y un usuario por servicio
+```
+
+Dentro de cada servicio el código mantiene las capas de DDD del monolito (`Domain`, `Application`,
+`Infrastructure`, `Interfaces`) y sus namespaces originales (`BackendAwRoomTrack.API.<Contexto>...`), para que la
+migración fuera un movimiento de archivos y no una reescritura. Lo nuevo de cada servicio está en el namespace
+`RoomTrack.<Servicio>.API` (su `DbContext`, su API interna y su `Program.cs`).
+
+### Cómo se comunican los servicios
+
+**1. Autenticación sin ida y vuelta.** `identity-service` firma los JWT y **cada servicio los valida por su
+cuenta** (misma clave, issuer y audience). Lo único que se consulta a Identity es si la sesión del token sigue
+vigente (usuario activo, versión del token): `GET /internal/v1/sessions/{userId}/{version}`, con caché de 15 s
+por usuario y versión. Las políticas por capacidad (`Policies`) son las mismas en todos los servicios.
+
+**2. Consultas y comandos síncronos: HTTP interno.** Los *facades* ACL del monolito (`IIamContextFacade`,
+`IAccommodationsContextFacade`, `IGuestProfilesContextFacade`, `IRoomReservationsFacade`) se mantienen como
+puertos en `RoomTrack.Contracts`. El servicio dueño los implementa en proceso y los expone en `/internal/v1/*`;
+los demás los implementan con un cliente HTTP (`RoomTrack.BuildingBlocks/Clients`), así que el código de
+aplicación no cambió. Detalles:
+
+- `/internal/*` **no lo enruta el gateway** y además exige la cabecera `X-Internal-Key` (`InternalApi__Key`, la
+  misma en todos los servicios).
+- Los errores remotos vuelven como la misma excepción de dominio (400/403/404/409/410 con su código estable), así
+  que la respuesta al cliente es igual que en el monolito. Si el otro servicio no responde: **503**
+  `service.unavailable`.
+- Resiliencia: timeouts, circuit breaker y reintentos solo de métodos seguros (un `POST` nunca se repite).
+
+**3. Hechos asíncronos: RabbitMQ con outbox transaccional.** Cada servicio publica mensajes con MassTransit usando
+el **outbox de Entity Framework** de su propia base de datos: el mensaje se guarda en `outbox_messages` en la misma
+transacción que el cambio, y se envía a RabbitMQ después. Si el cambio se revierte, el mensaje no existe; si se
+confirma, llega aunque el servicio se reinicie (al menos una vez). Los consumidores usan el **inbox**, que descarta
+los duplicados.
+
+| Mensaje | Publica | Consume | Para qué |
+|---|---|---|---|
+| `SendEmail` | todos los servicios | notifications-worker | entregar el correo (Brevo/SMTP/log) |
+| `RoomRegisteredIntegrationEvent`, `RoomRemovedIntegrationEvent` | accommodations | analytics | contar habitaciones por hotel |
+| `BookingStateChangedIntegrationEvent` | bookings | analytics | reservas y cancelaciones del mes, ocupación |
+| `PaymentStateChangedIntegrationEvent` | bookings | analytics | ingresos del mes |
+
+Los eventos de integración llevan el **estado actual** de la entidad (*event-carried state transfer*). Así
+Analytics mantiene su propio *read model* (`room_facts`, `booking_facts`, `payment_facts`) sin consultar las tablas
+de otros servicios. Cada fila guarda el instante del último hecho aplicado, de modo que un evento viejo que llegue
+tarde nunca pisa un estado más nuevo. Las métricas son **eventualmente consistentes**.
+
+### Qué cambió respecto del monolito (compromisos a conocer)
+
+- **Sin transacciones entre servicios.** Donde el monolito hacía todo en una transacción, ahora la llamada
+  remota va **al final**, justo antes del commit local, para que un rechazo remoto revierta lo local:
+  - *Check-in* (bookings → accommodations): la habitación pasa a `Occupied` en Accommodations y después se
+    confirma el check-in. Si falla el commit local después de ocupar la habitación (poco probable), la habitación
+    queda ocupada: el siguiente paso natural sería una **saga** con compensación.
+  - *Registro de hotel* (accommodations → identity): se guarda el hotel, Identity asigna el hotel al
+    administrador y devuelve su nueva sesión. Si Identity falla, el hotel se revierte.
+- **Bloqueo de habitación (R1).** El monolito bloqueaba la fila de la habitación; ahora esa fila vive en otra
+  base de datos. Bookings serializa las reservas de una habitación con su propia tabla `room_booking_locks`
+  (`SELECT ... FOR UPDATE` dentro de la transacción de la reserva).
+- **Correos.** Ya no existe la tabla `outbox_emails` ni el job `POST /api/v1/emails/dispatch`: el outbox de
+  MassTransit cumple esa función y el worker reintenta con backoff exponencial (`Email__Retry__*`). Después del
+  último intento el mensaje queda en la cola `_error` de RabbitMQ.
+- **Datos de demostración.** El seeder `DemoData` creaba cuentas, hoteles, reservas y pagos en una sola
+  transacción sobre una sola base de datos, y eso ya no es posible. **Se retiró**: para recuperarlo habría que
+  reescribirlo como un script que use la API pública a través del gateway.
+- **Migración de datos.** Cada servicio parte con una migración `InitialSchema` nueva. Mover los datos de una base
+  existente del monolito a las cinco bases es un paso aparte (no incluido).
+
+## Ejecutar en local
+
+### Docker Compose (todo el sistema)
+
+```bash
+cp .env.example .env   # opcional; sin .env se usan los valores de desarrollo
+docker compose up -d --build
+curl http://localhost:8080/health
+```
+
+- API: `http://localhost:8080/api/v1/...` (solo el gateway se publica en el host)
+- Documentación de todos los servicios: `http://localhost:8080/docs`
+- Consola de RabbitMQ: `http://localhost:15672` (`guest` / `guest`): colas, mensajes y la cola `_error`
+- MySQL: `localhost:3306`. Cada servicio entra con su usuario (`identity_svc`, `bookings_svc`...), que solo ve su
+  esquema. El script `deploy/mysql/init/01-databases.sql` corre solo la primera vez, con el volumen vacío
+  (`docker compose down -v` para empezar de cero).
+- Laboratorio de resiliencia de Analytics (Redis + ActiveMQ): `docker compose --profile lab up -d --build`,
+  con `ANALYTICS_REDIS_CONNECTION=redis:6379` y `ANALYTICS_ACTIVEMQ_URI=tcp://activemq:61616` en `.env`.
+
+### `dotnet run` (un servicio a la vez, para depurar)
+
+Levanta solo la infraestructura con Compose y ejecuta los servicios desde el IDE o la terminal:
+
+```bash
+docker compose up -d mysql rabbitmq
+dotnet run --project src/Services/Identity/RoomTrack.Identity.API          # http://localhost:5101
+dotnet run --project src/Services/Accommodations/RoomTrack.Accommodations.API  # http://localhost:5102
+dotnet run --project src/Services/Bookings/RoomTrack.Bookings.API          # http://localhost:5103
+dotnet run --project src/Services/Profiles/RoomTrack.Profiles.API          # http://localhost:5104
+dotnet run --project src/Services/Analytics/RoomTrack.Analytics.API        # http://localhost:5105
+dotnet run --project src/Services/Notifications/RoomTrack.Notifications.Worker
+dotnet run --project src/Gateway/RoomTrack.Gateway                         # http://localhost:5100
+```
+
+Los `appsettings.Development.json` ya traen las URLs entre servicios, las claves de desarrollo y la base de datos
+de cada uno (usuario `roomtrack` / `roomtrack_dev`, creado por el script de inicialización). Cada servicio aplica
+sus migraciones al arrancar. Para crear una migración nueva:
+
+```bash
+dotnet ef migrations add <Nombre> --project src/Services/Bookings/RoomTrack.Bookings.API \
+  --output-dir Infrastructure/Persistence/Migrations
+```
+
+### Tests
+
+```bash
+dotnet test RoomTrack.sln
+```
+
+Hay un proyecto de tests por servicio. Los tests que **ya no compilaban en `main`** antes de la migración se
+conservan, pero están excluidos con `<Compile Remove>` en su `.csproj`, con un comentario que lo explica.
 
 ## Configuración y secretos
 
-La API lee su configuración por capas; cada capa sobrescribe a la anterior:
+Cada servicio lee su configuración por capas: `appsettings.json` (sin secretos), `appsettings.{Environment}.json`
+y **variables de entorno** (`__` equivale a `:`; por ejemplo `TokenSettings__Secret` es `TokenSettings:Secret`).
+Las opciones se validan al iniciar: si falta un valor obligatorio, el servicio no arranca y el log dice cuál falta.
+`.env.example` lista las variables de Docker Compose.
 
-1. `appsettings.json`: valores por defecto, **sin secretos**.
-2. `appsettings.{Environment}.json`: ajustes del entorno (`Development`, `Production`). `appsettings.Development.json` solo trae valores locales de prueba.
-3. **User secrets** (solo en `Development`): secretos de tu máquina, fuera del repositorio.
-4. **Variables de entorno**: lo que usan Docker Compose y Render. `__` (doble guion bajo) equivale a `:` (por ejemplo `TokenSettings__Secret` es `TokenSettings:Secret`).
-
-Las opciones se validan al iniciar: si falta un valor obligatorio (por ejemplo `TokenSettings__Secret` o `Email__Brevo__ApiKey` en producción), la API no arranca y el log indica qué variable falta.
-
-Las imágenes de los hoteles se suben directo del navegador a Cloudinary con una **firma de corta vida** que emite la API (`POST /api/v1/media/hotel-images/signature`, solo administradores); el API secret vive solo en el servidor. Define `Cloudinary__CloudName`, `Cloudinary__ApiKey` y `Cloudinary__ApiSecret` (obligatorias en producción; sin ellas, en desarrollo la firma responde 503 `media.uploads_not_configured`). El upload preset firmado es `smartstay-hotels` (`Cloudinary__HotelImagesPreset`).
-
-**Correos.** El transporte se elige de forma explícita con `Email__Transport`:
-
-- `BrevoApi` (producción): API HTTP transaccional de Brevo (`POST https://api.brevo.com/v3/smtp/email`) por el puerto 443. Requiere `Email__Brevo__ApiKey` (secreto) y `Email__From__Address` (remitente verificado en Brevo). Se usa la API y no SMTP porque desde Render las conexiones salientes a `smtp-relay.brevo.com:587` fallan por timeout.
-- `Smtp`: cualquier relay SMTP (`Email__Smtp__Host`, `Port`, `Username`, `Password`, `EnableSsl`), pensado para uso local (por ejemplo Mailpit).
-- `Log`: el correo se escribe en el log con sus enlaces y códigos. Es el valor por defecto fuera de producción; en `Production` la API no arranca con `Log` ni sin transporte.
-
-Cada correo se guarda en la tabla `outbox_emails` **en la misma transacción** que el cambio que lo origina (outbox transaccional): si el cambio se revierte, el correo no existe; si se confirma, el correo se entrega aunque la API se reinicie o se redespliegue. Un despachador en segundo plano entrega los pendientes cada `Email__Outbox__PollIntervalSeconds` (10 s), reintenta los fallos transitorios con backoff exponencial hasta `Email__Outbox__MaxAttempts` (8) y marca `Failed` los rechazos permanentes (remitente o destinatario inválido, API key incorrecta). En el log queda una línea por correo enviado con el destinatario enmascarado; nunca la API key ni el cuerpo.
-
-Los medios de pago de las reservas (Yape, Plin, cuenta bancaria) **no** son variables de entorno: cada administrador los registra para su hotel desde la aplicación (`PUT /api/v1/hotels/{id}/payment-settings`). Un hotel sin medios de pago no acepta reservas.
-
-### Desarrollo local con `dotnet run`
-
-Usa `dotnet user-secrets` (el proyecto ya tiene un `UserSecretsId`):
-
-```bash
-cd BackendAwSmartstay.API
-dotnet user-secrets set "ConnectionStrings:DefaultConnection" "server=localhost;port=3306;user=smartstay;password=smartstay_dev;database=smartstay;"
-dotnet user-secrets set "InitialChainAdmin:Email" "admin@tu-dominio.com"
-dotnet user-secrets set "InitialChainAdmin:Password" "una frase larga para el administrador"
-dotnet user-secrets list
-dotnet run
-```
-
-Los user secrets solo se cargan cuando `ASPNETCORE_ENVIRONMENT=Development` (el comportamiento por defecto de ASP.NET Core). Sin `Email:Transport` (o con `Log`), los correos se escriben en el log con sus enlaces y códigos.
-
-### Docker Compose
-
-`docker-compose.yml` levanta MySQL y la API. Para cambiar valores, copia `.env.example` a `.env` (está en `.gitignore`): **ese archivo lo lee Docker Compose, no la aplicación**, y Compose pasa sus valores al contenedor como variables de entorno.
-
-```bash
-cp .env.example .env   # opcional
-docker compose up -d --build
-curl http://localhost:10000/health
-```
-
-### Producción (Render)
-
-Define cada valor como **variable de entorno** del servicio en Render (nunca en el repositorio). Los archivos sensibles, como el certificado CA de Aiven para MySQL, se suben como **Secret Files** (quedan en `/etc/secrets/`) y se referencian desde la variable, por ejemplo `SslMode=VerifyFull;SslCa=/etc/secrets/ca.pem;` en la cadena de conexión. `.env.example` lista todas las variables con su explicación.
-
-Las tareas programadas (`/demo-requests/follow-ups`, `/bookings/expire-pending`, `/rooms/maintenance-alerts`, `/emails/dispatch`) las invoca un programador externo (por ejemplo, un cron de GitHub Actions) con la cabecera `X-Cron-Key`. `/emails/dispatch` entrega los correos pendientes o en reintento (el plan free de Render duerme la API cuando no hay tráfico) y es idempotente.
-
-**IP del cliente (rate limiting y auditoría).** En Render el tráfico llega por Cloudflare → balanceador interno de Render → Kestrel, así que la IP del socket es la del balanceador. La API procesa siempre `X-Forwarded-For` y `X-Forwarded-Proto` con `ForwardedHeadersOptions` configuradas en código (primer middleware del pipeline): recorre la cadena de derecha a izquierda saltando solo proxies de confianza (loopback, rangos privados `10/8`, `172.16/12`, `192.168/16`, `100.64/10`, `fc00::/7` y los rangos publicados de Cloudflare) y toma la primera IP que no es de confianza como cliente. Lo que un cliente escriba más a la izquierda se ignora, así que no puede falsear su IP. `ForwardedHeaders__TrustedNetworks__0`, `__1`... reemplazan la lista por defecto (CIDR). No definas `ASPNETCORE_FORWARDEDHEADERS_ENABLED`: confía en cualquier proxy pero solo desenvuelve un salto y devolvía la IP interna del balanceador para todos los usuarios. Si Cloudflare publica rangos nuevos (https://www.cloudflare.com/ips), actualiza `ForwardedHeadersSettings.DefaultTrustedNetworks`.
-
-## Datos de demostración
-
-Las migraciones solo crean el esquema y los catálogos de referencia que la aplicación necesita (categorías de hospedaje y amenidades del formulario de hotel). Una base de datos nueva **no** tiene hoteles, habitaciones ni cuentas. Los datos de demostración son opcionales y se cargan al iniciar, después de las migraciones, solo con `DemoData__Enabled=true`:
-
-- Se crean **una sola vez**: si ya existe alguna cuenta u hotel de demostración, no se hace nada (reiniciar no duplica datos). Todo ocurre en una transacción.
-- Pasan por el dominio (agregados, política de contraseñas, disponibilidad), no por SQL.
-- **No se envía ningún correo**: los hechos se registran con su fecha en el pasado y sus eventos de dominio no se publican. Las cuentas quedan con el correo ya verificado; el staff igual debe activar su app de autenticación (MFA) en el primer inicio de sesión.
-- Las fechas son relativas a "hoy" en `America/Lima`, así que el calendario siempre se ve con movimiento.
+Valores compartidos por todos los servicios (deben ser iguales en todos):
 
 | Variable | Uso |
 |---|---|
-| `DemoData__Enabled` | `true` para cargar los datos (por defecto `false`). |
-| `DemoData__DefaultPassword` | **Secreto.** Contraseña de todas las cuentas de demostración: mínimo 15 caracteres (política de huéspedes, también válida para el staff), no común ni filtrada. Sin ella la API no arranca si los datos están activados. |
-| `DemoData__EmailBase` | Buzón base (por defecto `psulcasanchez@gmail.com`). Las cuentas usan sus alias de Gmail: `psulcasanchez+admin1@gmail.com`, etc. |
-| `DemoData__Hotel1Payment__AccountHolder`, `__Yape`, `__Plin`, `__BankName`, `__BankAccountNumber`, `__BankAccountCci` | **Datos personales**: medios de pago del hotel 1 (se validan igual que el formulario de la app). Si no se definen, el hotel 1 queda sin medios de pago, no acepta reservas y no se crean las reservas de demostración (queda un aviso en el log). Nunca se inventan números. |
+| `TokenSettings__Secret`, `__Issuer`, `__Audience` | Firma y validación de los JWT. |
+| `InternalApi__Key` | Clave de las llamadas entre servicios (`X-Internal-Key`, mínimo 32 caracteres). |
+| `Cron__ApiKey` | Clave del programador externo (`X-Cron-Key`). |
+| `RabbitMq__Host`, `__Username`, `__Password` | Broker de mensajes. |
+| `Services__<Servicio>__BaseUrl` | Dirección interna de los servicios que consume cada uno. |
 
-Qué se crea (las cuentas son `<buzón>+<alias>@<dominio>`):
+**Correos** (solo en `notifications-worker`). `Email__Transport` elige el transporte de forma explícita:
 
-| Alias | Rol | Qué muestra |
-|---|---|---|
-| `admin1` | admin de **Casa Ungurahui Hotel Boutique** (Tarapoto) | Hotel con 8 habitaciones (101–104, 201–204; Simple, Doble, Matrimonial, Suite; S/ 150–380), medios de pago configurados, staff, calendario y mapa de habitaciones. |
-| `recepcion1` | reception del hotel 1 | Mapa de habitaciones (103 ocupada, 202 en limpieza, 204 en mantenimiento hace más de 24 h con alerta de vencida), historial de estados, calendario y reservas del hotel. Registró los pagos. |
-| `limpieza1` | housekeeping del hotel 1 | Puso la 202 en limpieza. |
-| `mantenimiento1` | maintenance del hotel 1 | Puso la 204 en mantenimiento. |
-| `admin2` | admin de **Wayra Sacha Ecolodge** (Lamas) | Ecolodge con 5 habitaciones disponibles (bungalows B1–B2, M1–M2, D1), **sin medios de pago y sin staff**. |
-| `huesped1` | guest (con perfil de huésped) | Estadía en curso en la 103 (pagada en efectivo en recepción) y una reserva cancelada por el huésped después de pagar (pago reembolsado). |
-| `huesped2` | guest (con perfil de huésped) | Una reserva confirmada con pago por Yape registrado por recepción, una pendiente de pago (vence en menos de 24 h) y una vencida sin pago. |
+- `BrevoApi` (producción): API HTTP transaccional de Brevo por el puerto 443. Requiere `Email__Brevo__ApiKey` (secreto) y `Email__From__Address` (remitente verificado en Brevo).
+- `Smtp`: cualquier relay SMTP (`Email__Smtp__Host`, `Port`, `Username`, `Password`, `EnableSsl`), pensado para uso local (por ejemplo Mailpit).
+- `Log`: el correo se escribe en el log con sus enlaces y códigos. Es el valor por defecto fuera de producción; en `Production` el worker no arranca con `Log` ni sin transporte.
 
-Flujos que se hacen **en vivo** durante la demostración (no se precargan):
+Los rechazos permanentes (destinatario o remitente inválido) no se reintentan. En el log queda una línea por correo
+con el destinatario enmascarado; nunca la API key ni el cuerpo.
 
-- Registro de un huésped nuevo y verificación de su correo (US-01).
-- `admin2` crea su staff (US-03).
-- Recuperación de contraseña (US-04).
-- Activación de MFA del staff en su primer inicio de sesión (US-52).
-- `admin2` configura los medios de pago del ecolodge (US-53).
+**Imágenes de hoteles** (`accommodations-service`). Se suben directo del navegador a Cloudinary con una firma de
+corta vida (`POST /api/v1/media/hotel-images/signature`, solo administradores). Define `Cloudinary__CloudName`,
+`Cloudinary__ApiKey` y `Cloudinary__ApiSecret` (obligatorias en producción).
 
-Para volver a cargar los datos desde cero hay que partir de una base de datos vacía (en local: `docker compose down -v`).
+**Medios de pago** de las reservas (Yape, Plin, cuenta bancaria): no son variables de entorno; cada administrador
+los registra para su hotel desde la aplicación (`PUT /api/v1/hotels/{id}/payment-settings`).
+
+**Tareas programadas.** `POST /api/v1/bookings/expire-pending`, `/rooms/maintenance-alerts` y
+`/demo-requests/follow-ups` se invocan a través del gateway con la cabecera `X-Cron-Key`
+(`.github/workflows/scheduler.yml`).
+
+**IP del cliente** (rate limiting y auditoría). El gateway agrega `X-Forwarded-For` y cada servicio lo procesa
+saltando solo proxies de confianza: loopback, rangos privados (las redes de Docker incluidas) y los rangos de
+Cloudflare. Así el cliente no puede falsear su IP. `ForwardedHeaders__TrustedNetworks__0`, `__1`... reemplazan la
+lista por defecto.
