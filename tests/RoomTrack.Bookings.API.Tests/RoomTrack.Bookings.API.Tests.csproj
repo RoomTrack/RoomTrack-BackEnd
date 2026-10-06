@@ -4,14 +4,4 @@
         <ProjectReference Include="..\..\src\Services\Bookings\RoomTrack.Bookings.API\RoomTrack.Bookings.API.csproj" />
     </ItemGroup>
 
-    <!--
-        Tests that did not compile on main before the move to microservices (they target constructors and interfaces
-        that changed since they were written). Kept for reference; fix them and remove these lines to run them again.
-    -->
-    <ItemGroup>
-        <Compile Remove="Bookings\Application\BookingCommandServiceAclIntegrationTests.cs" />
-        <Compile Remove="Bookings\Domain\BookingTests.cs" />
-        <Compile Remove="Bookings\Infrastructure\BookingsPersistenceTests.cs" />
-    </ItemGroup>
-
 </Project>
