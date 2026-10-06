@@ -4,6 +4,10 @@ API REST de RoomTrack (ASP.NET Core 9, MySQL 8, RabbitMQ) organizada como **micr
 cinco servicios con su propia base de datos y un worker de notificaciones. Los clientes solo hablan con el gateway;
 la documentación de todos los servicios está en `http://localhost:8080/docs`.
 
+**Producción:** API en `https://roomtrack-api.onrender.com/api/v1/...` y Swagger UI de todos los servicios en
+[https://roomtrack-api.onrender.com/docs](https://roomtrack-api.onrender.com/docs) (si los servicios están dormidos,
+la primera carga tarda ~30–60 s).
+
 ## Arquitectura
 
 ```
@@ -211,3 +215,9 @@ los registra para su hotel desde la aplicación (`PUT /api/v1/hotels/{id}/paymen
 saltando solo proxies de confianza: loopback, rangos privados (las redes de Docker incluidas) y los rangos de
 Cloudflare. Así el cliente no puede falsear su IP. `ForwardedHeaders__TrustedNetworks__0`, `__1`... reemplazan la
 lista por defecto.
+
+**Servicios dormidos** (plan gratuito de Render, `render.yaml`). Cada servicio se duerme tras ~15 min sin tráfico.
+Mientras el gateway recibe peticiones, despierta a todos en segundo plano (`KeepAwake__Urls`, `KeepAwake.cs`), y antes
+de reenviar a un servicio que no ha respondido en los últimos 10 minutos espera a su `/health` (`WakeBeforeProxy.cs`):
+la primera petición tras un rato sin uso tarda ~30–60 s en lugar de fallar con 502 (en `/docs`, "Failed to load API
+definition").
