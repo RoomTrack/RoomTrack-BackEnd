@@ -1,3 +1,4 @@
+using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
 using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Aggregates;
 using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Enums;
 using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Events;
@@ -65,7 +66,7 @@ public class GuestProfileTests
     }
 
     [Fact]
-    public void LinkToUser_WhenAlreadyLinked_ShouldThrowInvalidOperationException()
+    public void LinkToUser_WhenAlreadyLinked_ShouldThrowBusinessRuleViolationException()
     {
         // Arrange
         var initialUserId = new UserId(1);
@@ -75,12 +76,12 @@ public class GuestProfileTests
         var act = () => guest.LinkToUser(new UserId(2), new EmailAddress("new@gmail.com"));
 
         // Assert
-        act.Should().Throw<InvalidOperationException>()
+        act.Should().Throw<BusinessRuleViolationException>()
             .WithMessage("*already linked*");
     }
 
     [Fact]
-    public void LinkToUser_WhenProfileIsInactive_ShouldThrowInvalidOperationException()
+    public void LinkToUser_WhenProfileIsInactive_ShouldThrowBusinessRuleViolationException()
     {
         // Arrange
         var guest = new GuestProfile(GuestProfileId.New(), _validName, _validPhone);
@@ -90,7 +91,7 @@ public class GuestProfileTests
         var act = () => guest.LinkToUser(new UserId(1), _validEmail);
 
         // Assert
-        act.Should().Throw<InvalidOperationException>()
+        act.Should().Throw<BusinessRuleViolationException>()
             .WithMessage("*inactive*");
     }
 
@@ -108,7 +109,7 @@ public class GuestProfileTests
     }
 
     [Fact]
-    public void SetIdentification_WhenDocumentAlreadyExists_ShouldThrowInvalidOperationException()
+    public void SetIdentification_WhenDocumentAlreadyExists_ShouldThrowBusinessRuleViolationException()
     {
         // Arrange
         var guest = new GuestProfile(GuestProfileId.New(), _validName, _validPhone, document: _validDni);
@@ -118,7 +119,7 @@ public class GuestProfileTests
         var act = () => guest.SetIdentification(passport);
 
         // Assert
-        act.Should().Throw<InvalidOperationException>()
+        act.Should().Throw<BusinessRuleViolationException>()
             .WithMessage("*already set*");
     }
 
@@ -141,7 +142,7 @@ public class GuestProfileTests
     [Theory]
     [InlineData("")]
     [InlineData("   ")]
-    public void CorrectIdentification_WithEmptyReason_ShouldThrowArgumentException(string reason)
+    public void CorrectIdentification_WithEmptyReason_ShouldThrowDomainValidationException(string reason)
     {
         // Arrange
         var guest = new GuestProfile(GuestProfileId.New(), _validName, _validPhone, document: _validDni);
@@ -151,11 +152,11 @@ public class GuestProfileTests
         var act = () => guest.CorrectIdentification(newDocument, reason, new UserId(99));
 
         // Assert
-        act.Should().Throw<ArgumentException>();
+        act.Should().Throw<DomainValidationException>();
     }
 
     [Fact]
-    public void CorrectIdentification_WithoutPriorDocument_ShouldThrowInvalidOperationException()
+    public void CorrectIdentification_WithoutPriorDocument_ShouldThrowBusinessRuleViolationException()
     {
         // Arrange
         var guest = new GuestProfile(GuestProfileId.New(), _validName, _validPhone, document: null);
@@ -165,12 +166,12 @@ public class GuestProfileTests
         var act = () => guest.CorrectIdentification(newDocument, "Motivo válido", new UserId(99));
 
         // Assert
-        act.Should().Throw<InvalidOperationException>()
+        act.Should().Throw<BusinessRuleViolationException>()
             .WithMessage("*SetIdentification*");
     }
 
     [Fact]
-    public void UpdateContactInformation_WhenInactive_ShouldThrowInvalidOperationException()
+    public void UpdateContactInformation_WhenInactive_ShouldThrowBusinessRuleViolationException()
     {
         // Arrange
         var guest = new GuestProfile(GuestProfileId.New(), _validName, _validPhone);
@@ -180,7 +181,7 @@ public class GuestProfileTests
         var act = () => guest.UpdateContactInformation(new PhoneNumber("+51911111111"), null);
 
         // Assert
-        act.Should().Throw<InvalidOperationException>()
+        act.Should().Throw<BusinessRuleViolationException>()
             .WithMessage("*inactive*");
     }
 
