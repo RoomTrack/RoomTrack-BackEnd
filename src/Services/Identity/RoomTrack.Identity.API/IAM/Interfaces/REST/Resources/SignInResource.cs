@@ -2,6 +2,7 @@ using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
 using BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.Validation;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using Swashbuckle.AspNetCore.Annotations;
 using BackendAwRoomTrack.API.IAM.Interfaces.REST.Validation;
 
 namespace BackendAwRoomTrack.API.IAM.Interfaces.REST.Resources;
@@ -18,6 +19,8 @@ public record SignInResource : IValidatableObject
     public string? Email { get; init; }
 
     /// <summary>Deprecated alias of <see cref="Email"/>, accepted for backward compatibility.</summary>
+    /// <remarks>Hidden from the OpenAPI document: Swagger UI would otherwise prefill it with "string", an invalid e-mail.</remarks>
+    [SwaggerIgnore]
     [AccountEmail]
     [MaxLength(254)]
     public string? Username { get; init; }
