@@ -1,3 +1,5 @@
+using RoomTrack.Gateway;
+
 // API gateway of RoomTrack: the only public entry point. It routes /api/v1/* to the service that owns each resource
 // (YARP, routes in appsettings.json), applies CORS once for every service, and serves the API documentation of all
 // the services in one Swagger UI. The internal API of the services (/internal/v1/*) is never routed.
@@ -19,6 +21,7 @@ builder.Services.AddCors(options => options.AddPolicy(corsPolicy, policy =>
 
 builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 builder.Services.AddHealthChecks();
+builder.Services.AddKeepAwake();
 
 var app = builder.Build();
 
@@ -27,6 +30,8 @@ if (allowedOrigins.Length == 0)
 else
     app.Logger.LogInformation("CORS: allowed origins: {Origins}", string.Join(", ", allowedOrigins));
 
+// Before everything else so that /health (the scheduler's wake-up call) also wakes the services.
+app.UseKeepAwake();
 app.UseCors(corsPolicy);
 
 // One Swagger UI for every service: each document is fetched through the gateway (/docs/{service}/...).
