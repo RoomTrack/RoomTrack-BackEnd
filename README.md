@@ -216,8 +216,10 @@ saltando solo proxies de confianza: loopback, rangos privados (las redes de Dock
 Cloudflare. Así el cliente no puede falsear su IP. `ForwardedHeaders__TrustedNetworks__0`, `__1`... reemplazan la
 lista por defecto.
 
-**Servicios dormidos** (plan gratuito de Render, `render.yaml`). Cada servicio se duerme tras ~15 min sin tráfico.
-Mientras el gateway recibe peticiones, despierta a todos en segundo plano (`KeepAwake__Urls`, `KeepAwake.cs`), y antes
-de reenviar a un servicio que no ha respondido en los últimos 10 minutos espera a su `/health` (`WakeBeforeProxy.cs`):
-la primera petición tras un rato sin uso tarda ~30–60 s en lugar de fallar con 502 (en `/docs`, "Failed to load API
-definition").
+**Servicios dormidos** (plan gratuito de Render, `render.yaml`). Cada servicio se duerme tras ~15 min sin tráfico, y
+Render solo lo despierta con tráfico de fuera de Render: las llamadas del gateway no bastan. Por eso `/docs` despierta a
+todos desde el navegador (un `fetch` `no-cors` al `/health` público de cada URL de `KeepAwake__Urls`, `KeepAwake.cs`), y
+antes de reenviar a un servicio que no ha respondido en los últimos 10 minutos el gateway consulta su `/health` hasta
+que responde 2xx, como mucho 90 s (`WakeBeforeProxy.cs`): la primera petición tras un rato sin uso tarda ~30–60 s en
+lugar de fallar con 502 (en `/docs`, "Failed to load API definition"). Los clientes (front) deben hacer lo mismo al
+cargar; si no, sus peticiones fallan con 502 hasta que algo de fuera despierte al servicio.

@@ -40,6 +40,8 @@ app.UseSwaggerUI(options =>
 {
     options.RoutePrefix = "docs";
     options.DocumentTitle = "RoomTrack API";
+    // Wakes the sleeping services from the browser while the documents load through the gateway.
+    options.HeadContent = KeepAwake.BrowserWakeScript(app.Configuration);
     foreach (var service in app.Configuration.GetSection("Documentation:Services").GetChildren())
         options.SwaggerEndpoint($"/docs/{service.Key}/swagger/v1/swagger.json", service.Value ?? service.Key);
 });

@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace RoomTrack.Gateway;
 
 /// <summary>
@@ -18,10 +20,7 @@ public static class KeepAwake
 
     public static WebApplication UseKeepAwake(this WebApplication app)
     {
-        var urls = (app.Configuration[$"{SectionName}:Urls"] ?? string.Empty)
-            .Split([',', ';'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .Select(url => url.TrimEnd('/') + "/health")
-            .ToArray();
+        var urls = HealthUrls(app.Configuration);
         if (urls.Length == 0) return app;
 
         var interval = TimeSpan.FromMinutes(app.Configuration.GetValue($"{SectionName}:IntervalMinutes", 5));
@@ -42,6 +41,26 @@ public static class KeepAwake
         });
         return app;
     }
+
+    /// <summary>
+    ///     A script for an HTML page that pings the <c>/health</c> of every URL in <c>KeepAwake:Urls</c> from the
+    ///     browser. Render only wakes a sleeping free service for traffic from outside Render, so the gateway's own
+    ///     calls cannot wake it; the browser's can, and <see cref="WakeBeforeProxy"/> then forwards once it is up.
+    ///     The answers are opaque (<c>no-cors</c>): only the request matters. Empty when no URL is configured.
+    /// </summary>
+    public static string BrowserWakeScript(IConfiguration configuration)
+    {
+        var urls = HealthUrls(configuration);
+        if (urls.Length == 0) return string.Empty;
+        return $"<script>{JsonSerializer.Serialize(urls)}.forEach(url => " +
+               "fetch(url, { mode: \"no-cors\", cache: \"no-store\" }).catch(() => {}));</script>";
+    }
+
+    private static string[] HealthUrls(IConfiguration configuration) =>
+        (configuration[$"{SectionName}:Urls"] ?? string.Empty)
+        .Split([',', ';'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+        .Select(url => url.TrimEnd('/') + "/health")
+        .ToArray();
 
     private static Task PingAllAsync(HttpClient client, string[] urls, ILogger logger) =>
         Task.WhenAll(urls.Select(async url =>
