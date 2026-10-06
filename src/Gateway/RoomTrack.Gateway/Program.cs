@@ -22,6 +22,7 @@ builder.Services.AddCors(options => options.AddPolicy(corsPolicy, policy =>
 builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 builder.Services.AddHealthChecks();
 builder.Services.AddKeepAwake();
+builder.Services.AddWakeBeforeProxy();
 
 var app = builder.Build();
 
@@ -45,6 +46,13 @@ app.UseSwaggerUI(options =>
 
 app.MapGet("/", () => Results.Redirect("/docs")).ExcludeFromDescription();
 app.MapHealthChecks("/health");
-app.MapReverseProxy();
+// The default proxy pipeline, plus waiting for a sleeping destination to boot before forwarding to it.
+app.MapReverseProxy(proxy =>
+{
+    proxy.UseSessionAffinity();
+    proxy.UseLoadBalancing();
+    proxy.UseWakeBeforeProxy();
+    proxy.UsePassiveHealthChecks();
+});
 
 app.Run();
