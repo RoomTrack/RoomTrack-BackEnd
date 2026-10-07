@@ -997,6 +997,11 @@ namespace BackendAwSmartstay.API.Migrations
                         .HasColumnType("varchar(20)")
                         .HasColumnName("role");
 
+                    b.Property<string>("SessionRevocationReason")
+                        .HasMaxLength(40)
+                        .HasColumnType("varchar(40)")
+                        .HasColumnName("session_revocation_reason");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
