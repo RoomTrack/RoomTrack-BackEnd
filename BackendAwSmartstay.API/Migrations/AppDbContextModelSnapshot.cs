@@ -1396,6 +1396,72 @@ namespace BackendAwSmartstay.API.Migrations
                     b.ToTable("data_protection_keys");
                 });
 
+            modelBuilder.Entity("BackendAwSmartstay.API.Accommodations.Domain.Model.Aggregates.Hotel", b =>
+                {
+                    b.OwnsOne("BackendAwSmartstay.API.Accommodations.Domain.Model.ValueObjects.HotelPaymentSettings", "PaymentSettings", b1 =>
+                        {
+                            b1.Property<int>("HotelId")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("AccountHolder")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("varchar(100)")
+                                .HasColumnName("payment_account_holder");
+
+                            b1.Property<string>("BankAccountCci")
+                                .HasMaxLength(20)
+                                .HasColumnType("varchar(20)")
+                                .HasColumnName("payment_bank_account_cci");
+
+                            b1.Property<string>("BankAccountNumber")
+                                .HasMaxLength(30)
+                                .HasColumnType("varchar(30)")
+                                .HasColumnName("payment_bank_account_number");
+
+                            b1.Property<string>("BankName")
+                                .HasMaxLength(60)
+                                .HasColumnType("varchar(60)")
+                                .HasColumnName("payment_bank_name");
+
+                            b1.Property<string>("PlinNumber")
+                                .HasMaxLength(9)
+                                .HasColumnType("varchar(9)")
+                                .HasColumnName("payment_plin_number");
+
+                            b1.Property<string>("YapeNumber")
+                                .HasMaxLength(9)
+                                .HasColumnType("varchar(9)")
+                                .HasColumnName("payment_yape_number");
+
+                            b1.HasKey("HotelId");
+
+                            b1.ToTable("hotels");
+
+                            b1.WithOwner()
+                                .HasForeignKey("HotelId");
+
+                            b1.HasData(
+                                new
+                                {
+                                    HotelId = 1,
+                                    AccountHolder = "Grand Hotel Bolivar S.A.C. (demo)",
+                                    BankAccountCci = "00219100000000000000",
+                                    BankAccountNumber = "191-0000000-0-00",
+                                    BankName = "BCP",
+                                    YapeNumber = "999000111"
+                                },
+                                new
+                                {
+                                    HotelId = 2,
+                                    AccountHolder = "Cusco Andean Lodge E.I.R.L. (demo)",
+                                    PlinNumber = "999000222"
+                                });
+                        });
+
+                    b.Navigation("PaymentSettings");
+                });
+
             modelBuilder.Entity("BackendAwSmartstay.API.Accommodations.Domain.Model.Aggregates.Room", b =>
                 {
                     b.HasOne("BackendAwSmartstay.API.Accommodations.Domain.Model.Aggregates.Hotel", "Hotel")
