@@ -84,34 +84,6 @@ namespace BackendAwSmartstay.API.Migrations
                         .HasName("p_k_hotels");
 
                     b.ToTable("hotels", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Address = "Jr. de la Unión 958",
-                            Amenities = "[\"Wifi\",\"Restaurante\",\"Bar\"]",
-                            City = "Lima",
-                            Country = "Peru",
-                            Description = "Historic hotel in the center of Lima.",
-                            HostId = 1,
-                            ImageUrl = "https://placehold.co/600x400/3498DB/FFFFFF?text=Bolivar",
-                            Name = "Grand Hotel Bolivar",
-                            Type = "Hotel"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Address = "San Blas 123",
-                            Amenities = "[\"Desayuno\",\"Wifi\",\"Gimnasio\"]",
-                            City = "Cusco",
-                            Country = "Peru",
-                            Description = "Experience the mystic energy of the Andes.",
-                            HostId = 1,
-                            ImageUrl = "https://placehold.co/600x400/E67E22/FFFFFF?text=Andean",
-                            Name = "Cusco Andean Lodge",
-                            Type = "Lodge"
-                        });
                 });
 
             modelBuilder.Entity("BackendAwSmartstay.API.Accommodations.Domain.Model.Aggregates.Room", b =>
@@ -177,44 +149,6 @@ namespace BackendAwSmartstay.API.Migrations
                         .HasDatabaseName("i_x_rooms__hotel_id__number");
 
                     b.ToTable("rooms", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 101,
-                            Amenities = "[\"Wifi\",\"TV\"]",
-                            Description = "Room 101 - Standard view.",
-                            HotelId = 1,
-                            Number = "101",
-                            Price = 85.00m,
-                            RoomTypeId = 1,
-                            Status = "Available",
-                            StatusChangedAt = new DateTimeOffset(new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0))
-                        },
-                        new
-                        {
-                            Id = 102,
-                            Amenities = "[\"Wifi\",\"TV\",\"Minibar\"]",
-                            Description = "Room 102 - Plaza view with balcony.",
-                            HotelId = 1,
-                            Number = "102",
-                            Price = 150.00m,
-                            RoomTypeId = 2,
-                            Status = "Available",
-                            StatusChangedAt = new DateTimeOffset(new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0))
-                        },
-                        new
-                        {
-                            Id = 201,
-                            Amenities = "[\"Jacuzzi\",\"Wifi\",\"Desayuno\",\"Chimenea\"]",
-                            Description = "Suite 201 - Panoramic mountain view.",
-                            HotelId = 2,
-                            Number = "201",
-                            Price = 320.00m,
-                            RoomTypeId = 3,
-                            Status = "Available",
-                            StatusChangedAt = new DateTimeOffset(new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0))
-                        });
                 });
 
             modelBuilder.Entity("BackendAwSmartstay.API.Accommodations.Domain.Model.Entities.Amenity", b =>
@@ -428,26 +362,6 @@ namespace BackendAwSmartstay.API.Migrations
                         .HasName("p_k_room_types");
 
                     b.ToTable("room_types", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Cozy room for solo travelers.",
-                            Name = "Single Standard"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Spacious room for couples or business.",
-                            Name = "Double Deluxe"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Luxury suite with best views.",
-                            Name = "Presidential Suite"
-                        });
                 });
 
             modelBuilder.Entity("BackendAwSmartstay.API.Audit.Domain.Model.Aggregates.AuditEntry", b =>
@@ -1440,23 +1354,6 @@ namespace BackendAwSmartstay.API.Migrations
 
                             b1.WithOwner()
                                 .HasForeignKey("HotelId");
-
-                            b1.HasData(
-                                new
-                                {
-                                    HotelId = 1,
-                                    AccountHolder = "Grand Hotel Bolivar S.A.C. (demo)",
-                                    BankAccountCci = "00219100000000000000",
-                                    BankAccountNumber = "191-0000000-0-00",
-                                    BankName = "BCP",
-                                    YapeNumber = "999000111"
-                                },
-                                new
-                                {
-                                    HotelId = 2,
-                                    AccountHolder = "Cusco Andean Lodge E.I.R.L. (demo)",
-                                    PlinNumber = "999000222"
-                                });
                         });
 
                     b.Navigation("PaymentSettings");
