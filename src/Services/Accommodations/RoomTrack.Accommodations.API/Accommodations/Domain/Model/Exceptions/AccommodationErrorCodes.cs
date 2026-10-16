@@ -13,6 +13,7 @@ public static class AccommodationErrorCodes
     public const string RoomHasActiveBookings = "room.has_active_bookings";
     public const string RoomInvalidStatusTransition = "room.invalid_status_transition";
     public const string RoomNotReady = "room.not_ready";
+    public const string RoomBlockedByIncident = "room.blocked_by_incident";
     public const string RoomTypeNotFound = "room_type.not_found";
     public const string CategoryAlreadyExists = "catalog.category_already_exists";
     public const string AmenityAlreadyExists = "catalog.amenity_already_exists";

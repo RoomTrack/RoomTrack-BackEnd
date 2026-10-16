@@ -7,3 +7,8 @@ namespace BackendAwRoomTrack.API.Accommodations.Domain.Model.Exceptions;
 public class InvalidRoomStatusTransitionException(int roomId, RoomStatus from, RoomStatus to)
     : BusinessRuleViolationException(AccommodationErrorCodes.RoomInvalidStatusTransition,
         $"Room {roomId} cannot change from {from} to {to}. Allowed from {from}: {string.Join(", ", RoomStatusTransitions.AllowedFrom(from))}.");
+
+/// <summary>An open incident blocks the room: it cannot be Available until the incident is resolved.</summary>
+public class RoomBlockedByIncidentException(int roomId)
+    : BusinessRuleViolationException(AccommodationErrorCodes.RoomBlockedByIncident,
+        $"Room {roomId} has an open incident that blocks it. Resolve the incident before making the room available.");
