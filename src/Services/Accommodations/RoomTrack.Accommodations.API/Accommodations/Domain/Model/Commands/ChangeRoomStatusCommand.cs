@@ -14,3 +14,9 @@ public record OccupyRoomForCheckInCommand(int RoomId, int? GuestUserId, string? 
 
 /// <summary>Alert the administrators of rooms under maintenance for too long. Run by the scheduler.</summary>
 public record RaiseMaintenanceAlertsCommand;
+
+/// <summary>A blocking incident takes the room out of service (Maintenance) until it is released.</summary>
+public record HoldRoomForIncidentCommand(int RoomId, int? ReportedByUserId, string? ReportedByEmail);
+
+/// <summary>The last blocking incident of the room was resolved: the room goes to Cleaning.</summary>
+public record ReleaseRoomFromIncidentCommand(int RoomId, int? ResolvedByUserId, string? ResolvedByEmail);

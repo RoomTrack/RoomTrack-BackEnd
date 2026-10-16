@@ -31,6 +31,17 @@ public static class Policies
     /// <summary>Add hotel categories and amenities to the shared master catalog.</summary>
     public const string ManageCatalog = nameof(ManageCatalog);
 
+    // ── Incidents ────────────────────────────────────────────────────
+    /// <summary>Report an incident of a room (hotel scope checked per resource).</summary>
+    public const string ReportIncidents = nameof(ReportIncidents);
+    /// <summary>List and read the incidents of the hotel (hotel scope checked per resource).</summary>
+    public const string ViewIncidents = nameof(ViewIncidents);
+    /// <summary>
+    ///     Assign, start, resolve and re-prioritize incidents (who may act on which one is decided by the Incident
+    ///     aggregate: administrators any, maintenance their own).
+    /// </summary>
+    public const string HandleIncidents = nameof(HandleIncidents);
+
     // ── Bookings ─────────────────────────────────────────────────────
     /// <summary>List/read bookings (guests only see their own).</summary>
     public const string ReadBookings = nameof(ReadBookings);
@@ -114,6 +125,8 @@ public static class Policies
     private static readonly string[] GuestOrFrontDesk =
         [UserRoles.Guest, UserRoles.Reception, UserRoles.Admin, UserRoles.ChainAdmin];
 
+    private static readonly string[] IncidentHandlers = [UserRoles.Maintenance, UserRoles.Admin, UserRoles.ChainAdmin];
+
     private static readonly string[] RoomDeviceOperators =
         [UserRoles.Guest, UserRoles.Maintenance, UserRoles.Admin, UserRoles.ChainAdmin];
 
@@ -127,6 +140,10 @@ public static class Policies
         [UploadHotelImages] = Administrators,
         [UpdateRoomStatus] = HotelStaff,
         [ViewRoomOperations] = HotelStaff,
+
+        [ReportIncidents] = HotelStaff,
+        [ViewIncidents] = HotelStaff,
+        [HandleIncidents] = IncidentHandlers,
 
         [ReadBookings] = AllRoles,
         [ReadRoomBookings] = HotelStaff,

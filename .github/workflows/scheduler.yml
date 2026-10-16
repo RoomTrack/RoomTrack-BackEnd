@@ -33,6 +33,10 @@ jobs:
         run: |
           curl --fail --silent --show-error --retry 3 --retry-delay 10 --max-time 60 -X POST -H "X-Cron-Key: ${CRON_API_KEY}" "${API_BASE_URL}/rooms/maintenance-alerts"
 
+      - name: Escalate critical incidents not started in time
+        run: |
+          curl --fail --silent --show-error --retry 3 --retry-delay 10 --max-time 60 -X POST -H "X-Cron-Key: ${CRON_API_KEY}" "${API_BASE_URL}/incidents/escalations"
+
       - name: Follow up demo requests
         run: |
           curl --fail --silent --show-error --retry 3 --retry-delay 10 --max-time 60 -X POST -H "X-Cron-Key: ${CRON_API_KEY}" "${API_BASE_URL}/demo-requests/follow-ups"
