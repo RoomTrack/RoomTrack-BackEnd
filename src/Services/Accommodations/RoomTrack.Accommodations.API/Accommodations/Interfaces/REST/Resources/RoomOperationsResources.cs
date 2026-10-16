@@ -10,8 +10,9 @@ namespace BackendAwRoomTrack.API.Accommodations.Interfaces.REST.Resources;
 /// <param name="StatusSince">Since when it has this status (UTC).</param>
 /// <param name="MaintenanceOverdue">Under maintenance for longer than the alert threshold.</param>
 /// <param name="AllowedNextStatuses">Statuses it can change to (for quick changes from the map).</param>
+/// <param name="BlockedByIncident">An open incident blocks it: it cannot be Available until the incident is resolved.</param>
 public record RoomMapItemResource(int Id, string Number, string RoomTypeName, string Description, decimal Price, string Status,
-    DateTimeOffset StatusSince, bool MaintenanceOverdue, IReadOnlyList<string> AllowedNextStatuses);
+    DateTimeOffset StatusSince, bool MaintenanceOverdue, IReadOnlyList<string> AllowedNextStatuses, bool BlockedByIncident);
 
 /// <summary>Every room of a hotel with its status and a count per status.</summary>
 public record RoomMapResource(int HotelId, string HotelName, DateTimeOffset GeneratedAt,
@@ -22,7 +23,7 @@ public record RoomMapResource(int HotelId, string HotelName, DateTimeOffset Gene
 /// <param name="RoomId">The room.</param>
 /// <param name="FromStatus">Previous status.</param>
 /// <param name="ToStatus">New status.</param>
-/// <param name="Origin">Staff (manual change) or CheckIn (digital check-in of a guest).</param>
+/// <param name="Origin">Staff (manual change), CheckIn (digital check-in of a guest) or Incident (a blocking incident).</param>
 /// <param name="ChangedAt">When (UTC).</param>
 /// <param name="ChangedByUserId">Who.</param>
 /// <param name="ChangedByEmail">Their e-mail at the time.</param>
