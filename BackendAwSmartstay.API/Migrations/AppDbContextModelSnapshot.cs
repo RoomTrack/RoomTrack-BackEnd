@@ -1142,6 +1142,70 @@ namespace BackendAwSmartstay.API.Migrations
                         });
                 });
 
+            modelBuilder.Entity("BackendAwSmartstay.API.Shared.Infrastructure.Email.Outbox.OutboxEmail", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("id");
+
+                    b.Property<int>("Attempts")
+                        .HasColumnType("int")
+                        .HasColumnName("attempts");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("HtmlBody")
+                        .IsRequired()
+                        .HasColumnType("mediumtext")
+                        .HasColumnName("html_body");
+
+                    b.Property<string>("LastError")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)")
+                        .HasColumnName("last_error");
+
+                    b.Property<DateTimeOffset>("NextAttemptAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("next_attempt_at");
+
+                    b.Property<string>("Recipient")
+                        .IsRequired()
+                        .HasMaxLength(320)
+                        .HasColumnType("varchar(320)")
+                        .HasColumnName("recipient");
+
+                    b.Property<DateTimeOffset?>("SentAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("sent_at");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("varchar(16)")
+                        .HasColumnName("status");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("subject");
+
+                    b.Property<string>("TextBody")
+                        .IsRequired()
+                        .HasColumnType("mediumtext")
+                        .HasColumnName("text_body");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_outbox_emails");
+
+                    b.HasIndex("Status", "NextAttemptAt")
+                        .HasDatabaseName("i_x_outbox_emails__status__next_attempt_at");
+
+                    b.ToTable("outbox_emails", (string)null);
+                });
+
             modelBuilder.Entity("BackendAwSmartstay.Domain.Profiles.Domain.Model.Aggregates.GuestProfile", b =>
                 {
                     b.Property<Guid>("Id")
