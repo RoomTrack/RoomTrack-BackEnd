@@ -10,8 +10,8 @@
 .env
 .env.*
 !.env.example
-BackendAwSmartstay.API.Tests/
+tests/
+deploy/
 docker-compose*.yml
-nginx.conf
 README.md
 LICENSE.md

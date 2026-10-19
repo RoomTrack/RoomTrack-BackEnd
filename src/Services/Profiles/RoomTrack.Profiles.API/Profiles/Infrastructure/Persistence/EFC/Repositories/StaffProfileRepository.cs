@@ -1,0 +1,60 @@
+using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
+using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Repositories;
+using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Aggregates;
+using BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects;
+using BackendAwRoomTrack.Domain.Profiles.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
+
+namespace BackendAwRoomTrack.API.Profiles.Infrastructure.Persistence.EFC.Repositories;
+
+public class StaffProfileRepository(AppDbContext context)
+    : BaseRepository<StaffProfile>(context), IStaffProfileRepository
+{
+    public async Task<StaffProfile?> FindByIdAsync(StaffProfileId id)
+    {
+        return await Context.Set<StaffProfile>()
+            .Include(s => s.Assignments)
+            .FirstOrDefaultAsync(s => s.Id == id);
+    }
+
+    public async Task<StaffProfile?> FindByUserIdAsync(UserId userId)
+    {
+        return await Context.Set<StaffProfile>()
+            .Include(s => s.Assignments)
+            .FirstOrDefaultAsync(s => s.UserId == userId);
+    }
+
+    public async Task<StaffProfile?> FindByEmployeeCodeAsync(EmployeeCode code)
+    {
+        return await Context.Set<StaffProfile>()
+            .Include(s => s.Assignments)
+            .FirstOrDefaultAsync(s => s.Code == code);
+    }
+
+    public async Task<IEnumerable<StaffProfile>> FindByTargetIdAsync(TargetId targetId)
+    {
+        return await Context.Set<StaffProfile>()
+            .Include(s => s.Assignments)
+            .Where(sp => sp.Assignments.Any(a => a.TargetId == targetId))
+            .ToListAsync();
+    }
+
+    public async Task<bool> ExistsByEmployeeCodeAsync(EmployeeCode code)
+    {
+        return await Context.Set<StaffProfile>()
+            .AnyAsync(s => s.Code == code);
+    }
+
+    public async Task<bool> ExistsByUserIdAsync(UserId userId)
+    {
+        return await Context.Set<StaffProfile>()
+            .AnyAsync(s => s.UserId == userId);
+    }
+
+    public override async Task<IEnumerable<StaffProfile>> ListAsync()
+    {
+        return await Context.Set<StaffProfile>()
+            .Include(s => s.Assignments)
+            .ToListAsync();
+    }
+}
