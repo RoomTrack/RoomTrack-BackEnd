@@ -1,0 +1,224 @@
+using BackendAwRoomTrack.API.Accommodations.Domain.Model.Commands;
+using BackendAwRoomTrack.API.Accommodations.Domain.Model.Queries;
+using BackendAwRoomTrack.API.Accommodations.Domain.Model.ValueObjects;
+using BackendAwRoomTrack.API.Accommodations.Domain.Services;
+using BackendAwRoomTrack.API.Accommodations.Interfaces.REST.Authorization;
+using BackendAwRoomTrack.API.Accommodations.Interfaces.REST.Resources;
+using BackendAwRoomTrack.API.Accommodations.Interfaces.REST.Transform;
+using BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+
+namespace BackendAwRoomTrack.API.Accommodations.Interfaces.REST;
+
+/// <summary>
+///     RESTful API interface controller responsible for handling corporate and guest operations 
+///     related to hotel property aggregates within the hotel accommodation bounded context.
+/// </summary>
+[Authorize(Policy = Policies.ReadInventory)]
+[ApiController]
+[Route("api/v1/[controller]")]
+[SwaggerTag("Available Hotel Endpoints")]
+public class HotelsController(
+    IHotelCommandService hotelCommandService,
+    IHotelQueryService hotelQueryService,
+    IAuthorizationService authorizationService) : ControllerBase
+{
+    /// <summary>
+    ///     Retrieves a collection of all registered hotel property resources.
+    /// </summary>
+    /// <remarks>
+    ///     Accessible by all verified roles (Guests, Admins, and ChainAdmins) across client applications.
+    /// </remarks>
+    /// <returns>An asynchronous action result containing an enumerable collection of hotel representations.</returns>
+    [HttpGet]
+    [SwaggerOperation(
+        Summary = "Get all hotels",
+        Description = "Retrieves all hotel aggregates mapped to external representations. Open to guests and staff.",
+        OperationId = "GetAllHotels")]
+    [SwaggerResponse(StatusCodes.Status200OK, "The hotel resource list was successfully fetched.", typeof(IEnumerable<HotelResource>))]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, "The request lacks a valid identity identification token.")]
+    [SwaggerResponse(StatusCodes.Status403Forbidden, "The authenticated identity has insufficient privilege levels.")]
+    public async Task<IActionResult> GetAllHotels()
+    {
+        var hotels = await hotelQueryService.Handle(new GetAllHotelsQuery());
+        var resources = hotels.Select(HotelResourceFromEntityAssembler.ToResourceFromEntity);
+        return Ok(resources);
+    }
+
+    /// <summary>
+    ///     Retrieves a unique hotel property resource by its technical identity marker.
+    /// </summary>
+    /// <param name="hotelId">The structural domain identity number of the hotel target aggregate.</param>
+    /// <returns>The matching hotel representation resource context, or NotFound.</returns>
+    [HttpGet("{hotelId:int}")]
+    [SwaggerOperation(
+        Summary = "Get hotel by its unique identifier",
+        Description = "Retrieves structural property details for a single hotel aggregate from its domain identifier.",
+        OperationId = "GetHotelById")]
+    [SwaggerResponse(StatusCodes.Status200OK, "The hotel aggregate was located and mapped successfully.", typeof(HotelResource))]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, "The request lacks a valid identity identification token.")]
+    [SwaggerResponse(StatusCodes.Status403Forbidden, "The authenticated identity has insufficient privilege levels.")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "No hotel aggregate matched the supplied structural query identifier.")]
+    public async Task<IActionResult> GetHotelById(int hotelId)
+    {
+        var hotel = await hotelQueryService.Handle(new GetHotelByIdQuery(hotelId));
+        if (hotel is null) return NotFound();
+        var resource = HotelResourceFromEntityAssembler.ToResourceFromEntity(hotel);
+        return Ok(resource);
+    }
+
+    /// <summary>
+    ///     Creates a new hotel aggregate root inside the transactional bounded context.
+    /// </summary>
+    /// <param name="resource">The incoming payload representation mapping properties required for construction.</param>
+    /// <returns>A created resource location confirmation with the persistence tracking instance representation.</returns>
+    [HttpPost]
+    [Authorize(Policy = Policies.ManageHotels)]
+    [SwaggerOperation(
+        Summary = "Create a new hotel property entry",
+        Description = "Registers a hotel. Admin: only their first hotel, which becomes their hotelId; their previous access and refresh tokens are revoked (401 auth.session_revoked, reason assignment_changed) and the response carries their NEW session (token with hotel_id, plus a refresh token when the current session was remembered): use it right away. Chain admin: any number of hotels, session null. The image must be uploaded with POST /media/hotel-images/signature when uploads are configured.",
+        OperationId = "CreateHotel")]
+    [SwaggerResponse(StatusCodes.Status201Created, "The hotel was registered: { hotel, session }.", typeof(HotelRegistrationResource))]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "The provided construction resource structure contains invalid constraints.")]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, "The request lacks a valid identity identification token.")]
+    [SwaggerResponse(StatusCodes.Status403Forbidden, "Access denied. Only Admin or ChainAdmin operators are cleared to execute infrastructure initialization.")]
+    [SwaggerResponse(StatusCodes.Status409Conflict, "A hotel administrator already has a hotel (an admin registers only their own hotel).")]
+    public async Task<IActionResult> CreateHotel([FromBody] CreateHotelResource resource)
+    {
+        var registrant = new HotelRegistrant(User.GetUserId(), User.IsChainAdmin(), User.GetHotelId());
+        var command = CreateHotelCommandFromResourceAssembler.ToCommandFromResource(resource, registrant, User.GetSessionContext());
+        var registration = await hotelCommandService.Handle(command);
+
+        var session = registration.RegistrantSession;
+        return CreatedAtAction(nameof(GetHotelById), new { hotelId = registration.Hotel.Id },
+            new HotelRegistrationResource(
+                HotelResourceFromEntityAssembler.ToResourceFromEntity(registration.Hotel),
+                session is null
+                    ? null
+                    : new RenewedSessionResource(session.AccessToken, "Bearer", session.AccessTokenExpiresAt,
+                        session.RefreshToken, session.RefreshTokenExpiresAt)));
+    }
+    
+    /// <summary>
+    ///     Updates the state representation parameters of a registered hotel aggregate root.
+    /// </summary>
+    /// <param name="hotelId">The structural identifier pointing to the aggregate instance undergoing mutation.</param>
+    /// <param name="resource">The incoming state modification layout resource constraints.</param>
+    /// <returns>The updated hotel resource state outcome representation.</returns>
+    [HttpPut("{hotelId:int}")]
+    [Authorize(Policy = Policies.ManageHotels)]
+    [SwaggerOperation(
+        Summary = "Update an existing hotel aggregate's context properties",
+        Description = "Mutates descriptive fields on an active hotel target. Only accessible by authorized management nodes.",
+        OperationId = "UpdateHotel")]
+    [SwaggerResponse(StatusCodes.Status200OK, "The hotel aggregate state was updated successfully.", typeof(HotelResource))]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, "The request lacks a valid identity identification token.")]
+    [SwaggerResponse(StatusCodes.Status403Forbidden, "The authenticated identity has insufficient administrative privilege levels.")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "The targeted hotel aggregate could not be extracted for state alteration.")]
+    public async Task<IActionResult> UpdateHotel(int hotelId, [FromBody] UpdateHotelResource resource)
+    {
+        var notAllowed = await EnsureCanManageHotelAsync(hotelId);
+        if (notAllowed is not null) return notAllowed;
+
+        var command = UpdateHotelCommandFromResourceAssembler.ToCommandFromResource(hotelId, resource);
+        var updatedHotel = await hotelCommandService.Handle(command);
+
+        if (updatedHotel is null) return NotFound();
+
+        var hotelResource = HotelResourceFromEntityAssembler.ToResourceFromEntity(updatedHotel);
+        return Ok(hotelResource);
+    }
+
+    /// <summary>
+    ///     Removes an active hotel property aggregate from the domain persistence subsystem.
+    /// </summary>
+    /// <param name="hotelId">The unique structural aggregate identifier targeted for transactional removal.</param>
+    /// <returns>The final detached state representation of the processed resource entry.</returns>
+    [HttpDelete("{hotelId:int}")]
+    [Authorize(Policy = Policies.ManageHotels)]
+    [SwaggerOperation(
+        Summary = "Delete a hotel property cluster",
+        Description = "Triggers complete cascading teardown routines for a single hotel entity group. Strictly for administrative clearance nodes.",
+        OperationId = "DeleteHotel")]
+    [SwaggerResponse(StatusCodes.Status200OK, "The hotel property aggregate hierarchy was completely processed and decommissioned.", typeof(HotelResource))]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, "The request lacks a valid identity identification token.")]
+    [SwaggerResponse(StatusCodes.Status403Forbidden, "The requesting identity lacks the extreme corporate validation depth to delete property nodes.")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "The targeted hotel index node was not present in the structural cluster tree.")]
+    public async Task<IActionResult> DeleteHotel(int hotelId)
+    {
+        var notAllowed = await EnsureCanManageHotelAsync(hotelId);
+        if (notAllowed is not null) return notAllowed;
+
+        var command = new DeleteHotelCommand(hotelId);
+        var deletedHotel = await hotelCommandService.Handle(command);
+
+        if (deletedHotel is null) return NotFound();
+
+        var hotelResource = HotelResourceFromEntityAssembler.ToResourceFromEntity(deletedHotel);
+        return Ok(hotelResource);
+    }
+
+    /// <summary>Gets the payment methods of a hotel.</summary>
+    /// <remarks>
+    ///     Admin and reception of that hotel, chain_admin. A hotel whose settings were never set answers 200 with
+    ///     <c>acceptsBookings: false</c> and null members: it does not accept bookings until its administrator
+    ///     sets at least one payment method.
+    /// </remarks>
+    [HttpGet("{hotelId:int}/payment-settings")]
+    [Authorize(Policy = Policies.ReadHotelPaymentSettings)]
+    [SwaggerOperation(Summary = "Get the payment methods of a hotel", OperationId = "GetHotelPaymentSettings")]
+    [ProducesResponseType(typeof(HotelPaymentSettingsResource), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetPaymentSettings(int hotelId)
+    {
+        var hotel = await hotelQueryService.Handle(new GetHotelByIdQuery(hotelId));
+        if (hotel is null) return NotFound();
+
+        var authorization = await authorizationService.AuthorizeAsync(User, hotel, HotelStaffRequirement.Instance);
+        if (!authorization.Succeeded) return Forbid();
+
+        return Ok(HotelPaymentSettingsResourceAssembler.ToResourceFromEntity(hotel));
+    }
+
+    /// <summary>Sets the payment methods of a hotel: from then on the hotel accepts bookings.</summary>
+    /// <remarks>
+    ///     Admin of that hotel or chain_admin. Replaces the current settings. The account holder and at least one
+    ///     method (Yape, Plin, or bank name + account number) are required; Yape/Plin are 9-digit Peruvian mobiles
+    ///     starting with 9 and the CCI has 20 digits. Every broken rule is reported at once in <c>violations</c>
+    ///     (codes <c>payment_settings.*</c>). The booking e-mails and the booking page show these methods.
+    /// </remarks>
+    [HttpPut("{hotelId:int}/payment-settings")]
+    [Authorize(Policy = Policies.ManageHotels)]
+    [SwaggerOperation(Summary = "Set the payment methods of a hotel", OperationId = "UpdateHotelPaymentSettings")]
+    [ProducesResponseType(typeof(HotelPaymentSettingsResource), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdatePaymentSettings(int hotelId, [FromBody] UpdateHotelPaymentSettingsResource resource)
+    {
+        var notAllowed = await EnsureCanManageHotelAsync(hotelId);
+        if (notAllowed is not null) return notAllowed;
+
+        var hotel = await hotelCommandService.Handle(
+            HotelPaymentSettingsResourceAssembler.ToCommandFromResource(hotelId, resource));
+        if (hotel is null) return NotFound();
+
+        return Ok(HotelPaymentSettingsResourceAssembler.ToResourceFromEntity(hotel));
+    }
+
+    /// <summary>
+    ///     Resource-based authorization: 404 when the hotel does not exist, 403 (native Forbid) when it is
+    ///     outside the requester's scope, null when the requester may manage it.
+    /// </summary>
+    private async Task<IActionResult?> EnsureCanManageHotelAsync(int hotelId)
+    {
+        var hotel = await hotelQueryService.Handle(new GetHotelByIdQuery(hotelId));
+        if (hotel is null) return NotFound();
+
+        var authorization = await authorizationService.AuthorizeAsync(User, hotel, HotelManagementRequirement.Instance);
+        return authorization.Succeeded ? null : Forbid();
+    }
+}

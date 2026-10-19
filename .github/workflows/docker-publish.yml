@@ -26,6 +26,32 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    # One image per microservice (same Dockerfile, different build arguments)
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: gateway
+            project: src/Gateway/RoomTrack.Gateway
+            assembly: RoomTrack.Gateway
+          - name: identity-service
+            project: src/Services/Identity/RoomTrack.Identity.API
+            assembly: RoomTrack.Identity.API
+          - name: accommodations-service
+            project: src/Services/Accommodations/RoomTrack.Accommodations.API
+            assembly: RoomTrack.Accommodations.API
+          - name: bookings-service
+            project: src/Services/Bookings/RoomTrack.Bookings.API
+            assembly: RoomTrack.Bookings.API
+          - name: profiles-service
+            project: src/Services/Profiles/RoomTrack.Profiles.API
+            assembly: RoomTrack.Profiles.API
+          - name: analytics-service
+            project: src/Services/Analytics/RoomTrack.Analytics.API
+            assembly: RoomTrack.Analytics.API
+          - name: notifications-worker
+            project: src/Services/Notifications/RoomTrack.Notifications.Worker
+            assembly: RoomTrack.Notifications.Worker
     permissions:
       contents: read
       packages: write
@@ -67,7 +93,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.name }}
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
@@ -76,11 +102,14 @@ jobs:
         uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
         with:
           context: .
+          build-args: |
+            PROJECT=${{ matrix.project }}
+            ASSEMBLY=${{ matrix.assembly }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=${{ matrix.name }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.name }}
 
       # Sign the resulting Docker image digest except on PRs.
       # This will only write to the public Rekor transparency log when the Docker

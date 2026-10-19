@@ -1,62 +1,142 @@
-# Render Blueprint — SmartStay API
-# Las variables con `sync: false` son secretos: Render las pide en el formulario al crear el Blueprint.
-# Nunca pongas sus valores en este archivo. El CA de Aiven se sube como Secret File `ca.pem`.
+# Render Blueprint — RoomTrack como microservicios
+#   roomtrack-api (web, público)  -> API gateway
+#   roomtrack-{identity,accommodations,bookings,profiles,analytics} (pserv, solo red privada de Render)
+#   roomtrack-notifications (worker)       -> entrega de e-mails desde RabbitMQ
+#
+# Todos se construyen con el mismo Dockerfile; Render pasa las variables de entorno como build args, así que
+# PROJECT y ASSEMBLY eligen el proyecto. Los servicios escuchan en 8080 (ASPNETCORE_HTTP_PORTS del Dockerfile).
+#
+# Externos (no los crea este Blueprint):
+#   - MySQL (Aiven): un esquema y un usuario por servicio (ver deploy/mysql/init/01-databases.sql) y TLS verificado
+#     con /etc/secrets/ca.pem (Secret File `ca.pem` en cada servicio con base de datos).
+#   - RabbitMQ (p. ej. CloudAMQP): añade RabbitMq__Host, RabbitMq__VirtualHost, RabbitMq__Username y
+#     RabbitMq__Password al grupo `roomtrack-shared` desde el dashboard tras la primera sincronización.
+#
+# Las variables con `sync: false` son secretos: Render las pide al crear el Blueprint. Nunca pongas sus valores aquí.
+# Las URLs internas (http://roomtrack-<servicio>:8080) asumen que el hostname interno es el nombre del servicio;
+# compruébalo en Dashboard > servicio > Connect > Internal.
+
+envVarGroups:
+  - name: roomtrack-shared
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: Database__MySqlServerVersion
+        value: 8.0.36
+      # Iguales en todos los servicios: Identity firma los JWT y el resto los valida.
+      - key: TokenSettings__Secret
+        generateValue: true
+      # Llamadas entre servicios (/internal/v1, cabecera X-Internal-Key).
+      - key: InternalApi__Key
+        generateValue: true
+      # Scheduler de GitHub Actions (cabecera X-Cron-Key). Copia el valor al secret CRON_API_KEY del repositorio.
+      - key: Cron__ApiKey
+        generateValue: true
+      # URLs de los clientes (links de los e-mails)
+      - key: App__WebBaseUrl
+        value: https://roomtrack-web.vercel.app
+      - key: App__LandingBaseUrl
+        value: https://roomtrack-landing.vercel.app
+      - key: RabbitMq__Port
+        value: "5672"
+
 services:
+  # ── Entrada pública ───────────────────────────────────────────────────────
   - type: web
-    name: smartstay-movildev-api
+    name: roomtrack-api
     runtime: docker
-    repo: https://github.com/9097-Experimentos-SmartStay/backend
+    repo: https://github.com/RoomTrack/RoomTrack-BackEnd
     branch: main
     region: oregon
     plan: free
     dockerfilePath: ./Dockerfile
     healthCheckPath: /health
     autoDeployTrigger: commit
+    buildFilter:
+      paths:
+        - src/Gateway/**
+        - Dockerfile
+        - Directory.*.props
     envVars:
-      # --- Runtime ---
+      - key: PROJECT
+        value: src/Gateway/RoomTrack.Gateway
+      - key: ASSEMBLY
+        value: RoomTrack.Gateway
+      - key: PORT
+        value: "8080"
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
-      # IP real del cliente: X-Forwarded-For configurado en código (Cloudflare + rangos privados de Render como
-      # proxies de confianza). NO uses ASPNETCORE_FORWARDEDHEADERS_ENABLED: solo desenvuelve un salto y devuelve la
-      # IP interna del balanceador. Override opcional: ForwardedHeaders__TrustedNetworks__0, __1...
+      - key: Cors__AllowedOrigins
+        value: https://roomtrack-web.vercel.app,https://roomtrack-landing.vercel.app
+      - key: ReverseProxy__Clusters__identity__Destinations__primary__Address
+        value: http://roomtrack-identity:8080
+      - key: ReverseProxy__Clusters__accommodations__Destinations__primary__Address
+        value: http://roomtrack-accommodations:8080
+      - key: ReverseProxy__Clusters__bookings__Destinations__primary__Address
+        value: http://roomtrack-bookings:8080
+      - key: ReverseProxy__Clusters__profiles__Destinations__primary__Address
+        value: http://roomtrack-profiles:8080
+      - key: ReverseProxy__Clusters__analytics__Destinations__primary__Address
+        value: http://roomtrack-analytics:8080
 
-      # --- Base de datos (Aiven MySQL, TLS verificado con /etc/secrets/ca.pem) ---
+  # ── Servicios privados ────────────────────────────────────────────────────
+  - type: pserv
+    name: roomtrack-identity
+    runtime: docker
+    repo: https://github.com/RoomTrack/RoomTrack-BackEnd
+    branch: main
+    region: oregon
+    plan: starter
+    dockerfilePath: ./Dockerfile
+    autoDeployTrigger: commit
+    buildFilter:
+      paths:
+        - src/BuildingBlocks/**
+        - src/Services/Identity/**
+        - Dockerfile
+        - Directory.*.props
+    envVars:
+      - fromGroup: roomtrack-shared
+      - key: PROJECT
+        value: src/Services/Identity/RoomTrack.Identity.API
+      - key: ASSEMBLY
+        value: RoomTrack.Identity.API
+      # server=...;database=roomtrack_identity;user=identity_svc;...;SslMode=VerifyCA;SslCa=/etc/secrets/ca.pem
       - key: ConnectionStrings__DefaultConnection
         sync: false
-      - key: Database__MySqlServerVersion
-        value: 8.0.36
-
-      # --- JWT ---
-      - key: TokenSettings__Secret
+      - key: InitialChainAdmin__Email
+        sync: false
+      - key: InitialChainAdmin__Password
         sync: false
 
-      # --- URLs de los clientes (links de emails y CORS) ---
-      - key: App__WebBaseUrl
-        value: https://smartstay-movildev-web.vercel.app
-      - key: App__LandingBaseUrl
-        value: https://smartstay-movildev-landing.vercel.app
-      - key: Cors__AllowedOrigins
-        value: https://smartstay-movildev-web.vercel.app,https://smartstay-movildev-landing.vercel.app
-
-      # --- Email (API HTTP transaccional de Brevo por 443; el SMTP saliente de Render no es fiable) ---
-      - key: Email__Transport
-        value: BrevoApi
-      - key: Email__Brevo__ApiKey
+  - type: pserv
+    name: roomtrack-accommodations
+    runtime: docker
+    repo: https://github.com/RoomTrack/RoomTrack-BackEnd
+    branch: main
+    region: oregon
+    plan: starter
+    dockerfilePath: ./Dockerfile
+    autoDeployTrigger: commit
+    buildFilter:
+      paths:
+        - src/BuildingBlocks/**
+        - src/Services/Accommodations/**
+        - Dockerfile
+        - Directory.*.props
+    envVars:
+      - fromGroup: roomtrack-shared
+      - key: PROJECT
+        value: src/Services/Accommodations/RoomTrack.Accommodations.API
+      - key: ASSEMBLY
+        value: RoomTrack.Accommodations.API
+      - key: ConnectionStrings__DefaultConnection
         sync: false
-      - key: Email__From__Address
-        value: psulcasanchez@gmail.com
-      - key: Email__From__Name
-        value: SmartStay
-
-      # --- Solicitudes de demo (US-27) y scheduler externo (GitHub Actions) ---
-      - key: Sales__NotificationEmail
-        value: psulcasanchez@gmail.com
-      - key: DemoRequests__SchedulingUrl
-        value: https://cal.com/piero-sulca-sanchez-rhh1nt/demo-smartstay
-      - key: Cron__ApiKey
-        sync: false
-
-      # --- Cloudinary (subidas firmadas de imágenes de hoteles) ---
+      - key: Services__Identity__BaseUrl
+        value: http://roomtrack-identity:8080
+      - key: Services__Bookings__BaseUrl
+        value: http://roomtrack-bookings:8080
+      # Subidas firmadas de imágenes de hoteles (obligatorias en Production)
       - key: Cloudinary__CloudName
         sync: false
       - key: Cloudinary__ApiKey
@@ -64,24 +144,127 @@ services:
       - key: Cloudinary__ApiSecret
         sync: false
 
-      # --- Reservas ---
+  - type: pserv
+    name: roomtrack-bookings
+    runtime: docker
+    repo: https://github.com/RoomTrack/RoomTrack-BackEnd
+    branch: main
+    region: oregon
+    plan: starter
+    dockerfilePath: ./Dockerfile
+    autoDeployTrigger: commit
+    buildFilter:
+      paths:
+        - src/BuildingBlocks/**
+        - src/Services/Bookings/**
+        - Dockerfile
+        - Directory.*.props
+    envVars:
+      - fromGroup: roomtrack-shared
+      - key: PROJECT
+        value: src/Services/Bookings/RoomTrack.Bookings.API
+      - key: ASSEMBLY
+        value: RoomTrack.Bookings.API
+      - key: ConnectionStrings__DefaultConnection
+        sync: false
+      - key: Services__Identity__BaseUrl
+        value: http://roomtrack-identity:8080
+      - key: Services__Accommodations__BaseUrl
+        value: http://roomtrack-accommodations:8080
+      - key: Services__Profiles__BaseUrl
+        value: http://roomtrack-profiles:8080
       - key: Bookings__TimeZone
         value: America/Lima
 
-      # --- Primer chain_admin ---
-      - key: InitialChainAdmin__Email
+  - type: pserv
+    name: roomtrack-profiles
+    runtime: docker
+    repo: https://github.com/RoomTrack/RoomTrack-BackEnd
+    branch: main
+    region: oregon
+    plan: starter
+    dockerfilePath: ./Dockerfile
+    autoDeployTrigger: commit
+    buildFilter:
+      paths:
+        - src/BuildingBlocks/**
+        - src/Services/Profiles/**
+        - Dockerfile
+        - Directory.*.props
+    envVars:
+      - fromGroup: roomtrack-shared
+      - key: PROJECT
+        value: src/Services/Profiles/RoomTrack.Profiles.API
+      - key: ASSEMBLY
+        value: RoomTrack.Profiles.API
+      - key: ConnectionStrings__DefaultConnection
         sync: false
-      - key: InitialChainAdmin__Password
+      - key: Services__Identity__BaseUrl
+        value: http://roomtrack-identity:8080
+      - key: Services__Accommodations__BaseUrl
+        value: http://roomtrack-accommodations:8080
+      # Solicitudes de demo
+      - key: Sales__NotificationEmail
         sync: false
+      - key: DemoRequests__SchedulingUrl
+        value: https://cal.com/roomtrack/demo-roomtrack
 
-      # --- Datos de demostración (hotel 1 con pagos, hotel 2 sin pagos) ---
-      - key: DemoData__Enabled
-        value: "true"
-      - key: DemoData__EmailBase
-        value: psulcasanchez@gmail.com
-      - key: DemoData__DefaultPassword
+  - type: pserv
+    name: roomtrack-analytics
+    runtime: docker
+    repo: https://github.com/RoomTrack/RoomTrack-BackEnd
+    branch: main
+    region: oregon
+    plan: starter
+    dockerfilePath: ./Dockerfile
+    autoDeployTrigger: commit
+    buildFilter:
+      paths:
+        - src/BuildingBlocks/**
+        - src/Services/Analytics/**
+        - Dockerfile
+        - Directory.*.props
+    envVars:
+      - fromGroup: roomtrack-shared
+      - key: PROJECT
+        value: src/Services/Analytics/RoomTrack.Analytics.API
+      - key: ASSEMBLY
+        value: RoomTrack.Analytics.API
+      - key: ConnectionStrings__DefaultConnection
         sync: false
-      - key: DemoData__Hotel1Payment__AccountHolder
+      - key: Services__Identity__BaseUrl
+        value: http://roomtrack-identity:8080
+
+  # ── Worker ────────────────────────────────────────────────────────────────
+  - type: worker
+    name: roomtrack-notifications
+    runtime: docker
+    repo: https://github.com/RoomTrack/RoomTrack-BackEnd
+    branch: main
+    region: oregon
+    plan: starter
+    dockerfilePath: ./Dockerfile
+    autoDeployTrigger: commit
+    buildFilter:
+      paths:
+        - src/BuildingBlocks/RoomTrack.Contracts/**
+        - src/Services/Notifications/**
+        - Dockerfile
+        - Directory.*.props
+    envVars:
+      - fromGroup: roomtrack-shared
+      - key: PROJECT
+        value: src/Services/Notifications/RoomTrack.Notifications.Worker
+      - key: ASSEMBLY
+        value: RoomTrack.Notifications.Worker
+      - key: DOTNET_ENVIRONMENT
+        value: Production
+      # API HTTP transaccional de Brevo por 443 (el SMTP saliente de Render no es fiable)
+      - key: Email__Transport
+        value: BrevoApi
+      - key: Email__Brevo__ApiKey
         sync: false
-      - key: DemoData__Hotel1Payment__Yape
+      - key: Email__From__Address
         sync: false
+      - key: Email__From__Name
+        value: RoomTrack

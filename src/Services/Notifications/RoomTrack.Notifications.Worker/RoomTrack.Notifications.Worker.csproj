@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+    <!-- Consumes the SendEmail messages of every service from RabbitMQ and hands them to the mail system. -->
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Hosting" />
+        <PackageReference Include="MassTransit.RabbitMQ" />
+        <PackageReference Include="MailKit" />
+        <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
+        <PackageReference Include="Polly" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\BuildingBlocks\RoomTrack.Contracts\RoomTrack.Contracts.csproj" />
+    </ItemGroup>
+
+</Project>

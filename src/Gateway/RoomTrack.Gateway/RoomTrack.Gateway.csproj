@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <!-- Single entry point of the clients: routes /api/v1/* to the owning service (YARP). -->
+
+    <ItemGroup>
+        <PackageReference Include="Yarp.ReverseProxy" />
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" />
+    </ItemGroup>
+
+</Project>
