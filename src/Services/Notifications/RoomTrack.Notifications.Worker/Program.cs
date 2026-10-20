@@ -4,7 +4,11 @@ using RoomTrack.Notifications.Worker.Email.Configuration;
 
 // Notifications worker: the only process that talks to the mail system. Every service publishes SendEmail messages
 // through its transactional outbox; this worker consumes them from RabbitMQ and delivers them, with redelivery.
-var builder = Host.CreateApplicationBuilder(args);
+// It also answers /health over HTTP so it can run as a (free) web service on Render; the API gateway calls it to
+// keep it awake while the app is in use.
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddHealthChecks();
 
 builder.Services.AddEmailTransports(builder.Configuration);
 
@@ -39,4 +43,6 @@ builder.Services.AddMassTransit(bus =>
     });
 });
 
-builder.Build().Run();
+var app = builder.Build();
+app.MapHealthChecks("/health");
+app.Run();

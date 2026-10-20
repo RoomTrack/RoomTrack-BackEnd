@@ -1,7 +1,13 @@
-# Render Blueprint — RoomTrack como microservicios
-#   roomtrack-api (web, público)  -> API gateway
-#   roomtrack-{identity,accommodations,bookings,profiles,analytics} (pserv, solo red privada de Render)
-#   roomtrack-notifications (worker)       -> entrega de e-mails desde RabbitMQ
+# Render Blueprint — RoomTrack como microservicios, en el plan GRATUITO
+#   roomtrack-api (web)                                        -> API gateway, la entrada de los clientes
+#   roomtrack-{identity,accommodations,bookings,profiles,analytics} (web) -> servicios
+#   roomtrack-notifications (web)                              -> entrega de e-mails desde RabbitMQ (+ /health)
+#
+# El plan free no tiene servicios privados (pserv) ni workers, y un servicio free no recibe tráfico de la red
+# privada: todos son web services y se llaman entre sí por sus URLs públicas (https://<servicio>.onrender.com).
+# La API interna (/internal/v1) sigue protegida por X-Internal-Key.
+# Un servicio free se duerme tras ~15 min sin tráfico: el gateway despierta a los demás (KeepAwake__Urls) cuando
+# recibe peticiones, así que solo la primera petición tras un rato sin uso tarda (~1 min).
 #
 # Todos se construyen con el mismo Dockerfile; Render pasa las variables de entorno como build args, así que
 # PROJECT y ASSEMBLY eligen el proyecto. Los servicios escuchan en 8080 (ASPNETCORE_HTTP_PORTS del Dockerfile).
@@ -11,10 +17,12 @@
 #     con /etc/secrets/ca.pem (Secret File `ca.pem` en cada servicio con base de datos).
 #   - RabbitMQ (p. ej. CloudAMQP): añade RabbitMq__Host, RabbitMq__VirtualHost, RabbitMq__Username y
 #     RabbitMq__Password al grupo `roomtrack-shared` desde el dashboard tras la primera sincronización.
+#   - IP real del cliente: añade a `roomtrack-shared` ForwardedHeaders__AdditionalTrustedNetworks con las IPs de
+#     salida del gateway (Dashboard > roomtrack-api > Connect > Outbound, separadas por comas).
 #
 # Las variables con `sync: false` son secretos: Render las pide al crear el Blueprint. Nunca pongas sus valores aquí.
-# Las URLs internas (http://roomtrack-<servicio>:8080) asumen que el hostname interno es el nombre del servicio;
-# compruébalo en Dashboard > servicio > Connect > Internal.
+# Las URLs públicas asumen que Render dio a cada servicio el subdominio <nombre>.onrender.com; si alguno está
+# ocupado Render añade un sufijo: compruébalo en el dashboard y corrige las URLs de abajo.
 
 envVarGroups:
   - name: roomtrack-shared
@@ -69,25 +77,29 @@ services:
       - key: Cors__AllowedOrigins
         value: https://roomtrack-web.vercel.app,https://roomtrack-landing.vercel.app
       - key: ReverseProxy__Clusters__identity__Destinations__primary__Address
-        value: http://roomtrack-identity:8080
+        value: https://roomtrack-identity.onrender.com
       - key: ReverseProxy__Clusters__accommodations__Destinations__primary__Address
-        value: http://roomtrack-accommodations:8080
+        value: https://roomtrack-accommodations.onrender.com
       - key: ReverseProxy__Clusters__bookings__Destinations__primary__Address
-        value: http://roomtrack-bookings:8080
+        value: https://roomtrack-bookings.onrender.com
       - key: ReverseProxy__Clusters__profiles__Destinations__primary__Address
-        value: http://roomtrack-profiles:8080
+        value: https://roomtrack-profiles.onrender.com
       - key: ReverseProxy__Clusters__analytics__Destinations__primary__Address
-        value: http://roomtrack-analytics:8080
+        value: https://roomtrack-analytics.onrender.com
+      # Despierta a los servicios mientras haya tráfico (ver KeepAwake.cs)
+      - key: KeepAwake__Urls
+        value: https://roomtrack-identity.onrender.com,https://roomtrack-accommodations.onrender.com,https://roomtrack-bookings.onrender.com,https://roomtrack-profiles.onrender.com,https://roomtrack-analytics.onrender.com,https://roomtrack-notifications.onrender.com
 
-  # ── Servicios privados ────────────────────────────────────────────────────
-  - type: pserv
+  # ── Servicios ─────────────────────────────────────────────────────────────
+  - type: web
     name: roomtrack-identity
     runtime: docker
     repo: https://github.com/RoomTrack/RoomTrack-BackEnd
     branch: main
     region: oregon
-    plan: starter
+    plan: free
     dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
     autoDeployTrigger: commit
     buildFilter:
       paths:
@@ -109,14 +121,15 @@ services:
       - key: InitialChainAdmin__Password
         sync: false
 
-  - type: pserv
+  - type: web
     name: roomtrack-accommodations
     runtime: docker
     repo: https://github.com/RoomTrack/RoomTrack-BackEnd
     branch: main
     region: oregon
-    plan: starter
+    plan: free
     dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
     autoDeployTrigger: commit
     buildFilter:
       paths:
@@ -133,9 +146,9 @@ services:
       - key: ConnectionStrings__DefaultConnection
         sync: false
       - key: Services__Identity__BaseUrl
-        value: http://roomtrack-identity:8080
+        value: https://roomtrack-identity.onrender.com
       - key: Services__Bookings__BaseUrl
-        value: http://roomtrack-bookings:8080
+        value: https://roomtrack-bookings.onrender.com
       # Subidas firmadas de imágenes de hoteles (obligatorias en Production)
       - key: Cloudinary__CloudName
         sync: false
@@ -144,14 +157,15 @@ services:
       - key: Cloudinary__ApiSecret
         sync: false
 
-  - type: pserv
+  - type: web
     name: roomtrack-bookings
     runtime: docker
     repo: https://github.com/RoomTrack/RoomTrack-BackEnd
     branch: main
     region: oregon
-    plan: starter
+    plan: free
     dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
     autoDeployTrigger: commit
     buildFilter:
       paths:
@@ -168,22 +182,23 @@ services:
       - key: ConnectionStrings__DefaultConnection
         sync: false
       - key: Services__Identity__BaseUrl
-        value: http://roomtrack-identity:8080
+        value: https://roomtrack-identity.onrender.com
       - key: Services__Accommodations__BaseUrl
-        value: http://roomtrack-accommodations:8080
+        value: https://roomtrack-accommodations.onrender.com
       - key: Services__Profiles__BaseUrl
-        value: http://roomtrack-profiles:8080
+        value: https://roomtrack-profiles.onrender.com
       - key: Bookings__TimeZone
         value: America/Lima
 
-  - type: pserv
+  - type: web
     name: roomtrack-profiles
     runtime: docker
     repo: https://github.com/RoomTrack/RoomTrack-BackEnd
     branch: main
     region: oregon
-    plan: starter
+    plan: free
     dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
     autoDeployTrigger: commit
     buildFilter:
       paths:
@@ -200,23 +215,24 @@ services:
       - key: ConnectionStrings__DefaultConnection
         sync: false
       - key: Services__Identity__BaseUrl
-        value: http://roomtrack-identity:8080
+        value: https://roomtrack-identity.onrender.com
       - key: Services__Accommodations__BaseUrl
-        value: http://roomtrack-accommodations:8080
+        value: https://roomtrack-accommodations.onrender.com
       # Solicitudes de demo
       - key: Sales__NotificationEmail
         sync: false
       - key: DemoRequests__SchedulingUrl
         value: https://cal.com/roomtrack/demo-roomtrack
 
-  - type: pserv
+  - type: web
     name: roomtrack-analytics
     runtime: docker
     repo: https://github.com/RoomTrack/RoomTrack-BackEnd
     branch: main
     region: oregon
-    plan: starter
+    plan: free
     dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
     autoDeployTrigger: commit
     buildFilter:
       paths:
@@ -233,17 +249,18 @@ services:
       - key: ConnectionStrings__DefaultConnection
         sync: false
       - key: Services__Identity__BaseUrl
-        value: http://roomtrack-identity:8080
+        value: https://roomtrack-identity.onrender.com
 
-  # ── Worker ────────────────────────────────────────────────────────────────
-  - type: worker
+  # ── Notificaciones ────────────────────────────────────────────────────────
+  - type: web
     name: roomtrack-notifications
     runtime: docker
     repo: https://github.com/RoomTrack/RoomTrack-BackEnd
     branch: main
     region: oregon
-    plan: starter
+    plan: free
     dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
     autoDeployTrigger: commit
     buildFilter:
       paths:

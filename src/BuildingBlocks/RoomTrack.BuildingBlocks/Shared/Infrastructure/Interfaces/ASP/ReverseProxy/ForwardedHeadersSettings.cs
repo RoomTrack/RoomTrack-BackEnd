@@ -60,7 +60,20 @@ public class ForwardedHeadersSettings
         "2c0f:f248::/32"
     ];
 
-    /// <summary>The networks in effect: the configured ones, or the defaults when none are configured.</summary>
+    /// <summary>
+    ///     Networks trusted ON TOP of <see cref="TrustedNetworks"/> or the defaults
+    ///     (<c>ForwardedHeaders__AdditionalTrustedNetworks</c>, comma separated). On Render's free plan the gateway
+    ///     reaches the services over the internet, so its outbound addresses (Dashboard > gateway > Connect >
+    ///     Outbound) go here; otherwise every request would seem to come from the gateway.
+    /// </summary>
+    public string AdditionalTrustedNetworks { get; set; } = string.Empty;
+
+    /// <summary>The networks in effect: the configured ones (or the defaults) plus the additional ones.</summary>
     public IReadOnlyList<string> EffectiveTrustedNetworks =>
-        TrustedNetworks is { Length: > 0 } ? TrustedNetworks : DefaultTrustedNetworks;
+        (TrustedNetworks is { Length: > 0 } ? TrustedNetworks : DefaultTrustedNetworks)
+        .Concat(AdditionalTrustedNetworks
+            .Split([',', ';', ' '], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            // A single address is a /32 (IPv4) or /128 (IPv6) network.
+            .Select(network => network.Contains('/') ? network : network + (network.Contains(':') ? "/128" : "/32")))
+        .ToArray();
 }
