@@ -1,3 +1,4 @@
+using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
 using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Entities;
 using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Enums;
 using BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects;
@@ -40,7 +41,7 @@ public class StaffAssignmentTests
     }
 
     [Fact]
-    public void Create_WhenEndDateAlreadyPassed_ShouldThrowInvalidOperationException()
+    public void Create_WhenEndDateAlreadyPassed_ShouldThrowBusinessRuleViolationException()
     {
         // Arrange
         var pastStart = _today.AddDays(-30);
@@ -51,7 +52,7 @@ public class StaffAssignmentTests
         var act = () => new StaffAssignment(AssignmentId.New(), ScopeLevel.Hotel, _hotelId, StaffRole.Reception, period, _today);
 
         // Assert
-        act.Should().Throw<InvalidOperationException>()
+        act.Should().Throw<BusinessRuleViolationException>()
             .WithMessage("*expired*");
     }
 
@@ -70,7 +71,7 @@ public class StaffAssignmentTests
     }
 
     [Fact]
-    public void Suspend_WhenTerminated_ShouldThrowInvalidOperationException()
+    public void Suspend_WhenTerminated_ShouldThrowBusinessRuleViolationException()
     {
         // Arrange
         var assignment = new StaffAssignment(AssignmentId.New(), ScopeLevel.Hotel, _hotelId, StaffRole.Reception, new DateRange(_today), _today);
@@ -80,7 +81,7 @@ public class StaffAssignmentTests
         var act = () => assignment.Suspend();
 
         // Assert
-        act.Should().Throw<InvalidOperationException>()
+        act.Should().Throw<BusinessRuleViolationException>()
             .WithMessage("*terminated*");
     }
 
@@ -117,7 +118,7 @@ public class StaffAssignmentTests
     }
 
     [Fact]
-    public void Reactivate_WhenNotSuspended_ShouldThrowInvalidOperationException()
+    public void Reactivate_WhenNotSuspended_ShouldThrowBusinessRuleViolationException()
     {
         // Arrange
         var assignment = new StaffAssignment(AssignmentId.New(), ScopeLevel.Hotel, _hotelId, StaffRole.Reception, new DateRange(_today), _today);
@@ -126,12 +127,12 @@ public class StaffAssignmentTests
         var act = () => assignment.Reactivate(_today);
 
         // Assert
-        act.Should().Throw<InvalidOperationException>()
+        act.Should().Throw<BusinessRuleViolationException>()
             .WithMessage("*Only suspended*");
     }
 
     [Fact]
-    public void Reactivate_WhenContractualEndDateAlreadyPassed_ShouldThrowInvalidOperationException()
+    public void Reactivate_WhenContractualEndDateAlreadyPassed_ShouldThrowBusinessRuleViolationException()
     {
         // Arrange
         var pastStart = _today.AddDays(-30);
@@ -144,7 +145,7 @@ public class StaffAssignmentTests
         var act = () => assignment.Reactivate(_today);
 
         // Assert
-        act.Should().Throw<InvalidOperationException>()
+        act.Should().Throw<BusinessRuleViolationException>()
             .WithMessage("*expired*");
     }
 
@@ -165,7 +166,7 @@ public class StaffAssignmentTests
     }
 
     [Fact]
-    public void Terminate_WhenTerminationDatePrecedesStartDate_ShouldThrowArgumentException()
+    public void Terminate_WhenTerminationDatePrecedesStartDate_ShouldThrowDomainValidationException()
     {
         // Arrange
         var startDate = _today.AddDays(5);
@@ -175,11 +176,11 @@ public class StaffAssignmentTests
         var act = () => assignment.Terminate(startDate.AddDays(-1));
 
         // Assert
-        act.Should().Throw<ArgumentException>();
+        act.Should().Throw<DomainValidationException>();
     }
 
     [Fact]
-    public void Terminate_WhenAlreadyTerminated_ShouldThrowInvalidOperationException()
+    public void Terminate_WhenAlreadyTerminated_ShouldThrowBusinessRuleViolationException()
     {
         // Arrange
         var assignment = new StaffAssignment(AssignmentId.New(), ScopeLevel.Hotel, _hotelId, StaffRole.Reception, new DateRange(_today), _today);
@@ -189,7 +190,7 @@ public class StaffAssignmentTests
         var act = () => assignment.Terminate(_today);
 
         // Assert
-        act.Should().Throw<InvalidOperationException>()
+        act.Should().Throw<BusinessRuleViolationException>()
             .WithMessage("*already terminated*");
     }
 }

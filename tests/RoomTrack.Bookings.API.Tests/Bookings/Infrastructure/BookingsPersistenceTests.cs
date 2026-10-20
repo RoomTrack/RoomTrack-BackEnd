@@ -2,18 +2,19 @@ using System;
 using System.Threading.Tasks;
 using BackendAwRoomTrack.API.Bookings.Domain.Model.Aggregates;
 using BackendAwRoomTrack.API.Bookings.Infrastructure.Persistence.EFC.Repositories;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using RoomTrack.Bookings.API.Infrastructure.Persistence;
 using Xunit;
+using static BackendAwRoomTrack.API.Tests.Bookings.BookingTestData;
 
 namespace BackendAwRoomTrack.API.Tests.Bookings.Infrastructure;
 
 public class BookingsPersistenceTests
 {
-    private DbContextOptions<AppDbContext> CreateNewContextOptions()
+    private DbContextOptions<BookingsDbContext> CreateNewContextOptions()
     {
-        return new DbContextOptionsBuilder<AppDbContext>()
+        return new DbContextOptionsBuilder<BookingsDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
     }
@@ -27,16 +28,10 @@ public class BookingsPersistenceTests
         int bookingId;
 
         // 1. Persist
-        using (var context = new AppDbContext(options))
+        using (var context = new BookingsDbContext(options))
         {
             var repo = new BookingRepository(context);
-            var booking = new Booking(
-                roomId: 101,
-                guestName: "Alice Wonderland",
-                guestEmail: "alice@example.com",
-                checkInDate: DateTime.UtcNow.AddDays(1),
-                checkOutDate: DateTime.UtcNow.AddDays(4),
-                guestProfileId: guestProfileId);
+            var booking = PlaceByStaff(guestProfileId, roomId: 101);
 
             await repo.AddAsync(booking);
             await context.SaveChangesAsync();
@@ -44,7 +39,7 @@ public class BookingsPersistenceTests
         }
 
         // 2. Query in separate DbContext
-        using (var context = new AppDbContext(options))
+        using (var context = new BookingsDbContext(options))
         {
             var repo = new BookingRepository(context);
             var loadedBooking = await repo.FindByIdAsync(bookingId);
@@ -67,16 +62,10 @@ public class BookingsPersistenceTests
         int bookingId;
 
         // 1. Persist
-        using (var context = new AppDbContext(options))
+        using (var context = new BookingsDbContext(options))
         {
             var repo = new BookingRepository(context);
-            var booking = new Booking(
-                roomId: 202,
-                guestName: "Anonymous Guest",
-                guestEmail: "anon@example.com",
-                checkInDate: DateTime.UtcNow.AddDays(2),
-                checkOutDate: DateTime.UtcNow.AddDays(5),
-                guestProfileId: null);
+            var booking = PlaceByStaff(guestProfileId: null, roomId: 202);
 
             await repo.AddAsync(booking);
             await context.SaveChangesAsync();
@@ -84,7 +73,7 @@ public class BookingsPersistenceTests
         }
 
         // 2. Query in separate DbContext
-        using (var context = new AppDbContext(options))
+        using (var context = new BookingsDbContext(options))
         {
             var repo = new BookingRepository(context);
             var loadedBooking = await repo.FindByIdAsync(bookingId);
@@ -92,8 +81,6 @@ public class BookingsPersistenceTests
             loadedBooking.Should().NotBeNull();
             loadedBooking!.Id.Should().Be(bookingId);
             loadedBooking.RoomId.Should().Be(202);
-            loadedBooking.GuestName.Should().Be("Anonymous Guest");
-            loadedBooking.GuestEmail.Should().Be("anon@example.com");
             loadedBooking.Status.Should().Be(BookingStatus.Pending);
             loadedBooking.GuestProfileId.Should().BeNull();
         }
@@ -106,15 +93,10 @@ public class BookingsPersistenceTests
         var options = CreateNewContextOptions();
         int bookingId;
 
-        using (var context = new AppDbContext(options))
+        using (var context = new BookingsDbContext(options))
         {
             var repo = new BookingRepository(context);
-            var booking = new Booking(
-                roomId: 10,
-                guestName: "Bob Tester",
-                guestEmail: "bob@example.com",
-                checkInDate: DateTime.UtcNow.AddDays(1),
-                checkOutDate: DateTime.UtcNow.AddDays(2));
+            var booking = PlaceByStaff(roomId: 10);
 
             await repo.AddAsync(booking);
             await context.SaveChangesAsync();
@@ -122,18 +104,18 @@ public class BookingsPersistenceTests
         }
 
         // Confirm booking
-        using (var context = new AppDbContext(options))
+        using (var context = new BookingsDbContext(options))
         {
             var repo = new BookingRepository(context);
             var booking = await repo.FindByIdAsync(bookingId);
             booking.Should().NotBeNull();
-            booking!.Confirm();
+            booking!.Confirm(Now);
             repo.Update(booking);
             await context.SaveChangesAsync();
         }
 
         // Verify confirmed
-        using (var context = new AppDbContext(options))
+        using (var context = new BookingsDbContext(options))
         {
             var repo = new BookingRepository(context);
             var loadedBooking = await repo.FindByIdAsync(bookingId);

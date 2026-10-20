@@ -1,3 +1,4 @@
+using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
 using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Aggregates;
 using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Enums;
 using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Events;
@@ -67,7 +68,7 @@ public class StaffProfileTests
     }
 
     [Fact]
-    public void AddAssignment_SecondChainAdmin_ShouldThrowInvalidOperationException()
+    public void AddAssignment_SecondChainAdmin_ShouldThrowBusinessRuleViolationException()
     {
         // Arrange
         var staff = CreateValidStaff();
@@ -81,12 +82,12 @@ public class StaffProfileTests
         var act = () => staff.AddAssignment(ScopeLevel.Chain, secondChainId, StaffRole.ChainAdmin, period2, _today);
 
         // Assert
-        act.Should().Throw<InvalidOperationException>()
+        act.Should().Throw<BusinessRuleViolationException>()
             .WithMessage("*ChainAdmin*");
     }
 
     [Fact]
-    public void AddAssignment_ChainScopeWithNonChainAdminRole_ShouldThrowArgumentException()
+    public void AddAssignment_ChainScopeWithNonChainAdminRole_ShouldThrowDomainValidationException()
     {
         // Arrange
         var staff = CreateValidStaff();
@@ -96,12 +97,12 @@ public class StaffProfileTests
         var act = () => staff.AddAssignment(ScopeLevel.Chain, _chainId, StaffRole.Reception, period, _today);
 
         // Assert
-        act.Should().Throw<ArgumentException>()
+        act.Should().Throw<DomainValidationException>()
             .WithMessage("*Only ChainAdmin*");
     }
 
     [Fact]
-    public void AddAssignment_HotelScopeWithChainAdminRole_ShouldThrowArgumentException()
+    public void AddAssignment_HotelScopeWithChainAdminRole_ShouldThrowDomainValidationException()
     {
         // Arrange
         var staff = CreateValidStaff();
@@ -111,7 +112,7 @@ public class StaffProfileTests
         var act = () => staff.AddAssignment(ScopeLevel.Hotel, _hotelId, StaffRole.ChainAdmin, period, _today);
 
         // Assert
-        act.Should().Throw<ArgumentException>()
+        act.Should().Throw<DomainValidationException>()
             .WithMessage("*ChainAdmin role is not permitted at Hotel scope*");
     }
 
@@ -126,7 +127,7 @@ public class StaffProfileTests
         var act = () => staff.AddAssignment(ScopeLevel.Hotel, _hotelId, StaffRole.Admin, new DateRange(_today), _today);
 
         // Assert
-        act.Should().Throw<InvalidOperationException>()
+        act.Should().Throw<BusinessRuleViolationException>()
             .WithMessage("*cannot take Hotel assignments*");
     }
 
@@ -141,12 +142,12 @@ public class StaffProfileTests
         var act = () => staff.AddAssignment(ScopeLevel.Chain, _chainId, StaffRole.ChainAdmin, new DateRange(_today), _today);
 
         // Assert
-        act.Should().Throw<InvalidOperationException>()
+        act.Should().Throw<BusinessRuleViolationException>()
             .WithMessage("*existing Hotel assignments*");
     }
 
     [Fact]
-    public void AddAssignment_AdminAndReceptionInSameHotel_ShouldThrowInvalidOperationException()
+    public void AddAssignment_AdminAndReceptionInSameHotel_ShouldThrowBusinessRuleViolationException()
     {
         // Arrange
         var staff = CreateValidStaff();
@@ -156,7 +157,7 @@ public class StaffProfileTests
         var act = () => staff.AddAssignment(ScopeLevel.Hotel, _hotelId, StaffRole.Reception, new DateRange(_today), _today);
 
         // Assert
-        act.Should().Throw<InvalidOperationException>()
+        act.Should().Throw<BusinessRuleViolationException>()
             .WithMessage("*already holds Admin duties*");
     }
 
@@ -175,7 +176,7 @@ public class StaffProfileTests
     }
 
     [Fact]
-    public void AddAssignment_DuplicateCurrentAssignment_ShouldThrowInvalidOperationException()
+    public void AddAssignment_DuplicateCurrentAssignment_ShouldThrowBusinessRuleViolationException()
     {
         // Arrange
         var staff = CreateValidStaff();
@@ -185,7 +186,7 @@ public class StaffProfileTests
         var act = () => staff.AddAssignment(ScopeLevel.Hotel, _hotelId, StaffRole.Housekeeping, new DateRange(_today), _today);
 
         // Assert
-        act.Should().Throw<InvalidOperationException>()
+        act.Should().Throw<BusinessRuleViolationException>()
             .WithMessage("*identical scope, target, and role already exists*");
     }
 
@@ -202,7 +203,7 @@ public class StaffProfileTests
         var act = () => staff.AddAssignment(ScopeLevel.Hotel, _hotelId, StaffRole.Housekeeping, new DateRange(_today), _today);
 
         // Assert
-        act.Should().Throw<InvalidOperationException>()
+        act.Should().Throw<BusinessRuleViolationException>()
             .WithMessage("*identical scope, target, and role already exists*");
     }
 
@@ -238,7 +239,7 @@ public class StaffProfileTests
     }
 
     [Fact]
-    public void AddAssignment_WhenStaffIsInactive_ShouldThrowInvalidOperationException()
+    public void AddAssignment_WhenStaffIsInactive_ShouldThrowBusinessRuleViolationException()
     {
         // Arrange
         var staff = CreateValidStaff();
@@ -248,7 +249,7 @@ public class StaffProfileTests
         var act = () => staff.AddAssignment(ScopeLevel.Hotel, _hotelId, StaffRole.Staff, new DateRange(_today), _today);
 
         // Assert
-        act.Should().Throw<InvalidOperationException>()
+        act.Should().Throw<BusinessRuleViolationException>()
             .WithMessage("*inactive*");
     }
 
@@ -328,7 +329,7 @@ public class StaffProfileTests
     }
 
     [Fact]
-    public void AdministrativeOperations_WhenStaffInactive_ShouldThrowInvalidOperationException()
+    public void AdministrativeOperations_WhenStaffInactive_ShouldThrowBusinessRuleViolationException()
     {
         // Arrange
         var staff = CreateValidStaff();
@@ -342,9 +343,9 @@ public class StaffProfileTests
         var act3 = () => staff.TerminateAssignment(assignmentId, _today);
         var act4 = () => staff.ReactivateAssignment(assignmentId, _today);
 
-        act1.Should().Throw<InvalidOperationException>().WithMessage("*inactive*");
-        act2.Should().Throw<InvalidOperationException>().WithMessage("*inactive*");
-        act3.Should().Throw<InvalidOperationException>().WithMessage("*inactive*");
-        act4.Should().Throw<InvalidOperationException>().WithMessage("*inactive*");
+        act1.Should().Throw<BusinessRuleViolationException>().WithMessage("*inactive*");
+        act2.Should().Throw<BusinessRuleViolationException>().WithMessage("*inactive*");
+        act3.Should().Throw<BusinessRuleViolationException>().WithMessage("*inactive*");
+        act4.Should().Throw<BusinessRuleViolationException>().WithMessage("*inactive*");
     }
 }
