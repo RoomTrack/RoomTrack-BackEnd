@@ -1,3 +1,4 @@
+using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
 using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Enums;
 using BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects;
 using FluentAssertions;
@@ -59,13 +60,13 @@ public class ValueObjectsTests
     [InlineData("1234567")]      // 7 dígitos
     [InlineData("123456789")]    // 9 dígitos
     [InlineData("1234567A")]    // No numérico
-    public void IdentificationDocument_WithInvalidDni_ShouldThrowArgumentException(string number)
+    public void IdentificationDocument_WithInvalidDni_ShouldThrowDomainValidationException(string number)
     {
         // Act
         var act = () => new IdentificationDocument(DocumentType.Dni, number);
 
         // Assert
-        act.Should().Throw<ArgumentException>();
+        act.Should().Throw<DomainValidationException>();
     }
 
     [Theory]
@@ -84,13 +85,13 @@ public class ValueObjectsTests
     [Theory]
     [InlineData("12345")]           // Menor a 6
     [InlineData("1234567890123")]   // Mayor a 12
-    public void IdentificationDocument_WithInvalidPassportLength_ShouldThrowArgumentException(string number)
+    public void IdentificationDocument_WithInvalidPassportLength_ShouldThrowDomainValidationException(string number)
     {
         // Act
         var act = () => new IdentificationDocument(DocumentType.Passport, number);
 
         // Assert
-        act.Should().Throw<ArgumentException>();
+        act.Should().Throw<DomainValidationException>();
     }
 
     [Theory]
@@ -111,13 +112,13 @@ public class ValueObjectsTests
     [InlineData("   ")]
     [InlineData("phone123")]
     [InlineData("12345")]
-    public void PhoneNumber_WithInvalidFormat_ShouldThrowArgumentException(string phone)
+    public void PhoneNumber_WithInvalidFormat_ShouldThrowDomainValidationException(string phone)
     {
         // Act
         var act = () => new PhoneNumber(phone);
 
         // Assert
-        act.Should().Throw<ArgumentException>();
+        act.Should().Throw<DomainValidationException>();
     }
 
     [Theory]
@@ -138,13 +139,13 @@ public class ValueObjectsTests
     [InlineData("EMP-1")]
     [InlineData("STF-00001")]
     [InlineData("EMP-ABCDE")]
-    public void EmployeeCode_WithInvalidFormat_ShouldThrowArgumentException(string code)
+    public void EmployeeCode_WithInvalidFormat_ShouldThrowDomainValidationException(string code)
     {
         // Act
         var act = () => new EmployeeCode(code);
 
         // Assert
-        act.Should().Throw<ArgumentException>();
+        act.Should().Throw<DomainValidationException>();
     }
 
     [Theory]
@@ -163,17 +164,17 @@ public class ValueObjectsTests
     [InlineData("")]
     [InlineData("   ")]
     [InlineData("ab")] // Menor a 3 caracteres
-    public void JobPosition_WithInvalidLength_ShouldThrowArgumentException(string position)
+    public void JobPosition_WithInvalidLength_ShouldThrowDomainValidationException(string position)
     {
         // Act
         var act = () => new JobPosition(position);
 
         // Assert
-        act.Should().Throw<ArgumentException>();
+        act.Should().Throw<DomainValidationException>();
     }
 
     [Fact]
-    public void DateRange_WhenEndDateIsEarlierThanStartDate_ShouldThrowArgumentException()
+    public void DateRange_WhenEndDateIsEarlierThanStartDate_ShouldThrowDomainValidationException()
     {
         // Arrange
         var start = new DateOnly(2026, 9, 10);
@@ -183,7 +184,7 @@ public class ValueObjectsTests
         var act = () => new DateRange(start, end);
 
         // Assert
-        act.Should().Throw<ArgumentException>();
+        act.Should().Throw<DomainValidationException>();
     }
 
     [Fact]
@@ -216,13 +217,13 @@ public class ValueObjectsTests
     [Theory]
     [InlineData("", "Perez")]
     [InlineData("Rosa", "")]
-    public void PersonName_WithEmptyValues_ShouldThrowArgumentException(string first, string last)
+    public void PersonName_WithEmptyValues_ShouldThrowDomainValidationException(string first, string last)
     {
         // Act
         var act = () => new PersonName(first, last);
 
         // Assert
-        act.Should().Throw<ArgumentException>();
+        act.Should().Throw<DomainValidationException>();
     }
 
     [Fact]
@@ -239,12 +240,12 @@ public class ValueObjectsTests
     [InlineData("")]
     [InlineData("invalid-email")]
     [InlineData("user@domain")]
-    public void EmailAddress_WithInvalidFormat_ShouldThrowArgumentException(string address)
+    public void EmailAddress_WithInvalidFormat_ShouldThrowDomainValidationException(string address)
     {
         // Act
         var act = () => new EmailAddress(address);
 
         // Assert
-        act.Should().Throw<ArgumentException>();
+        act.Should().Throw<DomainValidationException>();
     }
 }

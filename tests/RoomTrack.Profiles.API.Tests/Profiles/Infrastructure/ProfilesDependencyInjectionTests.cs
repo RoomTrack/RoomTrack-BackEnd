@@ -4,7 +4,9 @@ using BackendAwRoomTrack.API.Profiles.Application.Internal.OutboundServices;
 using BackendAwRoomTrack.API.Profiles.Application.Internal.QueryServices;
 using BackendAwRoomTrack.API.Profiles.Infrastructure.Interfaces.ASP.Configuration.Extensions;
 using BackendAwRoomTrack.API.Profiles.Interfaces.ACL;
+using BackendAwRoomTrack.API.Shared.Application.OutboundServices;
 using BackendAwRoomTrack.API.Shared.Domain.Repositories;
+using BackendAwRoomTrack.API.Shared.Infrastructure.Events;
 using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
 using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Repositories;
 using BackendAwRoomTrack.API.Shared.Infrastructure.Mediator.Cortex.Configuration.Extensions;
@@ -33,6 +35,7 @@ public class ProfilesDependencyInjectionTests
         builder.Services.AddScoped<AppDbContext>(provider => provider.GetRequiredService<ProfilesDbContext>());
 
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+        builder.Services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
         builder.AddCortexMediatorServices<Program>();
 
         // Register the Accommodations port (HTTP client of the Accommodations service) & Profiles services
