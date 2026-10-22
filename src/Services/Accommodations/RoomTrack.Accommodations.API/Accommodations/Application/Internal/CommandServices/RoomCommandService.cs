@@ -95,6 +95,26 @@ public class RoomCommandService(
         return room;
     }
 
+    public async Task<Room> Handle(HoldRoomForIncidentCommand command)
+    {
+        var room = await roomRepository.FindByIdForUpdateAsync(command.RoomId)
+                   ?? throw new EntityNotFoundException("Room", command.RoomId);
+        var change = room.HoldForIncident(command.ReportedByUserId, command.ReportedByEmail, timeProvider.GetUtcNow());
+        if (change is not null) await roomStatusChangeRepository.AddAsync(change);
+        await unitOfWork.CompleteAsync();
+        return room;
+    }
+
+    public async Task<Room> Handle(ReleaseRoomFromIncidentCommand command)
+    {
+        var room = await roomRepository.FindByIdForUpdateAsync(command.RoomId)
+                   ?? throw new EntityNotFoundException("Room", command.RoomId);
+        var change = room.ReleaseFromIncident(command.ResolvedByUserId, command.ResolvedByEmail, timeProvider.GetUtcNow());
+        if (change is not null) await roomStatusChangeRepository.AddAsync(change);
+        await unitOfWork.CompleteAsync();
+        return room;
+    }
+
     private async Task EnsureRoomTypeExistsAsync(int roomTypeId)
     {
         if (await roomTypeRepository.FindByIdAsync(roomTypeId) is null)
