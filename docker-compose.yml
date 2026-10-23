@@ -1,50 +1,217 @@
-# Local development stack: API + MySQL 8.
-#   cp .env.example .env   # optional; without .env the Development defaults below are used
+# RoomTrack as microservices: API gateway + 5 services + notifications worker, one MySQL schema per service and
+# RabbitMQ between them.
+#   cp .env.example .env   # optional; without .env the local development defaults below are used
 #   docker compose up -d --build
-#   curl http://localhost:10000/health
-# Swagger UI: http://localhost:10000/
-name: smartstay
+#   curl http://localhost:8080/health
+# API (gateway):        http://localhost:8080/api/v1/...
+# API docs (Swagger):   http://localhost:8080/docs
+# RabbitMQ console:     http://localhost:15672 (guest / guest)
+# Resilience lab (Redis + ActiveMQ for /api/v1/analytics/cache): docker compose --profile lab up -d --build
+name: roomtrack
+
+x-service-env: &service-env
+  ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
+  # The same JWT settings everywhere: Identity signs the tokens and every service validates them.
+  TokenSettings__Secret: ${TOKEN_SECRET:-local-development-only-secret-do-not-use-in-production-0123456789}
+  InternalApi__Key: ${INTERNAL_API_KEY:-local-development-only-internal-key-0123456789abcdef}
+  Cron__ApiKey: ${CRON_API_KEY:-local-development-only-cron-key-0123456789abcdef}
+  App__WebBaseUrl: ${APP_WEB_BASE_URL:-http://localhost:5173}
+  App__LandingBaseUrl: ${APP_LANDING_BASE_URL:-http://localhost:5174}
+  RabbitMq__Host: rabbitmq
+  RabbitMq__Username: ${RABBITMQ_USER:-guest}
+  RabbitMq__Password: ${RABBITMQ_PASSWORD:-guest}
+  Services__Identity__BaseUrl: http://identity-service:8080
+  Services__Accommodations__BaseUrl: http://accommodations-service:8080
+  Services__Bookings__BaseUrl: http://bookings-service:8080
+  Services__Profiles__BaseUrl: http://profiles-service:8080
+
+x-service-deps: &service-deps
+  mysql:
+    condition: service_healthy
+  rabbitmq:
+    condition: service_healthy
 
 services:
+  # ── Infrastructure ────────────────────────────────────────────────────────
   mysql:
     image: mysql:8.0
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-smartstay_root_dev}
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-smartstay}
-      MYSQL_USER: ${MYSQL_USER:-smartstay}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-smartstay_dev}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-roomtrack_root_dev}
     ports:
       - "${MYSQL_PORT:-3306}:3306"
     volumes:
       - mysql-data:/var/lib/mysql
+      # One schema and one user per service (only on the first start, when the volume is empty)
+      - ./deploy/mysql/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u$$MYSQL_USER -p$$MYSQL_PASSWORD --silent"]
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
       interval: 5s
       timeout: 5s
       retries: 30
       start_period: 20s
     restart: unless-stopped
 
-  api:
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-guest}
+    ports:
+      - "${RABBITMQ_PORT:-5672}:5672"
+      - "${RABBITMQ_CONSOLE_PORT:-15672}:15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 30
+      start_period: 20s
+    restart: unless-stopped
+
+  # ── Entry point ───────────────────────────────────────────────────────────
+  gateway:
     build:
       context: .
-      dockerfile: Dockerfile
-    depends_on:
-      mysql:
-        condition: service_healthy
+      args:
+        PROJECT: src/Gateway/RoomTrack.Gateway
+        ASSEMBLY: RoomTrack.Gateway
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
+      Cors__AllowedOrigins: ${CORS_ALLOWED_ORIGINS:-http://localhost:5173,http://localhost:5174,http://localhost:4173}
+      ReverseProxy__Clusters__identity__Destinations__primary__Address: http://identity-service:8080
+      ReverseProxy__Clusters__accommodations__Destinations__primary__Address: http://accommodations-service:8080
+      ReverseProxy__Clusters__bookings__Destinations__primary__Address: http://bookings-service:8080
+      ReverseProxy__Clusters__profiles__Destinations__primary__Address: http://profiles-service:8080
+      ReverseProxy__Clusters__analytics__Destinations__primary__Address: http://analytics-service:8080
     ports:
-      - "${API_PORT:-10000}:10000"
-    # Optional .env: TokenSettings__*, InitialChainAdmin__*, Cors__AllowedOrigins, Redis/ActiveMQ...
+      - "${GATEWAY_PORT:-8080}:8080"
+    depends_on:
+      - identity-service
+      - accommodations-service
+      - bookings-service
+      - profiles-service
+      - analytics-service
+    restart: unless-stopped
+
+  # ── Services ──────────────────────────────────────────────────────────────
+  identity-service:
+    build:
+      context: .
+      args:
+        PROJECT: src/Services/Identity/RoomTrack.Identity.API
+        ASSEMBLY: RoomTrack.Identity.API
     env_file:
       - path: .env
         required: false
     environment:
-      # Development uses the local-only JWT secret and CORS defaults from appsettings.Development.json.
-      # Set ASPNETCORE_ENVIRONMENT=Production in .env to test production settings (TokenSettings__Secret required).
-      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
-      # Inside compose the connection string always points at the mysql service above.
-      ConnectionStrings__DefaultConnection: "server=mysql;port=3306;user=${MYSQL_USER:-smartstay};password=${MYSQL_PASSWORD:-smartstay_dev};database=${MYSQL_DATABASE:-smartstay};"
+      <<: *service-env
+      ConnectionStrings__DefaultConnection: "server=mysql;port=3306;user=identity_svc;password=identity_dev;database=roomtrack_identity;"
+      InitialChainAdmin__Email: ${INITIAL_CHAIN_ADMIN_EMAIL:-}
+      InitialChainAdmin__Password: ${INITIAL_CHAIN_ADMIN_PASSWORD:-}
+    depends_on: *service-deps
+    restart: unless-stopped
+
+  accommodations-service:
+    build:
+      context: .
+      args:
+        PROJECT: src/Services/Accommodations/RoomTrack.Accommodations.API
+        ASSEMBLY: RoomTrack.Accommodations.API
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      <<: *service-env
+      ConnectionStrings__DefaultConnection: "server=mysql;port=3306;user=accommodations_svc;password=accommodations_dev;database=roomtrack_accommodations;"
+    depends_on: *service-deps
+    restart: unless-stopped
+
+  bookings-service:
+    build:
+      context: .
+      args:
+        PROJECT: src/Services/Bookings/RoomTrack.Bookings.API
+        ASSEMBLY: RoomTrack.Bookings.API
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      <<: *service-env
+      ConnectionStrings__DefaultConnection: "server=mysql;port=3306;user=bookings_svc;password=bookings_dev;database=roomtrack_bookings;"
+    depends_on: *service-deps
+    restart: unless-stopped
+
+  profiles-service:
+    build:
+      context: .
+      args:
+        PROJECT: src/Services/Profiles/RoomTrack.Profiles.API
+        ASSEMBLY: RoomTrack.Profiles.API
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      <<: *service-env
+      ConnectionStrings__DefaultConnection: "server=mysql;port=3306;user=profiles_svc;password=profiles_dev;database=roomtrack_profiles;"
+      Sales__NotificationEmail: ${SALES_NOTIFICATION_EMAIL:-ventas@roomtrack.local}
+    depends_on: *service-deps
+    restart: unless-stopped
+
+  analytics-service:
+    build:
+      context: .
+      args:
+        PROJECT: src/Services/Analytics/RoomTrack.Analytics.API
+        ASSEMBLY: RoomTrack.Analytics.API
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      <<: *service-env
+      ConnectionStrings__DefaultConnection: "server=mysql;port=3306;user=analytics_svc;password=analytics_dev;database=roomtrack_analytics;"
+      # Resilience lab, only used with --profile lab (empty = /api/v1/analytics/cache answers 503)
+      ConnectionStrings__RedisConnection: ${ANALYTICS_REDIS_CONNECTION:-}
+      Messaging__ActiveMqBrokerUri: ${ANALYTICS_ACTIVEMQ_URI:-}
+    depends_on: *service-deps
+    restart: unless-stopped
+
+  notifications-worker:
+    build:
+      context: .
+      args:
+        PROJECT: src/Services/Notifications/RoomTrack.Notifications.Worker
+        ASSEMBLY: RoomTrack.Notifications.Worker
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DOTNET_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
+      RabbitMq__Host: rabbitmq
+      RabbitMq__Username: ${RABBITMQ_USER:-guest}
+      RabbitMq__Password: ${RABBITMQ_PASSWORD:-guest}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ── Resilience lab (optional: docker compose --profile lab up) ─────────────
+  # Set ANALYTICS_REDIS_CONNECTION=redis:6379 and ANALYTICS_ACTIVEMQ_URI=tcp://activemq:61616 in .env.
+  redis:
+    image: redis:7-alpine
+    profiles: ["lab"]
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+  activemq:
+    image: apache/activemq-classic:latest
+    profiles: ["lab"]
+    ports:
+      - "61616:61616"
+      - "8161:8161"
     restart: unless-stopped
 
 volumes:
   mysql-data:
+  rabbitmq-data:
