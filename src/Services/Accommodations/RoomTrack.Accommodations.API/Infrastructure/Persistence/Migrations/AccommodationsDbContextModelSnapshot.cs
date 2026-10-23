@@ -110,6 +110,10 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("hotel_id");
 
+                    b.Property<bool>("IsBlockedByIncident")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("is_blocked_by_incident");
+
                     b.Property<DateTimeOffset?>("MaintenanceAlertSentAt")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("maintenance_alert_sent_at");
@@ -362,6 +366,159 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                         .HasName("p_k_room_types");
 
                     b.ToTable("room_types", (string)null);
+                });
+
+            modelBuilder.Entity("BackendAwRoomTrack.API.Incidents.Domain.Model.Aggregates.Incident", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTimeOffset?>("AssignedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("assigned_at");
+
+                    b.Property<int?>("AssigneeUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("assignee_user_id");
+
+                    b.Property<bool>("BlocksRoom")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("blocks_room");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)")
+                        .HasColumnName("description");
+
+                    b.Property<DateTimeOffset?>("EscalatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("escalated_at");
+
+                    b.Property<int>("HotelId")
+                        .HasColumnType("int")
+                        .HasColumnName("hotel_id");
+
+                    b.Property<string>("Priority")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("priority");
+
+                    b.Property<DateTimeOffset>("ReportedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("reported_at");
+
+                    b.Property<string>("ReportedByEmail")
+                        .HasMaxLength(254)
+                        .HasColumnType("varchar(254)")
+                        .HasColumnName("reported_by_email");
+
+                    b.Property<int>("ReportedByUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("reported_by_user_id");
+
+                    b.Property<string>("ResolutionNotes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)")
+                        .HasColumnName("resolution_notes");
+
+                    b.Property<DateTimeOffset?>("ResolvedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("resolved_at");
+
+                    b.Property<int?>("ResolvedByUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("resolved_by_user_id");
+
+                    b.Property<int>("RoomId")
+                        .HasColumnType("int")
+                        .HasColumnName("room_id");
+
+                    b.Property<DateTimeOffset?>("StartedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("started_at");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("status");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("varchar(120)")
+                        .HasColumnName("title");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_incidents");
+
+                    b.HasIndex("AssigneeUserId", "Status")
+                        .HasDatabaseName("i_x_incidents__assignee_user_id__status");
+
+                    b.HasIndex("HotelId", "Status")
+                        .HasDatabaseName("i_x_incidents__hotel_id__status");
+
+                    b.HasIndex("RoomId", "Status")
+                        .HasDatabaseName("i_x_incidents__room_id__status");
+
+                    b.ToTable("incidents", (string)null);
+                });
+
+            modelBuilder.Entity("BackendAwRoomTrack.API.Incidents.Domain.Model.Entities.IncidentHistoryEntry", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("action");
+
+                    b.Property<string>("ActorEmail")
+                        .HasMaxLength(254)
+                        .HasColumnType("varchar(254)")
+                        .HasColumnName("actor_email");
+
+                    b.Property<int?>("ActorUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("actor_user_id");
+
+                    b.Property<string>("Detail")
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)")
+                        .HasColumnName("detail");
+
+                    b.Property<int>("IncidentId")
+                        .HasColumnType("int")
+                        .HasColumnName("incident_id");
+
+                    b.Property<DateTimeOffset>("OccurredAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("occurred_at");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("status");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_incident_histories");
+
+                    b.HasIndex("IncidentId", "OccurredAt")
+                        .HasDatabaseName("i_x_incident_histories__incident_id__occurred_at");
+
+                    b.ToTable("incident_histories", (string)null);
                 });
 
             modelBuilder.Entity("MassTransit.EntityFrameworkCoreIntegration.InboxState", b =>
@@ -685,6 +842,16 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                         .HasConstraintName("f_k_room_status_changes_rooms__room_id");
                 });
 
+            modelBuilder.Entity("BackendAwRoomTrack.API.Incidents.Domain.Model.Entities.IncidentHistoryEntry", b =>
+                {
+                    b.HasOne("BackendAwRoomTrack.API.Incidents.Domain.Model.Aggregates.Incident", null)
+                        .WithMany("History")
+                        .HasForeignKey("IncidentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("f_k_incident_histories_incidents__incident_id");
+                });
+
             modelBuilder.Entity("MassTransit.EntityFrameworkCoreIntegration.OutboxMessage", b =>
                 {
                     b.HasOne("MassTransit.EntityFrameworkCoreIntegration.OutboxState", null)
@@ -702,6 +869,11 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates.Hotel", b =>
                 {
                     b.Navigation("Rooms");
+                });
+
+            modelBuilder.Entity("BackendAwRoomTrack.API.Incidents.Domain.Model.Aggregates.Incident", b =>
+                {
+                    b.Navigation("History");
                 });
 #pragma warning restore 612, 618
         }

@@ -79,6 +79,16 @@ public partial class Room : IHasDomainEvents
     public bool IsOfferedForBooking => Status != RoomStatus.Maintenance;
 
     /// <summary>
+    ///     An open incident that blocks the room keeps it out of service: it cannot become Available until every
+    ///     blocking incident is resolved (the Incidents context holds and releases it).
+    /// </summary>
+    public bool IsBlockedByIncident { get; private set; }
+
+    /// <summary>The statuses the room can change to now (Available is withheld while an incident blocks it).</summary>
+    public IReadOnlyList<RoomStatus> AllowedNextStatuses =>
+        RoomStatusTransitions.AllowedFrom(Status).Where(status => !(IsBlockedByIncident && status == RoomStatus.Available)).ToList();
+
+    /// <summary>
     ///     Moves the room to <paramref name="newStatus"/> if the transition is valid and returns the history line to
     ///     store with it, or null when the status does not change.
     /// </summary>
@@ -89,6 +99,8 @@ public partial class Room : IHasDomainEvents
         if (!RoomStatusTransitions.IsAllowed(Status, newStatus))
             throw new InvalidRoomStatusTransitionException(Id, Status, newStatus);
         if (newStatus == Status) return null;
+        if (newStatus == RoomStatus.Available && IsBlockedByIncident)
+            throw new RoomBlockedByIncidentException(Id);
 
         var change = new RoomStatusChange(Id, HotelId, Status, newStatus, origin, changedByUserId, changedByEmail, now);
         _domainEvents.Add(new RoomStatusChangedEvent(Id, HotelId, Status, newStatus, origin, changedByUserId, now));
@@ -104,6 +116,29 @@ public partial class Room : IHasDomainEvents
         if (Status != RoomStatus.Available)
             throw new RoomNotReadyForCheckInException(Id, Status);
         return ChangeStatus(RoomStatus.Occupied, RoomStatusChangeOrigin.CheckIn, guestUserId, guestEmail, now)!;
+    }
+
+    /// <summary>
+    ///     A blocking incident was reported: the room is taken out of service (Maintenance) until it is released.
+    ///     Returns the history line of the status change, or null when the room was already under maintenance.
+    /// </summary>
+    public RoomStatusChange? HoldForIncident(int? reportedByUserId, string? reportedByEmail, DateTimeOffset now)
+    {
+        IsBlockedByIncident = true;
+        return ChangeStatus(RoomStatus.Maintenance, RoomStatusChangeOrigin.Incident, reportedByUserId, reportedByEmail, now);
+    }
+
+    /// <summary>
+    ///     The last blocking incident of the room was resolved: the room goes from Maintenance to Cleaning, so
+    ///     housekeeping prepares it before it is Available again. Returns the history line, or null when the room had
+    ///     already left Maintenance.
+    /// </summary>
+    public RoomStatusChange? ReleaseFromIncident(int? resolvedByUserId, string? resolvedByEmail, DateTimeOffset now)
+    {
+        IsBlockedByIncident = false;
+        return Status == RoomStatus.Maintenance
+            ? ChangeStatus(RoomStatus.Cleaning, RoomStatusChangeOrigin.Incident, resolvedByUserId, resolvedByEmail, now)
+            : null;
     }
 
     /// <summary>

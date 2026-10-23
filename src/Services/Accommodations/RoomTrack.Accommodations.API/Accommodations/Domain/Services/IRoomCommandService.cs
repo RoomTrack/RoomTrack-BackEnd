@@ -30,6 +30,12 @@ public interface IRoomCommandService
     /// <summary>The room of a completed check-in becomes Occupied (must be Available).</summary>
     Task<Room> Handle(OccupyRoomForCheckInCommand command);
 
+    /// <summary>A blocking incident takes the room out of service. Runs in the caller's unit of work.</summary>
+    Task<Room> Handle(HoldRoomForIncidentCommand command);
+
+    /// <summary>The room is no longer blocked by incidents and goes to cleaning. Runs in the caller's unit of work.</summary>
+    Task<Room> Handle(ReleaseRoomFromIncidentCommand command);
+
     /// <returns>How many rooms were alerted.</returns>
     Task<int> Handle(RaiseMaintenanceAlertsCommand command);
 }

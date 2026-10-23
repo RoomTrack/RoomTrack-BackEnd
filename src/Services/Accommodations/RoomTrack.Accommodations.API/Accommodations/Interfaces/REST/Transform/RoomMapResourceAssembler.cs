@@ -13,7 +13,7 @@ public static class RoomMapResourceAssembler
             rooms.Select(room => new RoomMapItemResource(room.Id, room.Number, room.RoomType?.Name ?? string.Empty, room.Description,
                 room.Price, room.Status.ToString(), room.StatusChangedAt,
                 room.Status == RoomStatus.Maintenance && now - room.StatusChangedAt >= maintenanceThreshold,
-                RoomStatusTransitions.AllowedFrom(room.Status).Select(status => status.ToString()).ToList())).ToList());
+                room.AllowedNextStatuses.Select(status => status.ToString()).ToList(), room.IsBlockedByIncident)).ToList());
 
     public static RoomStatusChangeResource ToResource(RoomStatusChange change) =>
         new(change.Id, change.RoomId, change.FromStatus.ToString(), change.ToStatus.ToString(), change.Origin.ToString(),
