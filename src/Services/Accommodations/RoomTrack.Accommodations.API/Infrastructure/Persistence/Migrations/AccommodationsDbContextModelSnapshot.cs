@@ -368,6 +368,176 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                     b.ToTable("room_types", (string)null);
                 });
 
+            modelBuilder.Entity("BackendAwRoomTrack.API.Housekeeping.Domain.Model.Aggregates.CleaningTask", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTimeOffset?>("AssignedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("assigned_at");
+
+                    b.Property<bool>("AssignedAutomatically")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("assigned_automatically");
+
+                    b.Property<int?>("AssigneeUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("assignee_user_id");
+
+                    b.Property<string>("CancellationReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)")
+                        .HasColumnName("cancellation_reason");
+
+                    b.Property<DateTimeOffset?>("CancelledAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("cancelled_at");
+
+                    b.Property<DateTimeOffset?>("CompletedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("completed_at");
+
+                    b.Property<int?>("CompletedByUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("completed_by_user_id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at");
+
+                    b.Property<int?>("CreatedByUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<int>("HotelId")
+                        .HasColumnType("int")
+                        .HasColumnName("hotel_id");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)")
+                        .HasColumnName("notes");
+
+                    b.Property<string>("Priority")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("priority");
+
+                    b.Property<int>("RoomId")
+                        .HasColumnType("int")
+                        .HasColumnName("room_id");
+
+                    b.Property<DateTimeOffset?>("StartedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("started_at");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("status");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_cleaning_tasks");
+
+                    b.HasIndex("AssigneeUserId", "Status")
+                        .HasDatabaseName("i_x_cleaning_tasks__assignee_user_id__status");
+
+                    b.HasIndex("HotelId", "Status")
+                        .HasDatabaseName("i_x_cleaning_tasks__hotel_id__status");
+
+                    b.HasIndex("RoomId", "Status")
+                        .HasDatabaseName("i_x_cleaning_tasks__room_id__status");
+
+                    b.ToTable("cleaning_tasks", (string)null);
+                });
+
+            modelBuilder.Entity("BackendAwRoomTrack.API.Housekeeping.Domain.Model.Aggregates.HotelHousekeepingSettings", b =>
+                {
+                    b.Property<int>("HotelId")
+                        .HasColumnType("int")
+                        .HasColumnName("hotel_id");
+
+                    b.Property<bool>("AutoAssign")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("auto_assign");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("updated_at");
+
+                    b.Property<int?>("UpdatedByUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("updated_by_user_id");
+
+                    b.HasKey("HotelId")
+                        .HasName("p_k_hotel_housekeeping_settings");
+
+                    b.ToTable("hotel_housekeeping_settings", (string)null);
+                });
+
+            modelBuilder.Entity("BackendAwRoomTrack.API.Housekeeping.Domain.Model.Entities.CleaningTaskHistoryEntry", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)")
+                        .HasColumnName("action");
+
+                    b.Property<string>("ActorEmail")
+                        .HasMaxLength(254)
+                        .HasColumnType("varchar(254)")
+                        .HasColumnName("actor_email");
+
+                    b.Property<int?>("ActorUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("actor_user_id");
+
+                    b.Property<int>("CleaningTaskId")
+                        .HasColumnType("int")
+                        .HasColumnName("cleaning_task_id");
+
+                    b.Property<string>("Detail")
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)")
+                        .HasColumnName("detail");
+
+                    b.Property<int?>("IncidentId")
+                        .HasColumnType("int")
+                        .HasColumnName("incident_id");
+
+                    b.Property<DateTimeOffset>("OccurredAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("occurred_at");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("status");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_cleaning_task_histories");
+
+                    b.HasIndex("CleaningTaskId", "OccurredAt")
+                        .HasDatabaseName("i_x_cleaning_task_histories__cleaning_task_id__occurred_at");
+
+                    b.ToTable("cleaning_task_histories", (string)null);
+                });
+
             modelBuilder.Entity("BackendAwRoomTrack.API.Incidents.Domain.Model.Aggregates.Incident", b =>
                 {
                     b.Property<int>("Id")
@@ -842,6 +1012,16 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                         .HasConstraintName("f_k_room_status_changes_rooms__room_id");
                 });
 
+            modelBuilder.Entity("BackendAwRoomTrack.API.Housekeeping.Domain.Model.Entities.CleaningTaskHistoryEntry", b =>
+                {
+                    b.HasOne("BackendAwRoomTrack.API.Housekeeping.Domain.Model.Aggregates.CleaningTask", null)
+                        .WithMany("History")
+                        .HasForeignKey("CleaningTaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("f_k_cleaning_task_histories_cleaning_tasks__cleaning_task_id");
+                });
+
             modelBuilder.Entity("BackendAwRoomTrack.API.Incidents.Domain.Model.Entities.IncidentHistoryEntry", b =>
                 {
                     b.HasOne("BackendAwRoomTrack.API.Incidents.Domain.Model.Aggregates.Incident", null)
@@ -869,6 +1049,11 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates.Hotel", b =>
                 {
                     b.Navigation("Rooms");
+                });
+
+            modelBuilder.Entity("BackendAwRoomTrack.API.Housekeeping.Domain.Model.Aggregates.CleaningTask", b =>
+                {
+                    b.Navigation("History");
                 });
 
             modelBuilder.Entity("BackendAwRoomTrack.API.Incidents.Domain.Model.Aggregates.Incident", b =>
