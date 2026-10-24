@@ -42,6 +42,21 @@ public static class Policies
     /// </summary>
     public const string HandleIncidents = nameof(HandleIncidents);
 
+    // ── Housekeeping ─────────────────────────────────────────────────
+    /// <summary>List and read the cleaning tasks of the hotel (hotel scope checked per resource).</summary>
+    public const string ViewCleaningTasks = nameof(ViewCleaningTasks);
+    /// <summary>Create, cancel and re-prioritize cleaning tasks (hotel scope checked per resource).</summary>
+    public const string ManageCleaningTasks = nameof(ManageCleaningTasks);
+    /// <summary>
+    ///     Assign cleaning tasks (who may assign which one is decided by the CleaningTask aggregate: the front desk
+    ///     any, housekeeping an unassigned one for themselves).
+    /// </summary>
+    public const string AssignCleaningTasks = nameof(AssignCleaningTasks);
+    /// <summary>
+    ///     Start and complete cleaning tasks and report their impediments (housekeeping their own, administrators any).
+    /// </summary>
+    public const string HandleCleaningTasks = nameof(HandleCleaningTasks);
+
     // ── Bookings ─────────────────────────────────────────────────────
     /// <summary>List/read bookings (guests only see their own).</summary>
     public const string ReadBookings = nameof(ReadBookings);
@@ -127,6 +142,11 @@ public static class Policies
 
     private static readonly string[] IncidentHandlers = [UserRoles.Maintenance, UserRoles.Admin, UserRoles.ChainAdmin];
 
+    private static readonly string[] HousekeepingAndFrontDesk =
+        [UserRoles.Housekeeping, UserRoles.Reception, UserRoles.Admin, UserRoles.ChainAdmin];
+
+    private static readonly string[] CleaningTaskHandlers = [UserRoles.Housekeeping, UserRoles.Admin, UserRoles.ChainAdmin];
+
     private static readonly string[] RoomDeviceOperators =
         [UserRoles.Guest, UserRoles.Maintenance, UserRoles.Admin, UserRoles.ChainAdmin];
 
@@ -144,6 +164,11 @@ public static class Policies
         [ReportIncidents] = HotelStaff,
         [ViewIncidents] = HotelStaff,
         [HandleIncidents] = IncidentHandlers,
+
+        [ViewCleaningTasks] = HousekeepingAndFrontDesk,
+        [ManageCleaningTasks] = FrontDesk,
+        [AssignCleaningTasks] = HousekeepingAndFrontDesk,
+        [HandleCleaningTasks] = CleaningTaskHandlers,
 
         [ReadBookings] = AllRoles,
         [ReadRoomBookings] = HotelStaff,
