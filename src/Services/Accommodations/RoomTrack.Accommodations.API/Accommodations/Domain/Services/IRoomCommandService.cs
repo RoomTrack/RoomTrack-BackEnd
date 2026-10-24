@@ -36,6 +36,12 @@ public interface IRoomCommandService
     /// <summary>The room is no longer blocked by incidents and goes to cleaning. Runs in the caller's unit of work.</summary>
     Task<Room> Handle(ReleaseRoomFromIncidentCommand command);
 
+    /// <summary>Housekeeping starts cleaning the room. Runs in the caller's unit of work.</summary>
+    Task<Room> Handle(BeginRoomCleaningCommand command);
+
+    /// <summary>Housekeeping finished cleaning the room: it becomes Available. Runs in the caller's unit of work.</summary>
+    Task<Room> Handle(FinishRoomCleaningCommand command);
+
     /// <returns>How many rooms were alerted.</returns>
     Task<int> Handle(RaiseMaintenanceAlertsCommand command);
 }

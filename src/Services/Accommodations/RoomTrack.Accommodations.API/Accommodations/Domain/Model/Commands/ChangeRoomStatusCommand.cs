@@ -20,3 +20,9 @@ public record HoldRoomForIncidentCommand(int RoomId, int? ReportedByUserId, stri
 
 /// <summary>The last blocking incident of the room was resolved: the room goes to Cleaning.</summary>
 public record ReleaseRoomFromIncidentCommand(int RoomId, int? ResolvedByUserId, string? ResolvedByEmail);
+
+/// <summary>Housekeeping starts the cleaning task of the room: it goes to Cleaning.</summary>
+public record BeginRoomCleaningCommand(int RoomId, int CleanedByUserId, string? CleanedByEmail);
+
+/// <summary>Housekeeping completes the cleaning task of the room: it becomes Available.</summary>
+public record FinishRoomCleaningCommand(int RoomId, int CleanedByUserId, string? CleanedByEmail);
