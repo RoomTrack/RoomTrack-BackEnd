@@ -6,5 +6,7 @@ public enum RoomStatusChangeOrigin
     /// <summary>A staff member changed it.</summary>
     Staff,
     /// <summary>A guest completed the digital check-in: the room became Occupied.</summary>
-    CheckIn
+    CheckIn,
+    /// <summary>A blocking incident took the room out of service, or its resolution released it to cleaning.</summary>
+    Incident
 }

@@ -133,6 +133,8 @@ public static class ModelBuilderExtensions
             .HasMaxLength(20)
             .IsRequired();
         builder.Entity<Room>().Ignore(r => r.IsOfferedForBooking);
+        builder.Entity<Room>().Ignore(r => r.AllowedNextStatuses);
+        builder.Entity<Room>().Property(r => r.IsBlockedByIncident).IsRequired();
         builder.Entity<Room>().Ignore(r => r.DomainEvents);
         builder.Entity<Room>().Property(r => r.StatusChangedAt).IsRequired();
 

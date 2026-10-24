@@ -2,6 +2,7 @@ using BackendAwRoomTrack.API.Accommodations.Infrastructure.Interfaces.ASP.Config
 using BackendAwRoomTrack.API.Bookings.Interfaces.ACL;
 using BackendAwRoomTrack.API.Controllers.Authorization;
 using BackendAwRoomTrack.API.IAM.Interfaces.ACL;
+using BackendAwRoomTrack.API.Incidents.Infrastructure.Interfaces.ASP.Configuration.Extensions;
 using BackendAwRoomTrack.API.Media.Infrastructure.Interfaces.ASP.Configuration.Extensions;
 using BackendAwRoomTrack.API.Shared.Infrastructure.Hosting;
 using BackendAwRoomTrack.API.Shared.Infrastructure.Internal;
@@ -10,13 +11,14 @@ using BackendAwRoomTrack.API.shared.Infrastructure.Persistence.EFC.Configuration
 using RoomTrack.Accommodations.API.Infrastructure.Persistence;
 using RoomTrack.BuildingBlocks.Clients;
 
-// Accommodations service: hotels, rooms and room types (Accommodations), hotel images (Media) and the IoT emulator
-// of the rooms' devices.
+// Accommodations service: hotels, rooms and room types (Accommodations), incidents of the rooms (Incidents), hotel
+// images (Media) and the IoT emulator of the rooms' devices.
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddRoomTrackServiceDefaults<AccommodationsDbContext, Program>("Accommodations");
 
 builder.AddAccommodationsContextServices();
+builder.AddIncidentsContextServices();
 builder.AddMediaContextServices();
 builder.AddIoTEmulatorServices();
 
