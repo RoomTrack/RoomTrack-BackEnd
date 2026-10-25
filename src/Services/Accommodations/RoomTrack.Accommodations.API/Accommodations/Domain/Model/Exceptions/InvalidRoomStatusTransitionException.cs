@@ -12,3 +12,8 @@ public class InvalidRoomStatusTransitionException(int roomId, RoomStatus from, R
 public class RoomBlockedByIncidentException(int roomId)
     : BusinessRuleViolationException(AccommodationErrorCodes.RoomBlockedByIncident,
         $"Room {roomId} has an open incident that blocks it. Resolve the incident before making the room available.");
+
+/// <summary>A guest is staying in the room: it cannot be cleaned for a new stay until it is vacated.</summary>
+public class RoomOccupiedException(int roomId)
+    : BusinessRuleViolationException(AccommodationErrorCodes.RoomOccupied,
+        $"Room {roomId} is occupied. It can be cleaned once the guest checks out.");

@@ -8,5 +8,7 @@ public enum RoomStatusChangeOrigin
     /// <summary>A guest completed the digital check-in: the room became Occupied.</summary>
     CheckIn,
     /// <summary>A blocking incident took the room out of service, or its resolution released it to cleaning.</summary>
-    Incident
+    Incident,
+    /// <summary>Housekeeping started (Cleaning) or finished (Available) the cleaning task of the room.</summary>
+    Housekeeping
 }
