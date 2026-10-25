@@ -1,4 +1,5 @@
 using BackendAwRoomTrack.API.Accommodations.Infrastructure.Persistence.EFC.Configuration.Extensions;
+using BackendAwRoomTrack.API.Housekeeping.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using BackendAwRoomTrack.API.Incidents.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
 using Microsoft.EntityFrameworkCore;
@@ -6,8 +7,8 @@ using Microsoft.EntityFrameworkCore;
 namespace RoomTrack.Accommodations.API.Infrastructure.Persistence;
 
 /// <summary>
-///     Database of the Accommodations service: hotels, rooms, room types, their catalogs, the room status history and
-///     the incidents of the rooms.
+///     Database of the Accommodations service: hotels, rooms, room types, their catalogs, the room status history, the
+///     incidents and the cleaning tasks of the rooms.
 /// </summary>
 public class AccommodationsDbContext(DbContextOptions<AccommodationsDbContext> options) : AppDbContext(options)
 {
@@ -15,6 +16,7 @@ public class AccommodationsDbContext(DbContextOptions<AccommodationsDbContext> o
     {
         builder.ApplyAccommodationsConfiguration();
         builder.ApplyIncidentsConfiguration();
+        builder.ApplyHousekeepingConfiguration();
     }
 }
 

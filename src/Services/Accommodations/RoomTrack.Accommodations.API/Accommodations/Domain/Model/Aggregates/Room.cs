@@ -142,6 +142,27 @@ public partial class Room : IHasDomainEvents
     }
 
     /// <summary>
+    ///     Housekeeping starts cleaning the room (its cleaning task is started): the room goes to Cleaning. Returns the
+    ///     history line, or null when it was already being cleaned.
+    /// </summary>
+    /// <exception cref="RoomBlockedByIncidentException">An open incident keeps the room out of service.</exception>
+    /// <exception cref="RoomOccupiedException">A guest is still staying in it.</exception>
+    public RoomStatusChange? BeginCleaning(int? userId, string? email, DateTimeOffset now)
+    {
+        if (IsBlockedByIncident) throw new RoomBlockedByIncidentException(Id);
+        if (Status == RoomStatus.Occupied) throw new RoomOccupiedException(Id);
+        return ChangeStatus(RoomStatus.Cleaning, RoomStatusChangeOrigin.Housekeeping, userId, email, now);
+    }
+
+    /// <summary>
+    ///     Housekeeping finished cleaning the room: it becomes Available, so reception can assign it to a new guest.
+    ///     Returns the history line, or null when it was already Available.
+    /// </summary>
+    /// <exception cref="RoomBlockedByIncidentException">An open incident keeps the room out of service.</exception>
+    public RoomStatusChange? FinishCleaning(int? userId, string? email, DateTimeOffset now) =>
+        ChangeStatus(RoomStatus.Available, RoomStatusChangeOrigin.Housekeeping, userId, email, now);
+
+    /// <summary>
     ///     The room has been under maintenance for at least <paramref name="threshold"/> and no alert
     ///     was sent for this maintenance period yet.
     /// </summary>
