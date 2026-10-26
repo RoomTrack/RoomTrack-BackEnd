@@ -81,7 +81,7 @@ public interface IAccommodationsContextFacade
     ///     The guest of a completed check-in moves into the room, which becomes Occupied. Runs in the caller's
     ///     transaction (commits the shared unit of work).
     /// </summary>
-    /// <exception cref="RoomTrack.Shared.Domain.Model.Exceptions.BusinessRuleViolationException">The room is not Available.</exception>
+    /// <remarks>Throws a <c>BusinessRuleViolationException</c> when the room is not Available.</remarks>
     Task OccupyRoomForCheckInAsync(int roomId, int? guestUserId, string? guestEmail);
 
     /// <summary>

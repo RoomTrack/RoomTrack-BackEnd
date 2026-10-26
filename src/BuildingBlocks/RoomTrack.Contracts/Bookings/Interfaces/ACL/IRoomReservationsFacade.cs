@@ -1,7 +1,14 @@
 namespace RoomTrack.Bookings.Interfaces.ACL;
 
 /// <summary>The stay of a guest today: their checked-in booking, or the confirmed one whose dates include today.</summary>
+/// <param name="BookingId">The booking of the stay.</param>
+/// <param name="Code">The booking code shown to the guest.</param>
+/// <param name="HotelId">The hotel of the stay.</param>
+/// <param name="RoomId">The room of the stay.</param>
 /// <param name="GuestUserId">The IAM account of the guest, when the booking has one.</param>
+/// <param name="CheckInDate">The first night of the stay.</param>
+/// <param name="CheckOutDate">The day the guest leaves.</param>
+/// <param name="CheckedIn">Whether the guest already checked in.</param>
 public sealed record GuestStay(int BookingId, string Code, int HotelId, int RoomId, int? GuestUserId, DateTime CheckInDate,
     DateTime CheckOutDate, bool CheckedIn);
 
