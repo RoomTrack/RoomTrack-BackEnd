@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.IAM.Domain.Model.Commands;
+namespace RoomTrack.IAM.Domain.Model.Commands;
 
 /// <summary>Sign in with e-mail and password.</summary>
 /// <param name="Email">Login e-mail.</param>

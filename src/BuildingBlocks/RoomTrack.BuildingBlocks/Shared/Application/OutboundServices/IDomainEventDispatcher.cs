@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Events;
+using RoomTrack.Shared.Domain.Model.Events;
 
-namespace BackendAwRoomTrack.API.Shared.Application.OutboundServices;
+namespace RoomTrack.Shared.Application.OutboundServices;
 
 /// <summary>
 ///     Delivers domain events to their <c>IDomainEventHandler</c>s. The unit of work calls it for the events of the

@@ -1,12 +1,12 @@
 using System.Globalization;
 using System.Threading.RateLimiting;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.ExceptionHandling;
+using RoomTrack.Shared.Infrastructure.Interfaces.ASP.ExceptionHandling;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.RateLimiting;
+namespace RoomTrack.Shared.Infrastructure.Interfaces.ASP.RateLimiting;
 
 public static class RateLimitingServiceCollectionExtensions
 {

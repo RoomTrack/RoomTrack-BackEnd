@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Bookings.Interfaces.REST.Resources;
+namespace RoomTrack.Bookings.Interfaces.REST.Resources;
 
 /// <summary>
 ///     Changes to a booking. Omitted fields keep their value; at least one is required.

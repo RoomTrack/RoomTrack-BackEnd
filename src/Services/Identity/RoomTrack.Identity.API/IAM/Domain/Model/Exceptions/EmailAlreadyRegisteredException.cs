@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.IAM.Domain.Model.Exceptions;
+namespace RoomTrack.IAM.Domain.Model.Exceptions;
 
 /// <summary>
 ///     The e-mail already identifies an account. The message is exactly the one the acceptance

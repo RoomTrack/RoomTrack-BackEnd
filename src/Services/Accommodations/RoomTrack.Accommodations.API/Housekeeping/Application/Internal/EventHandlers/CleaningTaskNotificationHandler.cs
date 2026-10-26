@@ -1,13 +1,13 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Accommodations.Domain.Services;
-using BackendAwRoomTrack.API.Housekeeping.Application.OutboundServices;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Events;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Repositories;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Constants;
-using BackendAwRoomTrack.API.IAM.Interfaces.ACL;
-using BackendAwRoomTrack.API.Shared.Application.Internal.EventHandlers;
+using RoomTrack.Accommodations.Domain.Model.Queries;
+using RoomTrack.Accommodations.Domain.Services;
+using RoomTrack.Housekeeping.Application.OutboundServices;
+using RoomTrack.Housekeeping.Domain.Model.Events;
+using RoomTrack.Housekeeping.Domain.Repositories;
+using RoomTrack.IAM.Domain.Model.Constants;
+using RoomTrack.IAM.Interfaces.ACL;
+using RoomTrack.Shared.Application.Internal.EventHandlers;
 
-namespace BackendAwRoomTrack.API.Housekeeping.Application.Internal.EventHandlers;
+namespace RoomTrack.Housekeeping.Application.Internal.EventHandlers;
 
 /// <summary>
 ///     Notifies the hotel staff of what happens to a cleaning task. Recipients come from IAM through its ACL facade;

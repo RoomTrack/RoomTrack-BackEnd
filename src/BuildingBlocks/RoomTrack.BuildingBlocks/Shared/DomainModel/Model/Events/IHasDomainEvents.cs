@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.Domain.Shared.Domain.Model.Events;
+namespace RoomTrack.Shared.Domain.Model.Events;
 
 /// <summary>
 ///     An aggregate that records domain events. The unit of work collects them when it saves the aggregate and

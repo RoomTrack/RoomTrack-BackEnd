@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace BackendAwRoomTrack.API.Accommodations.Interfaces.REST.Resources;
+namespace RoomTrack.Accommodations.Interfaces.REST.Resources;
 
 /// <summary>A new room type used to classify rooms.</summary>
 public record CreateRoomTypeResource

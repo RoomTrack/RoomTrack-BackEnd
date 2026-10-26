@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Bookings.Interfaces.ACL;
-using BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
+using RoomTrack.Bookings.Interfaces.ACL;
+using RoomTrack.IAM.Interfaces.Authorization;
 using Microsoft.AspNetCore.Authorization;
 
-namespace BackendAwRoomTrack.API.Controllers.Authorization;
+namespace RoomTrack.Controllers.Authorization;
 
 /// <summary>A room whose devices are read or operated through the IoT emulator.</summary>
 /// <param name="RoomId">The room.</param>

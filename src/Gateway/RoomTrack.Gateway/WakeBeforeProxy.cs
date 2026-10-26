@@ -38,16 +38,10 @@ public static class WakeBeforeProxy
             var address = context.GetReverseProxyFeature().AvailableDestinations.FirstOrDefault()?.Model.Config.Address;
             if (address is not null && !IsAwake(lastAwake, address))
             {
-                var wake = wakes.GetOrAdd(address, _ => new Lazy<Task>(() =>
-                    WakeAsync(clientFactory.CreateClient(HttpClientName), address, lastAwake, logger)));
-                try
-                {
-                    await wake.Value.WaitAsync(context.RequestAborted);
-                }
-                finally
-                {
-                    wakes.TryRemove(new KeyValuePair<string, Lazy<Task>>(address, wake));
-                }
+                // The wake removes itself when it ends, not when a request stops waiting: a client that disconnects
+                // does not cancel the wake the other waiting requests share (nor make the next request start another).
+                var wake = wakes.GetOrAdd(address, key => new Lazy<Task>(() => WakeOnceAsync(key)));
+                await wake.Value.WaitAsync(context.RequestAborted);
             }
 
             await next();
@@ -58,6 +52,19 @@ public static class WakeBeforeProxy
                 lastAwake[address] = Environment.TickCount64;
         });
         return proxy;
+
+        // Only the wake in the dictionary is ever started (GetOrAdd never replaces it), so it removes its own entry.
+        async Task WakeOnceAsync(string address)
+        {
+            try
+            {
+                await WakeAsync(clientFactory.CreateClient(HttpClientName), address, lastAwake, logger);
+            }
+            finally
+            {
+                wakes.TryRemove(address, out _);
+            }
+        }
     }
 
     private static bool IsAwake(ConcurrentDictionary<string, long> lastAwake, string address) =>

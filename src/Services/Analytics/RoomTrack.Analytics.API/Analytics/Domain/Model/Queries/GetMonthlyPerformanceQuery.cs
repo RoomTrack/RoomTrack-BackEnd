@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Analytics.Domain.Model.Queries;
+namespace RoomTrack.Analytics.Domain.Model.Queries;
 
 /// <summary>
 /// Query to request performance metrics for the current month.

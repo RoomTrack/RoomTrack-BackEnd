@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
-namespace BackendAwRoomTrack.API.IAM.Infrastructure.Tokens.JWT.Configuration;
+namespace RoomTrack.IAM.Infrastructure.Tokens.JWT.Configuration;
 
 /// <summary>
 ///     JWT settings bound from the <c>TokenSettings</c> section (env vars <c>TokenSettings__*</c>).

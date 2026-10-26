@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Options;
 using ProxyNetwork = Microsoft.AspNetCore.HttpOverrides.IPNetwork;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.ReverseProxy;
+namespace RoomTrack.Shared.Infrastructure.Interfaces.ASP.ReverseProxy;
 
 public static class ForwardedHeadersExtensions
 {

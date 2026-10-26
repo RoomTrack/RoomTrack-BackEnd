@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Accommodations.Domain.Model.Exceptions;
+using RoomTrack.Accommodations.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.Accommodations.Domain.Services;
+namespace RoomTrack.Accommodations.Domain.Services;
 
 /// <summary>
 ///     Who may register a hotel and who hosts it (team decision D2):

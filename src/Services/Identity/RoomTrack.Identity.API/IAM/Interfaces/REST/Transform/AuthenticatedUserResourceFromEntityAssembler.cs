@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.IAM.Application.OutboundServices;
-using BackendAwRoomTrack.API.IAM.Domain.Services;
-using BackendAwRoomTrack.API.IAM.Interfaces.REST.Resources;
+using RoomTrack.IAM.Application.OutboundServices;
+using RoomTrack.IAM.Domain.Services;
+using RoomTrack.IAM.Interfaces.REST.Resources;
 
-namespace BackendAwRoomTrack.API.IAM.Interfaces.REST.Transform;
+namespace RoomTrack.IAM.Interfaces.REST.Transform;
 
 /// <summary>
 ///     Builds the sign-in/refresh response from an <see cref="AuthenticationResult"/>.

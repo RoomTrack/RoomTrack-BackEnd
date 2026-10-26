@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Commands;
+using RoomTrack.Bookings.Domain.Model.Aggregates;
+using RoomTrack.Bookings.Domain.Model.Commands;
 
-namespace BackendAwRoomTrack.API.Bookings.Domain.Services;
+namespace RoomTrack.Bookings.Domain.Services;
 
 /// <summary>
 /// Booking use cases: place, confirm (payment), cancel, reschedule, expire unpaid, check in.

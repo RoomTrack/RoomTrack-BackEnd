@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects;
+namespace RoomTrack.Profiles.Domain.Model.ValueObjects;
 
 public record StreetAddress
 {

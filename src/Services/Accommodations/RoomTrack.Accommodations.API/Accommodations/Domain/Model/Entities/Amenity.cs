@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Accommodations.Domain.Model.Entities;
+namespace RoomTrack.Accommodations.Domain.Model.Entities;
 
 /// <summary>
 /// Represents an amenity entity in the accommodations domain.

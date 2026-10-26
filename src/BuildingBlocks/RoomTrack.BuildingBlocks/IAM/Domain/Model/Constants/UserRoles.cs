@@ -1,4 +1,4 @@
-﻿namespace BackendAwRoomTrack.API.IAM.Domain.Model.Constants;
+﻿namespace RoomTrack.IAM.Domain.Model.Constants;
 
 /// <summary>
 ///     Defines valid user roles in the system.

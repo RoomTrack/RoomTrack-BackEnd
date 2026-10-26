@@ -1,12 +1,14 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Queries;
+using RoomTrack.Accommodations.Domain.Model.Aggregates;
+using RoomTrack.Accommodations.Domain.Model.Queries;
 
-namespace BackendAwRoomTrack.API.Accommodations.Domain.Services;
+namespace RoomTrack.Accommodations.Domain.Services;
 
 public interface IRoomQueryService
 {
 
     Task<Room?> Handle(GetRoomByIdQuery query);
+
+    Task<Room?> Handle(GetRoomByIdForUpdateQuery query);
 
     Task<IEnumerable<Room>> Handle(GetAllRoomsQuery query);
 

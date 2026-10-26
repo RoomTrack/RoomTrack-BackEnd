@@ -1,4 +1,4 @@
-﻿namespace BackendAwRoomTrack.API.IAM.Domain.Model.Commands;
+﻿namespace RoomTrack.IAM.Domain.Model.Commands;
 
 /// <summary>
 ///     Command to assign a new role to an existing user.

@@ -1,9 +1,9 @@
-using BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Constants;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Exceptions;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.IAM.Domain.Model.Aggregates;
+using RoomTrack.IAM.Domain.Model.Constants;
+using RoomTrack.IAM.Domain.Model.Exceptions;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.IAM.Domain.Services;
+namespace RoomTrack.IAM.Domain.Services;
 
 /// <summary>
 ///     Which hotel an account created by an administrator belongs to.

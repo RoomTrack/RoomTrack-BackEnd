@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.Domain.Profiles.Domain.Model.Exceptions;
+namespace RoomTrack.Profiles.Domain.Model.Exceptions;
 
 /// <summary>Stable error codes of the Profiles context (guest and staff profiles).</summary>
 public static class ProfileErrorCodes

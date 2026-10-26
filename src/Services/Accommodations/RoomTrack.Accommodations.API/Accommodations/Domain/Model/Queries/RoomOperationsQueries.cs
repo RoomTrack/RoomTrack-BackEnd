@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Accommodations.Domain.Model.Queries;
+namespace RoomTrack.Accommodations.Domain.Model.Queries;
 
 /// <summary>Every room of a hotel with its status.</summary>
 public record GetRoomMapQuery(int HotelId);

@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Analytics.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Analytics.Interfaces.REST.Resources;
+using RoomTrack.Analytics.Domain.Model.Aggregates;
+using RoomTrack.Analytics.Interfaces.REST.Resources;
 
-namespace BackendAwRoomTrack.API.Analytics.Interfaces.REST.Transform;
+namespace RoomTrack.Analytics.Interfaces.REST.Transform;
 
 public static class PerformanceMetricsAssembler
 {

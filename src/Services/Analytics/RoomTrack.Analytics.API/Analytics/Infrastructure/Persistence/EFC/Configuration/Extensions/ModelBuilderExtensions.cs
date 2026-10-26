@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Analytics.Domain.Model.ReadModels;
+using RoomTrack.Analytics.Domain.Model.ReadModels;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackendAwRoomTrack.API.Analytics.Infrastructure.Persistence.EFC.Configuration.Extensions;
+namespace RoomTrack.Analytics.Infrastructure.Persistence.EFC.Configuration.Extensions;
 
 public static class ModelBuilderExtensions
 {

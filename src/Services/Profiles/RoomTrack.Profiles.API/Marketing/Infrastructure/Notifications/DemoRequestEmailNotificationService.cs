@@ -1,12 +1,12 @@
-using BackendAwRoomTrack.API.Marketing.Application.Internal.Configuration;
-using BackendAwRoomTrack.API.Marketing.Application.OutboundServices;
-using BackendAwRoomTrack.API.Marketing.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Marketing.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Shared.Application.OutboundServices;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Email.Templates;
+using RoomTrack.Marketing.Application.Internal.Configuration;
+using RoomTrack.Marketing.Application.OutboundServices;
+using RoomTrack.Marketing.Domain.Model.Aggregates;
+using RoomTrack.Marketing.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Application.OutboundServices;
+using RoomTrack.Shared.Infrastructure.Email.Templates;
 using Microsoft.Extensions.Options;
 
-namespace BackendAwRoomTrack.API.Marketing.Infrastructure.Notifications;
+namespace RoomTrack.Marketing.Infrastructure.Notifications;
 
 /// <summary>
 ///     Demo request e-mails (neutral Spanish). The scheduling links open the sales team's calendar

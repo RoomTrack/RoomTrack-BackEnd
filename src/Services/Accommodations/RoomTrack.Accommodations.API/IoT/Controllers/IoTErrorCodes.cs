@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Controllers;
+namespace RoomTrack.Controllers;
 
 /// <summary>Stable error codes of the IoT emulator (not part of the current backlog).</summary>
 public static class IoTErrorCodes

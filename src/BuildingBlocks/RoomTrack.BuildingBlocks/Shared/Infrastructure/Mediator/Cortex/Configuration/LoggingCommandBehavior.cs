@@ -1,6 +1,6 @@
 using Cortex.Mediator.Commands;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Mediator.Cortex.Configuration;
+namespace RoomTrack.Shared.Infrastructure.Mediator.Cortex.Configuration;
 
 /// <summary>
 /// Behavior for logging commands in the mediator pipeline.

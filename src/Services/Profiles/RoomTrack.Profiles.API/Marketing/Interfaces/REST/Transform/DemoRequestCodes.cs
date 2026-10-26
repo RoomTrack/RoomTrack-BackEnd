@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.Marketing.Domain.Model.ValueObjects;
+using RoomTrack.Marketing.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Marketing.Interfaces.REST.Transform;
+namespace RoomTrack.Marketing.Interfaces.REST.Transform;
 
 /// <summary>
 ///     Codes of the landing contract ↔ domain values:

@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Entities;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Queries;
+using RoomTrack.Accommodations.Domain.Model.Entities;
+using RoomTrack.Accommodations.Domain.Model.Queries;
 
-namespace BackendAwRoomTrack.API.Accommodations.Domain.Services;
+namespace RoomTrack.Accommodations.Domain.Services;
 
 public interface IRoomTypeQueryService
 {

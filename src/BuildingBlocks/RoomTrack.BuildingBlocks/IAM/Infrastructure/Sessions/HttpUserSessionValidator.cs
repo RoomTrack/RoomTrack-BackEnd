@@ -1,9 +1,9 @@
-using BackendAwRoomTrack.API.IAM.Application.OutboundServices;
-using BackendAwRoomTrack.API.IAM.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Internal;
+using RoomTrack.IAM.Application.OutboundServices;
+using RoomTrack.IAM.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Infrastructure.Internal;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace BackendAwRoomTrack.API.IAM.Infrastructure.Sessions;
+namespace RoomTrack.IAM.Infrastructure.Sessions;
 
 /// <summary>
 ///     <see cref="IUserSessionValidator"/> of the services other than Identity: asks the Identity service whether the

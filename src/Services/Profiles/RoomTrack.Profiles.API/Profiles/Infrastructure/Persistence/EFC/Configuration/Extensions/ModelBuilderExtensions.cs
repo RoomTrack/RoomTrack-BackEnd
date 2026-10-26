@@ -1,11 +1,11 @@
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Aggregates;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Entities;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Enums;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Profiles.Infrastructure.Persistence.EFC.Entities;
+using RoomTrack.Profiles.Domain.Model.Aggregates;
+using RoomTrack.Profiles.Domain.Model.Entities;
+using RoomTrack.Profiles.Domain.Model.Enums;
+using RoomTrack.Profiles.Domain.Model.ValueObjects;
+using RoomTrack.Profiles.Infrastructure.Persistence.EFC.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackendAwRoomTrack.API.Profiles.Infrastructure.Persistence.EFC.Configuration.Extensions;
+namespace RoomTrack.Profiles.Infrastructure.Persistence.EFC.Configuration.Extensions;
 
 /// <summary>
 /// Extension methods for configuring Profile entity mappings in Entity Framework Core.

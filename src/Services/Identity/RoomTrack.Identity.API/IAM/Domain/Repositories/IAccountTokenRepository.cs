@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Enums;
-using BackendAwRoomTrack.API.Shared.Domain.Repositories;
+using RoomTrack.IAM.Domain.Model.Aggregates;
+using RoomTrack.IAM.Domain.Model.Enums;
+using RoomTrack.Shared.Domain.Repositories;
 
-namespace BackendAwRoomTrack.API.IAM.Domain.Repositories;
+namespace RoomTrack.IAM.Domain.Repositories;
 
 /// <summary>Single-use account tokens (e-mail verification, password reset).</summary>
 public interface IAccountTokenRepository : IBaseRepository<AccountToken>

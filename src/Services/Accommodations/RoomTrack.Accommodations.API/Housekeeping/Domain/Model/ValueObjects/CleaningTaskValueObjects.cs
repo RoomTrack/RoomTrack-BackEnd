@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Housekeeping.Domain.Model.ValueObjects;
+namespace RoomTrack.Housekeeping.Domain.Model.ValueObjects;
 
 /// <summary>How urgent a cleaning task is. The housekeeping list is ordered by it (Urgent first).</summary>
 public enum CleaningTaskPriority

@@ -1,13 +1,13 @@
-using BackendAwRoomTrack.API.IAM.Domain.Model.Constants;
+using RoomTrack.IAM.Domain.Model.Constants;
 using System.Globalization;
-using BackendAwRoomTrack.API.IAM.Application.OutboundServices;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Shared.Application.OutboundServices;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Configuration;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Email.Templates;
+using RoomTrack.IAM.Application.OutboundServices;
+using RoomTrack.IAM.Domain.Model.Aggregates;
+using RoomTrack.Shared.Application.OutboundServices;
+using RoomTrack.Shared.Infrastructure.Configuration;
+using RoomTrack.Shared.Infrastructure.Email.Templates;
 using Microsoft.Extensions.Options;
 
-namespace BackendAwRoomTrack.API.IAM.Infrastructure.Notifications;
+namespace RoomTrack.IAM.Infrastructure.Notifications;
 
 /// <summary>
 ///     Account e-mails (neutral Spanish) with links to the web application:

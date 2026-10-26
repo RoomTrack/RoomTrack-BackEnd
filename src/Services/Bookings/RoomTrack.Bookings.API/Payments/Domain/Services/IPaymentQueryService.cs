@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Payments.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Payments.Domain.Model.Queries;
+using RoomTrack.Payments.Domain.Model.Aggregates;
+using RoomTrack.Payments.Domain.Model.Queries;
 
-namespace BackendAwRoomTrack.API.Payments.Domain.Services;
+namespace RoomTrack.Payments.Domain.Services;
 
 /// <summary>
 /// Defines the contract for services that retrieve payment data.

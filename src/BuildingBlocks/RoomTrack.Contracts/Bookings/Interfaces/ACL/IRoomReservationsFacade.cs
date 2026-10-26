@@ -1,4 +1,9 @@
-namespace BackendAwRoomTrack.API.Bookings.Interfaces.ACL;
+namespace RoomTrack.Bookings.Interfaces.ACL;
+
+/// <summary>The stay of a guest today: their checked-in booking, or the confirmed one whose dates include today.</summary>
+/// <param name="GuestUserId">The IAM account of the guest, when the booking has one.</param>
+public sealed record GuestStay(int BookingId, string Code, int HotelId, int RoomId, int? GuestUserId, DateTime CheckInDate,
+    DateTime CheckOutDate, bool CheckedIn);
 
 /// <summary>
 ///     Read-only view of the reservations of rooms, for the Accommodations context (e.g. a room with active bookings
@@ -16,4 +21,13 @@ public interface IRoomReservationsFacade
     ///     <paramref name="day"/> (R5: a guest controls the devices of the room they are staying in).
     /// </summary>
     Task<bool> HasCurrentConfirmedStayAsync(int guestUserId, int roomId, DateTime day);
+
+    /// <summary>
+    ///     The stay of the guest today (hotel time), or null when they are not staying anywhere: what a guest request or
+    ///     a conversation with the front desk is about (US-19, US-20).
+    /// </summary>
+    Task<GuestStay?> FetchCurrentStayAsync(int guestUserId);
+
+    /// <summary>The stay in the room today (hotel time), or null when nobody is staying there.</summary>
+    Task<GuestStay?> FetchCurrentStayOfRoomAsync(int roomId);
 }

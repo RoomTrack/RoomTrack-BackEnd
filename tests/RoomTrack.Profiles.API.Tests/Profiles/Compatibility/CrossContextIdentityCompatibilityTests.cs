@@ -3,23 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BackendAwRoomTrack.API.Profiles.Application.ACL;
-using BackendAwRoomTrack.API.Profiles.Application.Internal.CommandServices;
-using BackendAwRoomTrack.API.Profiles.Application.Internal.OutboundServices;
-using BackendAwRoomTrack.API.Profiles.Application.Internal.QueryServices;
-using BackendAwRoomTrack.API.Profiles.Infrastructure.Persistence.EFC.Repositories;
-using BackendAwRoomTrack.API.Shared.Domain.Repositories;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Repositories;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Aggregates;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Enums;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Events;
+using RoomTrack.Profiles.Application.ACL;
+using RoomTrack.Profiles.Application.Internal.CommandServices;
+using RoomTrack.Profiles.Application.Internal.OutboundServices;
+using RoomTrack.Profiles.Application.Internal.QueryServices;
+using RoomTrack.Profiles.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.Shared.Application.OutboundServices;
+using RoomTrack.Shared.Domain.Repositories;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.Profiles.Domain.Model.Aggregates;
+using RoomTrack.Profiles.Domain.Model.Enums;
+using RoomTrack.Profiles.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Domain.Model.Events;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using RoomTrack.Profiles.API.Infrastructure.Persistence;
 using Xunit;
 
-namespace BackendAwRoomTrack.API.Tests.Profiles.Compatibility;
+namespace RoomTrack.Tests.Profiles.Compatibility;
 
 public class CrossContextIdentityCompatibilityTests
 {
@@ -28,9 +30,14 @@ public class CrossContextIdentityCompatibilityTests
         public Task PublishAsync(IReadOnlyCollection<IEvent> domainEvents, CancellationToken cancellationToken = default) => Task.CompletedTask;
     }
 
-    private DbContextOptions<AppDbContext> CreateNewContextOptions()
+    private class FakeDomainEventDispatcher : IDomainEventDispatcher
     {
-        return new DbContextOptionsBuilder<AppDbContext>()
+        public Task DispatchAsync(IEnumerable<IEvent> domainEvents, CancellationToken cancellationToken = default) => Task.CompletedTask;
+    }
+
+    private DbContextOptions<ProfilesDbContext> CreateNewContextOptions()
+    {
+        return new DbContextOptionsBuilder<ProfilesDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
     }
@@ -70,7 +77,7 @@ public class CrossContextIdentityCompatibilityTests
         const int iamUserId = 7;
         var guestId = GuestProfileId.New();
 
-        using (var context = new AppDbContext(options))
+        using (var context = new ProfilesDbContext(options))
         {
             var repo = new GuestProfileRepository(context);
             var guest = new GuestProfile(
@@ -86,11 +93,11 @@ public class CrossContextIdentityCompatibilityTests
             await context.SaveChangesAsync();
         }
 
-        using (var context = new AppDbContext(options))
+        using (var context = new ProfilesDbContext(options))
         {
             var repo = new GuestProfileRepository(context);
             var queryService = new GuestProfileQueryService(repo);
-            var unitOfWork = new UnitOfWork(context);
+            var unitOfWork = new UnitOfWork(context, new FakeDomainEventDispatcher());
             var eventPublisher = new FakeDomainEventPublisher();
             var commandService = new GuestProfileCommandService(repo, unitOfWork, eventPublisher);
             var facade = new GuestProfilesContextFacade(commandService, queryService);
@@ -101,7 +108,7 @@ public class CrossContextIdentityCompatibilityTests
             profileId.Should().Be(guestId.Value);
 
             // Query by int userId using query service
-            var profile = await queryService.Handle(new API.Profiles.Application.Internal.Queries.GetGuestProfileByUserIdQuery(new UserId(iamUserId)));
+            var profile = await queryService.Handle(new RoomTrack.Profiles.Application.Internal.Queries.GetGuestProfileByUserIdQuery(new UserId(iamUserId)));
             profile.Should().NotBeNull();
             profile!.UserId.Should().Be(new UserId(iamUserId));
             profile.Name.FullName.Should().Be("Carlos Gomez");
@@ -117,7 +124,7 @@ public class CrossContextIdentityCompatibilityTests
         var staffId = StaffProfileId.New();
         var today = DateOnly.FromDateTime(DateTime.UtcNow);
 
-        using (var context = new AppDbContext(options))
+        using (var context = new ProfilesDbContext(options))
         {
             var repo = new StaffProfileRepository(context);
             var staff = new StaffProfile(
@@ -136,7 +143,7 @@ public class CrossContextIdentityCompatibilityTests
             await context.SaveChangesAsync();
         }
 
-        using (var context = new AppDbContext(options))
+        using (var context = new ProfilesDbContext(options))
         {
             var repo = new StaffProfileRepository(context);
             var queryService = new StaffProfileQueryService(repo);
@@ -152,7 +159,7 @@ public class CrossContextIdentityCompatibilityTests
             profileId.Should().Be(staffId.Value);
 
             // Query staff by int hotelId via query service
-            var staffInHotel = (await queryService.Handle(new API.Profiles.Application.Internal.Queries.GetStaffProfilesByHotelIdQuery(new TargetId(hotelId)))).ToList();
+            var staffInHotel = (await queryService.Handle(new RoomTrack.Profiles.Application.Internal.Queries.GetStaffProfilesByHotelIdQuery(new TargetId(hotelId)))).ToList();
             staffInHotel.Should().HaveCount(1);
             staffInHotel[0].Id.Should().Be(staffId);
             staffInHotel[0].UserId.Should().Be(new UserId(iamUserId));

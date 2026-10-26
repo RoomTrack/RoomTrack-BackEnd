@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Payments.Application.OutboundServices;
-using BackendAwRoomTrack.API.Payments.Domain.Model.ValueObjects;
+using RoomTrack.Payments.Application.OutboundServices;
+using RoomTrack.Payments.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Payments.Infrastructure.Gateways;
+namespace RoomTrack.Payments.Infrastructure.Gateways;
 
 /// <summary>
 ///     Adapter for payments received by the hotel itself: the staff member attests them (with the operation number

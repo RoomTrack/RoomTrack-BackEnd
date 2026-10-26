@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Marketing.Domain.Model.Exceptions;
+namespace RoomTrack.Marketing.Domain.Model.Exceptions;
 
 /// <summary>Stable error codes of the Marketing context (demo requests).</summary>
 public static class MarketingErrorCodes

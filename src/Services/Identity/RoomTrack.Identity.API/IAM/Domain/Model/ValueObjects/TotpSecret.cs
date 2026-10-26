@@ -1,9 +1,9 @@
-using BackendAwRoomTrack.API.IAM.Domain.Model.Exceptions;
+using RoomTrack.IAM.Domain.Model.Exceptions;
 using System.Security.Cryptography;
 using System.Text;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.IAM.Domain.Model.ValueObjects;
+namespace RoomTrack.IAM.Domain.Model.ValueObjects;
 
 /// <summary>
 ///     Shared secret of a TOTP authenticator: 160 random bits (the HMAC-SHA1 key size recommended by

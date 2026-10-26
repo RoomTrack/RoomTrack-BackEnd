@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Entities;
+using RoomTrack.Housekeeping.Domain.Model.Aggregates;
+using RoomTrack.Housekeeping.Domain.Model.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackendAwRoomTrack.API.Housekeeping.Infrastructure.Persistence.EFC.Configuration.Extensions;
+namespace RoomTrack.Housekeeping.Infrastructure.Persistence.EFC.Configuration.Extensions;
 
 public static class ModelBuilderExtensions
 {
@@ -19,6 +19,7 @@ public static class ModelBuilderExtensions
         builder.Entity<CleaningTask>().Property(t => t.Status).HasConversion<string>().HasMaxLength(20).IsRequired();
         builder.Entity<CleaningTask>().Property(t => t.Notes).HasMaxLength(CleaningTask.NotesMaxLength);
         builder.Entity<CleaningTask>().Property(t => t.CancellationReason).HasMaxLength(CleaningTask.CancellationReasonMaxLength);
+        builder.Entity<CleaningTask>().Property(t => t.Version).IsConcurrencyToken();
         builder.Entity<CleaningTask>().Ignore(t => t.IsOpen);
         builder.Entity<CleaningTask>().Ignore(t => t.ImpedimentIncidentIds);
         builder.Entity<CleaningTask>().Ignore(t => t.DomainEvents);

@@ -1,8 +1,8 @@
 using System.Text.RegularExpressions;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Exceptions;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Accommodations.Domain.Model.Exceptions;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.Accommodations.Domain.Model.ValueObjects;
+namespace RoomTrack.Accommodations.Domain.Model.ValueObjects;
 
 /// <summary>
 ///     How the guests of a hotel pay their bookings: the account holder and at least one

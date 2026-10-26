@@ -1,14 +1,14 @@
-using BackendAwRoomTrack.API.Audit.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Audit.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Audit.Domain.Services;
-using BackendAwRoomTrack.API.Audit.Interfaces.REST.Resources;
-using BackendAwRoomTrack.API.Audit.Interfaces.REST.Transform;
-using BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
+using RoomTrack.Audit.Domain.Model.Queries;
+using RoomTrack.Audit.Domain.Model.ValueObjects;
+using RoomTrack.Audit.Domain.Services;
+using RoomTrack.Audit.Interfaces.REST.Resources;
+using RoomTrack.Audit.Interfaces.REST.Transform;
+using RoomTrack.IAM.Interfaces.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace BackendAwRoomTrack.API.Audit.Interfaces.REST;
+namespace RoomTrack.Audit.Interfaces.REST;
 
 /// <summary>
 ///     Access audit log: sign-ins, failed sign-ins, locks, sign-outs, password resets and

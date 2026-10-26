@@ -1,7 +1,7 @@
 using Polly;
 using Polly.CircuitBreaker;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Resilience;
+namespace RoomTrack.Shared.Infrastructure.Resilience;
 
 public static class RedisCircuitBreaker
 {

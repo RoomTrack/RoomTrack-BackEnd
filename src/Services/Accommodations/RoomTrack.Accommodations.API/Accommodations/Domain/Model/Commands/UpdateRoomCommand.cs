@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Accommodations.Domain.Model.Commands;
+namespace RoomTrack.Accommodations.Domain.Model.Commands;
 
 /// <summary>Edit a room (the hotel cannot change). A new price only applies to new bookings.</summary>
 public record UpdateRoomCommand(

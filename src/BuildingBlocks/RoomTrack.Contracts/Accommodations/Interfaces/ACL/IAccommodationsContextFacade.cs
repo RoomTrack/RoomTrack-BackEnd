@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Accommodations.Interfaces.ACL;
+namespace RoomTrack.Accommodations.Interfaces.ACL;
 
 /// <summary>A room as offered for booking, exposed to other bounded contexts (no domain entity leaks).</summary>
 /// <param name="RoomId">The room.</param>
@@ -81,8 +81,14 @@ public interface IAccommodationsContextFacade
     ///     The guest of a completed check-in moves into the room, which becomes Occupied. Runs in the caller's
     ///     transaction (commits the shared unit of work).
     /// </summary>
-    /// <exception cref="BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions.BusinessRuleViolationException">The room is not Available.</exception>
+    /// <exception cref="RoomTrack.Shared.Domain.Model.Exceptions.BusinessRuleViolationException">The room is not Available.</exception>
     Task OccupyRoomForCheckInAsync(int roomId, int? guestUserId, string? guestEmail);
+
+    /// <summary>
+    ///     The guest of the room checked out: an Occupied room goes to Cleaning ("pendiente de limpieza") and gets
+    ///     its cleaning task. Committed by the Accommodations service: call it last, right before the caller commits.
+    /// </summary>
+    Task VacateRoomAfterCheckOutAsync(int roomId, int? checkedOutByUserId, string? checkedOutByEmail);
 
     /// <summary>Rooms that can be offered for booking (not under maintenance), of one hotel or of every hotel.</summary>
     Task<IReadOnlyList<RoomOffer>> FetchRoomsOfferedForBookingAsync(int? hotelId);

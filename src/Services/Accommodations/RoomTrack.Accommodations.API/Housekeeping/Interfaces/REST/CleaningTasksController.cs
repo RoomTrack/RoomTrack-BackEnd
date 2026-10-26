@@ -1,23 +1,23 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Accommodations.Domain.Services;
-using BackendAwRoomTrack.API.Accommodations.Interfaces.REST.Authorization;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Services;
-using BackendAwRoomTrack.API.Housekeeping.Interfaces.REST.Authorization;
-using BackendAwRoomTrack.API.Housekeeping.Interfaces.REST.Resources;
-using BackendAwRoomTrack.API.Housekeeping.Interfaces.REST.Transform;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Constants;
-using BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Accommodations.Domain.Model.Exceptions;
+using RoomTrack.Accommodations.Domain.Model.Queries;
+using RoomTrack.Accommodations.Domain.Services;
+using RoomTrack.Accommodations.Interfaces.REST.Authorization;
+using RoomTrack.Housekeeping.Domain.Model.Aggregates;
+using RoomTrack.Housekeeping.Domain.Model.Commands;
+using RoomTrack.Housekeeping.Domain.Model.Queries;
+using RoomTrack.Housekeeping.Domain.Model.ValueObjects;
+using RoomTrack.Housekeeping.Domain.Services;
+using RoomTrack.Housekeeping.Interfaces.REST.Authorization;
+using RoomTrack.Housekeeping.Interfaces.REST.Resources;
+using RoomTrack.Housekeeping.Interfaces.REST.Transform;
+using RoomTrack.IAM.Domain.Model.Constants;
+using RoomTrack.IAM.Interfaces.Authorization;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace BackendAwRoomTrack.API.Housekeeping.Interfaces.REST;
+namespace RoomTrack.Housekeeping.Interfaces.REST;
 
 /// <summary>
 ///     Cleaning tasks of the rooms: the front desk assigns them to housekeeping, manually or automatically by workload

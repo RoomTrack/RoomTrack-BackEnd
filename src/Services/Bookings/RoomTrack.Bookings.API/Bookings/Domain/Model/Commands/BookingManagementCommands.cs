@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Bookings.Domain.Model.Commands;
+namespace RoomTrack.Bookings.Domain.Model.Commands;
 
 /// <summary>Move a booking to other dates and/or another room of the same hotel.</summary>
 /// <param name="BookingId">The booking.</param>

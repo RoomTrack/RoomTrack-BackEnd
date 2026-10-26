@@ -1,6 +1,6 @@
-﻿using BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates;
+﻿using RoomTrack.IAM.Domain.Model.Aggregates;
 
-namespace BackendAwRoomTrack.API.IAM.Domain.Services;
+namespace RoomTrack.IAM.Domain.Services;
 
 /// <summary>
 /// Domain service that determines whether a user can access data

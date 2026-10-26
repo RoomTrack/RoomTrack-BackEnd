@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Events;
+using RoomTrack.Shared.Domain.Model.Events;
 using Cortex.Mediator.Notifications;
 
-namespace BackendAwRoomTrack.API.Shared.Application.Internal.EventHandlers;
+namespace RoomTrack.Shared.Application.Internal.EventHandlers;
 
 /// <summary>
 /// Defines a handler for domain events.

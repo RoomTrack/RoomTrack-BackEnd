@@ -3,12 +3,12 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Encodings.Web;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.ExceptionHandling;
+using RoomTrack.Shared.Infrastructure.Interfaces.ASP.ExceptionHandling;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Internal;
+namespace RoomTrack.Shared.Infrastructure.Internal;
 
 /// <summary>
 ///     Authenticates the calls between services (<c>/internal/v1/*</c>) by the shared key of the

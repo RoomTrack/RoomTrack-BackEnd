@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Marketing.Domain.Model.Exceptions;
+using RoomTrack.Marketing.Domain.Model.Exceptions;
 using System.Text.RegularExpressions;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.Marketing.Domain.Model.ValueObjects;
+namespace RoomTrack.Marketing.Domain.Model.ValueObjects;
 
 /// <summary>
 ///     Contact of the visitor who asks for a demo. Mirrors the landing form: names with letters of any

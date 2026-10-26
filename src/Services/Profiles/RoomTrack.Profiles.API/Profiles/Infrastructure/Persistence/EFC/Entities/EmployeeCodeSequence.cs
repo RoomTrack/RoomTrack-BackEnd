@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Profiles.Infrastructure.Persistence.EFC.Entities;
+namespace RoomTrack.Profiles.Infrastructure.Persistence.EFC.Entities;
 
 /// <summary>
 /// Infrastructure entity for atomic sequence generation of Staff Employee Codes (EMP-XXXXX).

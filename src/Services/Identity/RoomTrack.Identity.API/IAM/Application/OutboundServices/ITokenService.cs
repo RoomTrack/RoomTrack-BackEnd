@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates;
+using RoomTrack.IAM.Domain.Model.Aggregates;
 
-namespace BackendAwRoomTrack.API.IAM.Application.OutboundServices;
+namespace RoomTrack.IAM.Application.OutboundServices;
 
 /// <summary>A signed access token and the moment it stops being accepted.</summary>
 public sealed record IssuedAccessToken(string Value, DateTimeOffset ExpiresAt);

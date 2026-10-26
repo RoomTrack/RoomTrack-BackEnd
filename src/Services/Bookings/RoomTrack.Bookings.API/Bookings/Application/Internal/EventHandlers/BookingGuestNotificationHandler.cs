@@ -1,10 +1,10 @@
-using BackendAwRoomTrack.API.Accommodations.Interfaces.ACL;
-using BackendAwRoomTrack.API.Bookings.Application.OutboundServices;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Events;
-using BackendAwRoomTrack.API.Bookings.Domain.Repositories;
-using BackendAwRoomTrack.API.Shared.Application.Internal.EventHandlers;
+using RoomTrack.Accommodations.Interfaces.ACL;
+using RoomTrack.Bookings.Application.OutboundServices;
+using RoomTrack.Bookings.Domain.Model.Events;
+using RoomTrack.Bookings.Domain.Repositories;
+using RoomTrack.Shared.Application.Internal.EventHandlers;
 
-namespace BackendAwRoomTrack.API.Bookings.Application.Internal.EventHandlers;
+namespace RoomTrack.Bookings.Application.Internal.EventHandlers;
 
 /// <summary>
 ///     Keeps the guest informed of every change of their booking (D1).
@@ -18,7 +18,8 @@ public class BookingGuestNotificationHandler(
     IDomainEventHandler<BookingCreatedEvent>,
     IDomainEventHandler<BookingConfirmedEvent>,
     IDomainEventHandler<BookingCancelledEvent>,
-    IDomainEventHandler<BookingRescheduledEvent>
+    IDomainEventHandler<BookingRescheduledEvent>,
+    IDomainEventHandler<GuestCheckedOutEvent>
 {
     public async Task HandleAsync(BookingCreatedEvent e, CancellationToken cancellationToken)
     {
@@ -49,6 +50,13 @@ public class BookingGuestNotificationHandler(
         if (booking is null) return;
         await notifications.SendBookingRescheduledAsync(booking, await PlaceAsync(booking),
             e.PreviousCheckIn, e.PreviousCheckOut, await RoomNumberAsync(e.PreviousRoomId));
+    }
+
+    public async Task HandleAsync(GuestCheckedOutEvent e, CancellationToken cancellationToken)
+    {
+        var booking = await bookingRepository.FindByIdAsync(e.BookingId);
+        if (booking is null) return;
+        await notifications.SendCheckedOutAsync(booking, await PlaceAsync(booking));
     }
 
     private async Task<BookingPlace> PlaceAsync(Domain.Model.Aggregates.Booking booking) =>

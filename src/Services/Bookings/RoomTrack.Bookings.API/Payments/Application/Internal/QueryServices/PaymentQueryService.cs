@@ -1,10 +1,10 @@
-using BackendAwRoomTrack.API.Bookings.Interfaces.ACL;
-using BackendAwRoomTrack.API.Payments.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Payments.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Payments.Domain.Repositories;
-using BackendAwRoomTrack.API.Payments.Domain.Services;
+using RoomTrack.Bookings.Interfaces.ACL;
+using RoomTrack.Payments.Domain.Model.Aggregates;
+using RoomTrack.Payments.Domain.Model.Queries;
+using RoomTrack.Payments.Domain.Repositories;
+using RoomTrack.Payments.Domain.Services;
 
-namespace BackendAwRoomTrack.API.Payments.Application.Internal.QueryServices;
+namespace RoomTrack.Payments.Application.Internal.QueryServices;
 
 /// <summary>
 /// Service implementation for handling payment queries.

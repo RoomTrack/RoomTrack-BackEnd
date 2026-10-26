@@ -1,18 +1,18 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Events;
-using BackendAwRoomTrack.API.Housekeeping.Application.Internal.CommandServices;
-using BackendAwRoomTrack.API.Housekeeping.Application.Internal.EventHandlers;
-using BackendAwRoomTrack.API.Housekeeping.Application.Internal.QueryServices;
-using BackendAwRoomTrack.API.Housekeeping.Application.OutboundServices;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Events;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Repositories;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Services;
-using BackendAwRoomTrack.API.Housekeeping.Infrastructure.Notifications;
-using BackendAwRoomTrack.API.Housekeeping.Infrastructure.Persistence.EFC.Repositories;
-using BackendAwRoomTrack.API.Housekeeping.Interfaces.REST.Authorization;
-using BackendAwRoomTrack.API.Shared.Application.Internal.EventHandlers;
+using RoomTrack.Accommodations.Domain.Model.Events;
+using RoomTrack.Housekeeping.Application.Internal.CommandServices;
+using RoomTrack.Housekeeping.Application.Internal.EventHandlers;
+using RoomTrack.Housekeeping.Application.Internal.QueryServices;
+using RoomTrack.Housekeeping.Application.OutboundServices;
+using RoomTrack.Housekeeping.Domain.Model.Events;
+using RoomTrack.Housekeeping.Domain.Repositories;
+using RoomTrack.Housekeeping.Domain.Services;
+using RoomTrack.Housekeeping.Infrastructure.Notifications;
+using RoomTrack.Housekeeping.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.Housekeeping.Interfaces.REST.Authorization;
+using RoomTrack.Shared.Application.Internal.EventHandlers;
 using Microsoft.AspNetCore.Authorization;
 
-namespace BackendAwRoomTrack.API.Housekeeping.Infrastructure.Interfaces.ASP.Configuration.Extensions;
+namespace RoomTrack.Housekeeping.Infrastructure.Interfaces.ASP.Configuration.Extensions;
 
 public static class WebApplicationBuilderExtensions
 {
@@ -33,6 +33,11 @@ public static class WebApplicationBuilderExtensions
         builder.Services.AddScoped<CleaningTaskNotificationHandler>();
         builder.Services.AddScoped<IDomainEventHandler<CleaningTaskAssignedEvent>>(sp => sp.GetRequiredService<CleaningTaskNotificationHandler>());
         builder.Services.AddScoped<IDomainEventHandler<CleaningTaskCompletedEvent>>(sp => sp.GetRequiredService<CleaningTaskNotificationHandler>());
+
+        // Push notifications to the devices of the staff (US-22)
+        builder.Services.AddScoped<CleaningTaskPushHandler>();
+        builder.Services.AddScoped<IDomainEventHandler<CleaningTaskAssignedEvent>>(sp => sp.GetRequiredService<CleaningTaskPushHandler>());
+        builder.Services.AddScoped<IDomainEventHandler<CleaningTaskPriorityChangedEvent>>(sp => sp.GetRequiredService<CleaningTaskPushHandler>());
 
         // Resource-based authorization (hotel scope)
         builder.Services.AddSingleton<IAuthorizationHandler, CleaningTaskScopeAuthorizationHandler>();

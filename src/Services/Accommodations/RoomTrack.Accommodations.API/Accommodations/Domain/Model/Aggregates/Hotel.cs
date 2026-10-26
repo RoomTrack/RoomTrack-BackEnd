@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.ValueObjects;
+using RoomTrack.Accommodations.Domain.Model.Commands;
+using RoomTrack.Accommodations.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates;
+namespace RoomTrack.Accommodations.Domain.Model.Aggregates;
 
 /// <summary>
 /// Represents a hotel accommodation aggregate in the domain, encapsulating rooms and related business logic.

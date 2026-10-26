@@ -1,9 +1,9 @@
 using System.Globalization;
 using System.Text;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.IAM.Domain.Model.ValueObjects;
+using RoomTrack.IAM.Domain.Model.Exceptions;
+using RoomTrack.IAM.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.IAM.Domain.Services;
+namespace RoomTrack.IAM.Domain.Services;
 
 /// <summary>Outcome of checking a new password against <see cref="PasswordPolicy"/>.</summary>
 /// <param name="Code">Stable code of the broken rule (<c>password.*</c>), or null when the password is acceptable.</param>

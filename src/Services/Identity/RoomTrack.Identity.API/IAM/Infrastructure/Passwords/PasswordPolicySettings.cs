@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace BackendAwRoomTrack.API.IAM.Infrastructure.Passwords;
+namespace RoomTrack.IAM.Infrastructure.Passwords;
 
 /// <summary>
 ///     Breached password lookup (section <c>PasswordPolicy</c>, env vars <c>PasswordPolicy__*</c>). Validated at startup.

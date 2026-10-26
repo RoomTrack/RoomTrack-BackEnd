@@ -1,10 +1,10 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Entities;
-using BackendAwRoomTrack.API.Accommodations.Domain.Repositories;
-using BackendAwRoomTrack.API.Accommodations.Domain.Services;
-using BackendAwRoomTrack.API.Shared.Domain.Repositories;
+using RoomTrack.Accommodations.Domain.Model.Commands;
+using RoomTrack.Accommodations.Domain.Model.Entities;
+using RoomTrack.Accommodations.Domain.Repositories;
+using RoomTrack.Accommodations.Domain.Services;
+using RoomTrack.Shared.Domain.Repositories;
 
-namespace BackendAwRoomTrack.API.Accommodations.Application.Internal.CommandServices;
+namespace RoomTrack.Accommodations.Application.Internal.CommandServices;
 
 /// <summary>
 /// Handles command operations related to the RoomType entity.

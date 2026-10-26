@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects;
+using RoomTrack.Profiles.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Profiles.Application.Internal.Queries;
+namespace RoomTrack.Profiles.Application.Internal.Queries;
 
 public record GetGuestProfileByIdQuery(GuestProfileId ProfileId);
 

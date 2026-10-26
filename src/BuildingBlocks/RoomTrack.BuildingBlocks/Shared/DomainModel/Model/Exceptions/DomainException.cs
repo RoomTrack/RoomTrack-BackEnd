@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+namespace RoomTrack.Shared.Domain.Model.Exceptions;
 
 /// <summary>
 ///     Base type of every error raised by a domain model (aggregates, entities, value objects and domain services).

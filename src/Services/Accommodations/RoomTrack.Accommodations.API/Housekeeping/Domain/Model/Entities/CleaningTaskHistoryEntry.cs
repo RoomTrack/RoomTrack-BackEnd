@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.ValueObjects;
+using RoomTrack.Housekeeping.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Housekeeping.Domain.Model.Entities;
+namespace RoomTrack.Housekeeping.Domain.Model.Entities;
 
 /// <summary>
 ///     One line of the history of a cleaning task (what happened, who and when). Recorded by the <c>CleaningTask</c>

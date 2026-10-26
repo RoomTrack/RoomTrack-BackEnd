@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Incidents.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Events;
+using RoomTrack.Incidents.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Domain.Model.Events;
 
-namespace BackendAwRoomTrack.API.Incidents.Domain.Model.Events;
+namespace RoomTrack.Incidents.Domain.Model.Events;
 
 /// <summary>An incident was reported (recorded once the incident has its generated id).</summary>
 public sealed record IncidentReportedEvent(int IncidentId, int HotelId, int RoomId, IncidentPriority Priority, bool BlocksRoom,
@@ -21,4 +21,11 @@ public sealed record IncidentResolvedEvent(int IncidentId, int HotelId, int Room
 
 /// <summary>A critical incident was not started in time: the hotel administrators are alerted.</summary>
 public sealed record IncidentEscalatedEvent(int IncidentId, int HotelId, DateTimeOffset ReportedAt, DateTimeOffset OccurredOn)
+    : DomainEvent(OccurredOn);
+
+/// <summary>
+///     The urgency of an open incident changed: its assignee is notified, highlighted when it became critical.
+/// </summary>
+public sealed record IncidentPriorityChangedEvent(int IncidentId, int HotelId, int RoomId, int? AssigneeUserId,
+    IncidentPriority FromPriority, IncidentPriority ToPriority, int ChangedByUserId, DateTimeOffset OccurredOn)
     : DomainEvent(OccurredOn);

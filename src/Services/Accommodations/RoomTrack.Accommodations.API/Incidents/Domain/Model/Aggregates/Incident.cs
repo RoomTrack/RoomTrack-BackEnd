@@ -1,11 +1,12 @@
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Entities;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Events;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Events;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Incidents.Domain.Model.Entities;
+using RoomTrack.Incidents.Domain.Model.Events;
+using RoomTrack.Incidents.Domain.Model.Exceptions;
+using RoomTrack.Incidents.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Domain.Model;
+using RoomTrack.Shared.Domain.Model.Events;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.Incidents.Domain.Model.Aggregates;
+namespace RoomTrack.Incidents.Domain.Model.Aggregates;
 
 /// <summary>
 ///     A damage or malfunction of a room reported by the hotel staff (US-08) and followed by maintenance until it is
@@ -16,7 +17,7 @@ namespace BackendAwRoomTrack.API.Incidents.Domain.Model.Aggregates;
 ///     (<see cref="BlocksRoom"/>) takes the room out of service until it is resolved; the application service holds
 ///     and releases the room in the same transaction.
 /// </remarks>
-public class Incident : IHasDomainEvents
+public class Incident : IHasDomainEvents, IHasConcurrencyVersion
 {
     public const int TitleMinLength = 3;
     public const int TitleMaxLength = 120;
@@ -83,6 +84,12 @@ public class Incident : IHasDomainEvents
     public DateTimeOffset? EscalatedAt { get; private set; }
 
     public bool IsOpen => Status != IncidentStatus.Resolved;
+
+    /// <summary>
+    ///     Optimistic concurrency: two changes made at once (e.g. a re-prioritization while maintenance resolves it)
+    ///     cannot overwrite each other; the second one is refused.
+    /// </summary>
+    public int Version { get; private set; }
 
     /// <summary>What happened to the incident, oldest first.</summary>
     public IReadOnlyList<IncidentHistoryEntry> History => _history.AsReadOnly();
@@ -165,12 +172,14 @@ public class Incident : IHasDomainEvents
         _domainEvents.Add(new IncidentResolvedEvent(Id, HotelId, RoomId, BlocksRoom, ReportedByUserId, actor.UserId, now));
     }
 
-    /// <summary>Re-classifies the urgency of an open incident. The same priority is a no-op.</summary>
+    /// <summary>Re-classifies the urgency of an open incident (its assignee is notified). The same priority is a no-op.</summary>
     public void ChangePriority(IncidentPriority priority, IncidentActor actor, DateTimeOffset now)
     {
         EnsureOpen();
         if (priority == Priority) return;
         Record(IncidentHistoryAction.PriorityChanged, $"{Priority} → {priority}", actor, now);
+        _domainEvents.Add(new IncidentPriorityChangedEvent(Id, HotelId, RoomId, AssigneeUserId, Priority, priority,
+            actor.UserId, now));
         Priority = priority;
     }
 

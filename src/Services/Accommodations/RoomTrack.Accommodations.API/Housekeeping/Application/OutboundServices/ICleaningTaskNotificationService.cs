@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.IAM.Interfaces.ACL;
+using RoomTrack.Housekeeping.Domain.Model.ValueObjects;
+using RoomTrack.IAM.Interfaces.ACL;
 
-namespace BackendAwRoomTrack.API.Housekeeping.Application.OutboundServices;
+namespace RoomTrack.Housekeeping.Application.OutboundServices;
 
 /// <summary>The cleaning task (and its room) an e-mail is about.</summary>
 public sealed record CleaningTaskNotice(int CleaningTaskId, CleaningTaskPriority Priority, string? Notes, string RoomNumber,

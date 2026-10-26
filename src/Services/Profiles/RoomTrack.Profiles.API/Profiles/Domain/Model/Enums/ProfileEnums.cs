@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.Domain.Profiles.Domain.Model.Enums;
+namespace RoomTrack.Profiles.Domain.Model.Enums;
 
 public enum ProfileStatus 
 { 

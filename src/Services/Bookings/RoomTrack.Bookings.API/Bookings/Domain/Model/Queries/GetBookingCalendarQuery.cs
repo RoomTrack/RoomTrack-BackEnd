@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Bookings.Domain.Model.Queries;
+namespace RoomTrack.Bookings.Domain.Model.Queries;
 
 /// <summary>
 ///     The active bookings of a hotel sharing a night with <paramref name="Window"/>, organized by

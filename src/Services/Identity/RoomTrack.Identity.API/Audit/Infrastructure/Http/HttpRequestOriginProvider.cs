@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.Audit.Application.OutboundServices;
+using RoomTrack.Audit.Application.OutboundServices;
 
-namespace BackendAwRoomTrack.API.Audit.Infrastructure.Http;
+namespace RoomTrack.Audit.Infrastructure.Http;
 
 /// <summary>
 ///     Reads the client IP of the current HTTP request. Behind the reverse proxies it is the client address

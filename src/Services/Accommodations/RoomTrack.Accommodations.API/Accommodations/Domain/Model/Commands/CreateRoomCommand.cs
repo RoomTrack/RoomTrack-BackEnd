@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Accommodations.Domain.Model.Commands;
+namespace RoomTrack.Accommodations.Domain.Model.Commands;
 
 /// <summary>Create a room of a hotel.</summary>
 /// <param name="HotelId">The hotel.</param>

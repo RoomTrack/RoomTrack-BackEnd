@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates;
-using ValueObjects = BackendAwRoomTrack.API.Accommodations.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Shared.Domain.Repositories;
+using RoomTrack.Accommodations.Domain.Model.Aggregates;
+using ValueObjects = RoomTrack.Accommodations.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Domain.Repositories;
 
-namespace BackendAwRoomTrack.API.Accommodations.Domain.Repositories;
+namespace RoomTrack.Accommodations.Domain.Repositories;
 
 /// <summary>
 /// Repository interface for managing Hotel aggregates.

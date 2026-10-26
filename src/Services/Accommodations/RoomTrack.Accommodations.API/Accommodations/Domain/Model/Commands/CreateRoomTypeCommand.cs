@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Accommodations.Domain.Model.Commands;
+namespace RoomTrack.Accommodations.Domain.Model.Commands;
 
 /// <summary>
 /// Command to create a new room type.

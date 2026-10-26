@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.Shared.Application.Exceptions;
+namespace RoomTrack.Shared.Application.Exceptions;
 
 /// <summary>
 ///     An optional feature cannot run because this deployment lacks its configuration (e.g. the credentials of a

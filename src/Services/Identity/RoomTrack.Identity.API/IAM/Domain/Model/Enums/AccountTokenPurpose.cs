@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.IAM.Domain.Model.Enums;
+namespace RoomTrack.IAM.Domain.Model.Enums;
 
 /// <summary>What a single-use account token (sent by e-mail as a link) allows.</summary>
 public enum AccountTokenPurpose

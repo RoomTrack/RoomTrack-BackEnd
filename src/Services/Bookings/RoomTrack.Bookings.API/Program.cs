@@ -1,15 +1,15 @@
-using BackendAwRoomTrack.API.Accommodations.Interfaces.ACL;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Events;
-using BackendAwRoomTrack.API.Bookings.Infrastructure.Interfaces.ASP.Configuration.Extensions;
-using BackendAwRoomTrack.API.IAM.Interfaces.ACL;
-using BackendAwRoomTrack.API.Payments.Domain.Model.Events;
-using BackendAwRoomTrack.API.Payments.Infrastructure.Interfaces.ASP.Configuration.Extensions;
-using BackendAwRoomTrack.API.Profiles.Interfaces.ACL;
-using BackendAwRoomTrack.API.Shared.Application.Internal.EventHandlers;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Hosting;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Internal;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Messaging;
-using BackendAwRoomTrack.API.shared.Infrastructure.Persistence.EFC.Configuration.Extensions;
+using RoomTrack.Accommodations.Interfaces.ACL;
+using RoomTrack.Bookings.Domain.Model.Events;
+using RoomTrack.Bookings.Infrastructure.Interfaces.ASP.Configuration.Extensions;
+using RoomTrack.IAM.Interfaces.ACL;
+using RoomTrack.Payments.Domain.Model.Events;
+using RoomTrack.Payments.Infrastructure.Interfaces.ASP.Configuration.Extensions;
+using RoomTrack.Profiles.Interfaces.ACL;
+using RoomTrack.Shared.Application.Internal.EventHandlers;
+using RoomTrack.Shared.Infrastructure.Hosting;
+using RoomTrack.Shared.Infrastructure.Internal;
+using RoomTrack.Shared.Infrastructure.Messaging;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using RoomTrack.Bookings.API.Application.IntegrationEvents;
 using RoomTrack.Bookings.API.Infrastructure.Concurrency;
 using RoomTrack.Bookings.API.Infrastructure.Persistence;
@@ -35,6 +35,7 @@ builder.Services.AddScoped<IDomainEventHandler<BookingConfirmedEvent>>(sp => sp.
 builder.Services.AddScoped<IDomainEventHandler<BookingCancelledEvent>>(sp => sp.GetRequiredService<BookingsIntegrationEventPublisher>());
 builder.Services.AddScoped<IDomainEventHandler<BookingRescheduledEvent>>(sp => sp.GetRequiredService<BookingsIntegrationEventPublisher>());
 builder.Services.AddScoped<IDomainEventHandler<GuestCheckedInEvent>>(sp => sp.GetRequiredService<BookingsIntegrationEventPublisher>());
+builder.Services.AddScoped<IDomainEventHandler<GuestCheckedOutEvent>>(sp => sp.GetRequiredService<BookingsIntegrationEventPublisher>());
 builder.Services.AddScoped<IDomainEventHandler<PaymentCompletedEvent>>(sp => sp.GetRequiredService<BookingsIntegrationEventPublisher>());
 builder.Services.AddScoped<IDomainEventHandler<PaymentRefundedEvent>>(sp => sp.GetRequiredService<BookingsIntegrationEventPublisher>());
 

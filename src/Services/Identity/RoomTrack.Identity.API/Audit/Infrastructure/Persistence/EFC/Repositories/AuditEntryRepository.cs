@@ -1,10 +1,10 @@
-using BackendAwRoomTrack.API.Audit.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Audit.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Audit.Domain.Repositories;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
+using RoomTrack.Audit.Domain.Model.Aggregates;
+using RoomTrack.Audit.Domain.Model.Queries;
+using RoomTrack.Audit.Domain.Repositories;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackendAwRoomTrack.API.Audit.Infrastructure.Persistence.EFC.Repositories;
+namespace RoomTrack.Audit.Infrastructure.Persistence.EFC.Repositories;
 
 public class AuditEntryRepository(AppDbContext context) : IAuditEntryRepository
 {

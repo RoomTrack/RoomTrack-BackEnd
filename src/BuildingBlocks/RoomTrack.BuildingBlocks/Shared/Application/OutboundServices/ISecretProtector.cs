@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Shared.Application.OutboundServices;
+namespace RoomTrack.Shared.Application.OutboundServices;
 
 /// <summary>
 ///     Encrypts secrets that must be stored but read back later (MFA secrets, identity document images).

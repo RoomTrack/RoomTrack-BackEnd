@@ -25,7 +25,7 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates.Hotel", b =>
+            modelBuilder.Entity("RoomTrack.Accommodations.Domain.Model.Aggregates.Hotel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -89,7 +89,7 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                     b.ToTable("hotels", (string)null);
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates.Room", b =>
+            modelBuilder.Entity("RoomTrack.Accommodations.Domain.Model.Aggregates.Room", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -158,7 +158,7 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                     b.ToTable("rooms", (string)null);
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Accommodations.Domain.Model.Entities.Amenity", b =>
+            modelBuilder.Entity("RoomTrack.Accommodations.Domain.Model.Entities.Amenity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -234,7 +234,7 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                         });
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Accommodations.Domain.Model.Entities.HotelCategory", b =>
+            modelBuilder.Entity("RoomTrack.Accommodations.Domain.Model.Entities.HotelCategory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -287,7 +287,7 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                         });
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Accommodations.Domain.Model.Entities.RoomStatusChange", b =>
+            modelBuilder.Entity("RoomTrack.Accommodations.Domain.Model.Entities.RoomStatusChange", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -344,7 +344,7 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                     b.ToTable("room_status_changes", (string)null);
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Accommodations.Domain.Model.Entities.RoomType", b =>
+            modelBuilder.Entity("RoomTrack.Accommodations.Domain.Model.Entities.RoomType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -371,7 +371,7 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                     b.ToTable("room_types", (string)null);
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Incidents.Domain.Model.Aggregates.Incident", b =>
+            modelBuilder.Entity("RoomTrack.Incidents.Domain.Model.Aggregates.Incident", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -472,7 +472,7 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                     b.ToTable("incidents", (string)null);
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Incidents.Domain.Model.Entities.IncidentHistoryEntry", b =>
+            modelBuilder.Entity("RoomTrack.Incidents.Domain.Model.Entities.IncidentHistoryEntry", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -765,9 +765,9 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                     b.ToTable("data_protection_keys");
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates.Hotel", b =>
+            modelBuilder.Entity("RoomTrack.Accommodations.Domain.Model.Aggregates.Hotel", b =>
                 {
-                    b.OwnsOne("BackendAwRoomTrack.API.Accommodations.Domain.Model.ValueObjects.HotelPaymentSettings", "PaymentSettings", b1 =>
+                    b.OwnsOne("RoomTrack.Accommodations.Domain.Model.ValueObjects.HotelPaymentSettings", "PaymentSettings", b1 =>
                         {
                             b1.Property<int>("HotelId")
                                 .HasColumnType("int");
@@ -814,16 +814,16 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                     b.Navigation("PaymentSettings");
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates.Room", b =>
+            modelBuilder.Entity("RoomTrack.Accommodations.Domain.Model.Aggregates.Room", b =>
                 {
-                    b.HasOne("BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates.Hotel", "Hotel")
+                    b.HasOne("RoomTrack.Accommodations.Domain.Model.Aggregates.Hotel", "Hotel")
                         .WithMany("Rooms")
                         .HasForeignKey("HotelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("f_k_rooms_hotels__hotel_id");
 
-                    b.HasOne("BackendAwRoomTrack.API.Accommodations.Domain.Model.Entities.RoomType", "RoomType")
+                    b.HasOne("RoomTrack.Accommodations.Domain.Model.Entities.RoomType", "RoomType")
                         .WithMany()
                         .HasForeignKey("RoomTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -835,9 +835,9 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                     b.Navigation("RoomType");
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Accommodations.Domain.Model.Entities.RoomStatusChange", b =>
+            modelBuilder.Entity("RoomTrack.Accommodations.Domain.Model.Entities.RoomStatusChange", b =>
                 {
-                    b.HasOne("BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates.Room", null)
+                    b.HasOne("RoomTrack.Accommodations.Domain.Model.Aggregates.Room", null)
                         .WithMany()
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -845,9 +845,9 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                         .HasConstraintName("f_k_room_status_changes_rooms__room_id");
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Incidents.Domain.Model.Entities.IncidentHistoryEntry", b =>
+            modelBuilder.Entity("RoomTrack.Incidents.Domain.Model.Entities.IncidentHistoryEntry", b =>
                 {
-                    b.HasOne("BackendAwRoomTrack.API.Incidents.Domain.Model.Aggregates.Incident", null)
+                    b.HasOne("RoomTrack.Incidents.Domain.Model.Aggregates.Incident", null)
                         .WithMany("History")
                         .HasForeignKey("IncidentId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -869,12 +869,12 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                         .HasConstraintName("f_k_outbox_messages_inbox_states__inbox_message_id__inbox_consumer_id");
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates.Hotel", b =>
+            modelBuilder.Entity("RoomTrack.Accommodations.Domain.Model.Aggregates.Hotel", b =>
                 {
                     b.Navigation("Rooms");
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Incidents.Domain.Model.Aggregates.Incident", b =>
+            modelBuilder.Entity("RoomTrack.Incidents.Domain.Model.Aggregates.Incident", b =>
                 {
                     b.Navigation("History");
                 });

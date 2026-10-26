@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.Payments.Domain.Model.ValueObjects;
+using RoomTrack.Payments.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Payments.Application.OutboundServices;
+namespace RoomTrack.Payments.Application.OutboundServices;
 
 /// <summary>A charge for the total of a booking.</summary>
 public sealed record PaymentCharge(int BookingId, string BookingCode, decimal Amount, PaymentMethod Method, string? OperationNumber);

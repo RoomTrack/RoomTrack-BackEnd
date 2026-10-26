@@ -2,7 +2,7 @@ using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace BackendAwRoomTrack.API.Media.Infrastructure.Cloudinary;
+namespace RoomTrack.Media.Infrastructure.Cloudinary;
 
 /// <summary>
 ///     Cloudinary's documented signature of API requests ("Generating authentication signatures"):

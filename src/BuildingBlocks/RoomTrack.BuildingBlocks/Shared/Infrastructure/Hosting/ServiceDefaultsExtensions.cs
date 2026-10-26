@@ -1,19 +1,19 @@
-using BackendAwRoomTrack.API.IAM.Application.OutboundServices;
-using BackendAwRoomTrack.API.IAM.Infrastructure.Authentication;
-using BackendAwRoomTrack.API.IAM.Infrastructure.Sessions;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Authentication.ScheduledJobs;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Documentation.OpenApi.Configuration.Extensions;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.Configuration;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.Configuration.Extensions;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.RateLimiting;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.ReverseProxy;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Internal;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Mediator.Cortex.Configuration.Extensions;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
-using BackendAwRoomTrack.API.shared.Infrastructure.Persistence.EFC.Configuration.Extensions;
+using RoomTrack.IAM.Application.OutboundServices;
+using RoomTrack.IAM.Infrastructure.Authentication;
+using RoomTrack.IAM.Infrastructure.Sessions;
+using RoomTrack.Shared.Infrastructure.Authentication.ScheduledJobs;
+using RoomTrack.Shared.Infrastructure.Documentation.OpenApi.Configuration.Extensions;
+using RoomTrack.Shared.Infrastructure.Interfaces.ASP.Configuration;
+using RoomTrack.Shared.Infrastructure.Interfaces.ASP.Configuration.Extensions;
+using RoomTrack.Shared.Infrastructure.Interfaces.ASP.RateLimiting;
+using RoomTrack.Shared.Infrastructure.Interfaces.ASP.ReverseProxy;
+using RoomTrack.Shared.Infrastructure.Internal;
+using RoomTrack.Shared.Infrastructure.Mediator.Cortex.Configuration.Extensions;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Hosting;
+namespace RoomTrack.Shared.Infrastructure.Hosting;
 
 /// <summary>
 ///     What every RoomTrack service has in common, so each <c>Program.cs</c> only adds its own bounded contexts:

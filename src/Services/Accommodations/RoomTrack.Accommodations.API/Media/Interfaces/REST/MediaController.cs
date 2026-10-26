@@ -1,13 +1,13 @@
-using BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
-using BackendAwRoomTrack.API.Media.Application.Internal.CommandServices;
-using BackendAwRoomTrack.API.Media.Interfaces.REST.Resources;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.RateLimiting;
+using RoomTrack.IAM.Interfaces.Authorization;
+using RoomTrack.Media.Application.Internal.CommandServices;
+using RoomTrack.Media.Interfaces.REST.Resources;
+using RoomTrack.Shared.Infrastructure.Interfaces.ASP.RateLimiting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace BackendAwRoomTrack.API.Media.Interfaces.REST;
+namespace RoomTrack.Media.Interfaces.REST;
 
 /// <summary>
 ///     Uploads of images to the project's media library (Cloudinary). The API only signs: the browser sends the

@@ -1,9 +1,9 @@
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Exceptions;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Profiles.Domain.Model.Exceptions;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 using System.Text.RegularExpressions;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Enums;
+using RoomTrack.Profiles.Domain.Model.Enums;
 
-namespace BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects;
+namespace RoomTrack.Profiles.Domain.Model.ValueObjects;
 
 public partial record IdentificationDocument
 {

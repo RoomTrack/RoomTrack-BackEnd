@@ -3,11 +3,11 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.ExceptionHandling;
+using RoomTrack.Shared.Infrastructure.Interfaces.ASP.ExceptionHandling;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Authentication.ScheduledJobs;
+namespace RoomTrack.Shared.Infrastructure.Authentication.ScheduledJobs;
 
 /// <summary>
 ///     Native authentication scheme for the external scheduler: the request must carry the shared secret in the

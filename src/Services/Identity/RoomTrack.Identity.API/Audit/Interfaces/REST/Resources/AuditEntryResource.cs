@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace BackendAwRoomTrack.API.Audit.Interfaces.REST.Resources;
+namespace RoomTrack.Audit.Interfaces.REST.Resources;
 
 /// <summary>One entry of the access audit log.</summary>
 /// <param name="Id">Entry id.</param>

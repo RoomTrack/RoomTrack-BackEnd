@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Bookings.Interfaces.REST.Resources;
+namespace RoomTrack.Bookings.Interfaces.REST.Resources;
 
 /// <summary>A booking.</summary>
 /// <param name="Id">Technical id (use it in the URLs).</param>
@@ -21,6 +21,7 @@ namespace BackendAwRoomTrack.API.Bookings.Interfaces.REST.Resources;
 /// <param name="CancelledAt">When it was cancelled.</param>
 /// <param name="CancellationReason">GuestRequest, HotelRequest or PaymentNotReceived.</param>
 /// <param name="CheckedInAt">When the guest checked in.</param>
+/// <param name="CheckedOutAt">When the guest checked out (the booking is Completed).</param>
 /// <param name="GuestProfileId">The associated guest profile, if any.</param>
 /// <param name="UserId">The guest account that owns the booking, if any.</param>
 /// <param name="PaymentInstructions">
@@ -50,7 +51,8 @@ public record BookingResource(
     DateTimeOffset? CheckedInAt,
     Guid? GuestProfileId = null,
     int? UserId = null,
-    BookingPaymentInstructionsResource? PaymentInstructions = null);
+    BookingPaymentInstructionsResource? PaymentInstructions = null,
+    DateTimeOffset? CheckedOutAt = null);
 
 /// <summary>How the guest pays a Pending booking: the payment methods of its hotel. Null members are not offered.</summary>
 /// <param name="AccountHolder">Name the guest pays to.</param>

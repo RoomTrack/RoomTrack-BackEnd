@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace BackendAwRoomTrack.API.Marketing.Application.Internal.Configuration;
+namespace RoomTrack.Marketing.Application.Internal.Configuration;
 
 /// <summary>
 ///     Demo request settings (sections <c>Sales</c> and <c>DemoRequests</c>), validated at startup.

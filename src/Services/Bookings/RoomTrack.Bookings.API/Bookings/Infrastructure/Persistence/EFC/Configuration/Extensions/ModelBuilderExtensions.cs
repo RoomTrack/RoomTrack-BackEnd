@@ -1,9 +1,9 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Bookings.Infrastructure.Storage;
+using RoomTrack.Bookings.Domain.Model.Aggregates;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Bookings.Infrastructure.Storage;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackendAwRoomTrack.API.Bookings.Infrastructure.Persistence.EFC.Configuration.Extensions;
+namespace RoomTrack.Bookings.Infrastructure.Persistence.EFC.Configuration.Extensions;
 
 public static class ModelBuilderExtensions
 {

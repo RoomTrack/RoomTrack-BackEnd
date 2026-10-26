@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.Analytics.Domain.Model.Aggregates;
+using RoomTrack.Analytics.Domain.Model.Aggregates;
 
-namespace BackendAwRoomTrack.API.Analytics.Domain.Repositories;
+namespace RoomTrack.Analytics.Domain.Repositories;
 
 /// <summary>
 /// Interface for retrieving analytical data.

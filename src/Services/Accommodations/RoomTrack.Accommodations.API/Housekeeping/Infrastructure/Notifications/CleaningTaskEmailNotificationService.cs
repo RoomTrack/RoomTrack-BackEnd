@@ -1,13 +1,13 @@
 using System.Globalization;
-using BackendAwRoomTrack.API.Housekeeping.Application.OutboundServices;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.IAM.Interfaces.ACL;
-using BackendAwRoomTrack.API.Shared.Application.OutboundServices;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Configuration;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Email.Templates;
+using RoomTrack.Housekeeping.Application.OutboundServices;
+using RoomTrack.Housekeeping.Domain.Model.ValueObjects;
+using RoomTrack.IAM.Interfaces.ACL;
+using RoomTrack.Shared.Application.OutboundServices;
+using RoomTrack.Shared.Infrastructure.Configuration;
+using RoomTrack.Shared.Infrastructure.Email.Templates;
 using Microsoft.Extensions.Options;
 
-namespace BackendAwRoomTrack.API.Housekeeping.Infrastructure.Notifications;
+namespace RoomTrack.Housekeeping.Infrastructure.Notifications;
 
 /// <summary>Cleaning task e-mails to the hotel staff (neutral Spanish) with a link to the task in the web app.</summary>
 public class CleaningTaskEmailNotificationService(

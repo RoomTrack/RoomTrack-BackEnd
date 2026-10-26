@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Audit.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Audit.Domain.Model.Queries;
+using RoomTrack.Audit.Domain.Model.Aggregates;
+using RoomTrack.Audit.Domain.Model.Queries;
 
-namespace BackendAwRoomTrack.API.Audit.Domain.Services;
+namespace RoomTrack.Audit.Domain.Services;
 
 public interface IAuditQueryService
 {

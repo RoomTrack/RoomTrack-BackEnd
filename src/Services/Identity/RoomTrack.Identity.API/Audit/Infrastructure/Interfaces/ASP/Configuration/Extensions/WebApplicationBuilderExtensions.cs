@@ -1,14 +1,14 @@
-using BackendAwRoomTrack.API.Audit.Application.Internal.EventHandlers;
-using BackendAwRoomTrack.API.Audit.Application.Internal.QueryServices;
-using BackendAwRoomTrack.API.Audit.Application.OutboundServices;
-using BackendAwRoomTrack.API.Audit.Domain.Repositories;
-using BackendAwRoomTrack.API.Audit.Domain.Services;
-using BackendAwRoomTrack.API.Audit.Infrastructure.Http;
-using BackendAwRoomTrack.API.Audit.Infrastructure.Persistence.EFC.Repositories;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Events;
-using BackendAwRoomTrack.API.Shared.Application.Internal.EventHandlers;
+using RoomTrack.Audit.Application.Internal.EventHandlers;
+using RoomTrack.Audit.Application.Internal.QueryServices;
+using RoomTrack.Audit.Application.OutboundServices;
+using RoomTrack.Audit.Domain.Repositories;
+using RoomTrack.Audit.Domain.Services;
+using RoomTrack.Audit.Infrastructure.Http;
+using RoomTrack.Audit.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.IAM.Domain.Model.Events;
+using RoomTrack.Shared.Application.Internal.EventHandlers;
 
-namespace BackendAwRoomTrack.API.Audit.Infrastructure.Interfaces.ASP.Configuration.Extensions;
+namespace RoomTrack.Audit.Infrastructure.Interfaces.ASP.Configuration.Extensions;
 
 public static class WebApplicationBuilderExtensions
 {

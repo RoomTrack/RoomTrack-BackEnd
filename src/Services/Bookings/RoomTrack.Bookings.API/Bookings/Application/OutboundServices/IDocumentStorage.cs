@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Bookings.Application.OutboundServices;
+namespace RoomTrack.Bookings.Application.OutboundServices;
 
 /// <summary>
 ///     Stores the identity documents uploaded at the check-in. Adapters must keep them confidential (they

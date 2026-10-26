@@ -1,21 +1,21 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Accommodations.Domain.Services;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Repositories;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Services;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Constants;
-using BackendAwRoomTrack.API.IAM.Interfaces.ACL;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Incidents.Domain.Services;
-using BackendAwRoomTrack.API.Shared.Domain.Repositories;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Accommodations.Domain.Model.Commands;
+using RoomTrack.Accommodations.Domain.Model.Queries;
+using RoomTrack.Accommodations.Domain.Services;
+using RoomTrack.Housekeeping.Domain.Model.Aggregates;
+using RoomTrack.Housekeeping.Domain.Model.Commands;
+using RoomTrack.Housekeeping.Domain.Model.Exceptions;
+using RoomTrack.Housekeeping.Domain.Model.ValueObjects;
+using RoomTrack.Housekeeping.Domain.Repositories;
+using RoomTrack.Housekeeping.Domain.Services;
+using RoomTrack.IAM.Domain.Model.Constants;
+using RoomTrack.IAM.Interfaces.ACL;
+using RoomTrack.Incidents.Domain.Model.Commands;
+using RoomTrack.Incidents.Domain.Model.ValueObjects;
+using RoomTrack.Incidents.Domain.Services;
+using RoomTrack.Shared.Domain.Repositories;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.Housekeeping.Application.Internal.CommandServices;
+namespace RoomTrack.Housekeeping.Application.Internal.CommandServices;
 
 /// <summary>
 ///     Use cases of the cleaning tasks. The room of a task is changed through the Rooms context
@@ -38,8 +38,6 @@ public class CleaningTaskCommandService(
     {
         var room = await roomQueryService.Handle(new GetRoomByIdQuery(command.RoomId))
                    ?? throw new EntityNotFoundException("Room", command.RoomId);
-        if (await cleaningTaskRepository.FindOpenByRoomAsync(room.Id) is { } open)
-            throw new RoomAlreadyHasOpenCleaningTaskException(room.Id, open.Id);
 
         var now = timeProvider.GetUtcNow();
         var task = CleaningTask.Create(room.HotelId, room.Id, command.Priority, command.Notes, command.Actor, now);
@@ -55,9 +53,15 @@ public class CleaningTaskCommandService(
             task.AssignAutomatically(selected, command.Actor, now);
         }
 
+        // The room is locked before looking for its open task: a double click, or the room going to Cleaning at the
+        // same time (which creates its own task under this lock), waits here and then finds the task already open.
         // The assignment event needs the generated id: saved first, then published in the same transaction.
         await unitOfWork.ExecuteInTransactionAsync(async () =>
         {
+            await roomQueryService.Handle(new GetRoomByIdForUpdateQuery(room.Id));
+            if (await cleaningTaskRepository.FindOpenByRoomAsync(room.Id) is { } open)
+                throw new RoomAlreadyHasOpenCleaningTaskException(room.Id, open.Id);
+
             await cleaningTaskRepository.AddAsync(task);
             await unitOfWork.CompleteAsync();
         });
@@ -81,7 +85,7 @@ public class CleaningTaskCommandService(
         {
             if (!command.Actor.CanManage) throw new CleaningTaskManageNotAllowedException("automatically assign");
             var selected = await assignmentStrategy.SelectAssigneeAsync(task.HotelId, excludingUserId: task.AssigneeUserId)
-                           ?? throw new NoHousekeeperAvailableException(task.HotelId);
+                           ?? throw new NoHousekeeperAvailableException(task.HotelId, task.AssigneeUserId);
             task.AssignAutomatically(selected, command.Actor, now);
         }
 

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace BackendAwRoomTrack.API.Bookings.Interfaces.REST.Resources;
+namespace RoomTrack.Bookings.Interfaces.REST.Resources;
 
 /// <summary>
 ///     A new booking. A guest books for themselves (their account gives the name and e-mail). Staff book for a guest

@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Bookings.Domain.Model.Queries;
+namespace RoomTrack.Bookings.Domain.Model.Queries;
 
 /// <summary>
 ///     Rooms that can be booked for <paramref name="Dates"/>: offered for booking (not under

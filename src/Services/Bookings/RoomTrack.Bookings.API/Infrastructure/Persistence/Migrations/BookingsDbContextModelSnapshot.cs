@@ -22,7 +22,7 @@ namespace RoomTrack.Bookings.API.Infrastructure.Persistence.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Bookings.Domain.Model.Aggregates.Booking", b =>
+            modelBuilder.Entity("RoomTrack.Bookings.Domain.Model.Aggregates.Booking", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -51,6 +51,14 @@ namespace RoomTrack.Bookings.API.Infrastructure.Persistence.Migrations
                     b.Property<DateTimeOffset?>("CheckedInAt")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("checked_in_at");
+
+                    b.Property<DateTimeOffset?>("CheckedOutAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("checked_out_at");
+
+                    b.Property<int?>("CheckedOutByUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("checked_out_by_user_id");
 
                     b.Property<string>("Code")
                         .IsRequired()
@@ -130,7 +138,7 @@ namespace RoomTrack.Bookings.API.Infrastructure.Persistence.Migrations
                     b.ToTable("bookings");
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Bookings.Domain.Model.Aggregates.DigitalCheckIn", b =>
+            modelBuilder.Entity("RoomTrack.Bookings.Domain.Model.Aggregates.DigitalCheckIn", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -211,7 +219,7 @@ namespace RoomTrack.Bookings.API.Infrastructure.Persistence.Migrations
                     b.ToTable("digital_check_ins", (string)null);
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Bookings.Infrastructure.Storage.StoredDocument", b =>
+            modelBuilder.Entity("RoomTrack.Bookings.Infrastructure.Storage.StoredDocument", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -249,7 +257,7 @@ namespace RoomTrack.Bookings.API.Infrastructure.Persistence.Migrations
                     b.ToTable("stored_documents", (string)null);
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Payments.Domain.Model.Aggregates.Payment", b =>
+            modelBuilder.Entity("RoomTrack.Payments.Domain.Model.Aggregates.Payment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -571,9 +579,9 @@ namespace RoomTrack.Bookings.API.Infrastructure.Persistence.Migrations
                     b.ToTable("room_booking_locks");
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Bookings.Domain.Model.Aggregates.DigitalCheckIn", b =>
+            modelBuilder.Entity("RoomTrack.Bookings.Domain.Model.Aggregates.DigitalCheckIn", b =>
                 {
-                    b.HasOne("BackendAwRoomTrack.API.Bookings.Domain.Model.Aggregates.Booking", null)
+                    b.HasOne("RoomTrack.Bookings.Domain.Model.Aggregates.Booking", null)
                         .WithMany()
                         .HasForeignKey("BookingId")
                         .OnDelete(DeleteBehavior.Cascade)

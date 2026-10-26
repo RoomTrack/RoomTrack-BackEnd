@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Audit.Domain.Model.Exceptions;
+namespace RoomTrack.Audit.Domain.Model.Exceptions;
 
 /// <summary>Stable error codes of the Audit context (access audit log).</summary>
 public static class AuditErrorCodes

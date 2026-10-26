@@ -1,12 +1,12 @@
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Incidents.Domain.Services;
-using BackendAwRoomTrack.API.Incidents.Interfaces.REST.Resources;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Authentication.ScheduledJobs;
+using RoomTrack.Incidents.Domain.Model.Commands;
+using RoomTrack.Incidents.Domain.Services;
+using RoomTrack.Incidents.Interfaces.REST.Resources;
+using RoomTrack.Shared.Infrastructure.Authentication.ScheduledJobs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace BackendAwRoomTrack.API.Incidents.Interfaces.REST;
+namespace RoomTrack.Incidents.Interfaces.REST;
 
 /// <summary>
 ///     Scheduled jobs of the incidents, called by the external scheduler with <c>X-Cron-Key</c> (kept apart from

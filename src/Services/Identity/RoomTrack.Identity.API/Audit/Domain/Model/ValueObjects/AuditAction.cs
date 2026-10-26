@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Audit.Domain.Model.ValueObjects;
+namespace RoomTrack.Audit.Domain.Model.ValueObjects;
 
 /// <summary>Access-related actions recorded in the audit log.</summary>
 public enum AuditAction

@@ -1,9 +1,9 @@
-using BackendAwRoomTrack.API.Shared.Application.Exceptions;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Internal;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Shared.Application.Exceptions;
+using RoomTrack.Shared.Infrastructure.Internal;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.ExceptionHandling;
+namespace RoomTrack.Shared.Infrastructure.Interfaces.ASP.ExceptionHandling;
 
 /// <summary>
 ///     Maps exceptions that escape the application layer to HTTP status codes. This is the only place where
@@ -19,6 +19,7 @@ namespace BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.ExceptionH
 ///         <item><see cref="ResourceExpiredException"/>: the resource existed but its lifetime ended → 410</item>
 ///         <item><see cref="FeatureNotConfiguredException"/>: an optional feature is not configured here → 503</item>
 ///         <item><see cref="DependencyUnavailableException"/>: another service this request needs is down → 503</item>
+///         <item><see cref="DbUpdateConcurrencyException"/>: someone else changed the same record at once → 409</item>
 ///         <item><see cref="DbUpdateException"/>: a database constraint rejected the change → 409</item>
 ///     </list>
 ///     Anything else (including <see cref="ArgumentException"/> or <see cref="InvalidOperationException"/>
@@ -37,6 +38,7 @@ public static class ExceptionStatusCodeMapper
         FeatureNotConfiguredException => (StatusCodes.Status503ServiceUnavailable, "Service unavailable"),
         DependencyUnavailableException => (StatusCodes.Status503ServiceUnavailable, "Service unavailable"),
         BadHttpRequestException badRequest => (badRequest.StatusCode, "Invalid request"),
+        DbUpdateConcurrencyException => (StatusCodes.Status409Conflict, "Concurrent update"),
         DbUpdateException => (StatusCodes.Status409Conflict, "Conflict with existing data"),
         _ => (StatusCodes.Status500InternalServerError, "Unexpected error")
     };

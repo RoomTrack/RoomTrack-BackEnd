@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.IAM.Domain.Model.Commands;
+namespace RoomTrack.IAM.Domain.Model.Commands;
 
 /// <summary>Exchange a refresh token for a new access token and a new refresh token (rotation).</summary>
 public record RefreshSessionCommand(string RefreshToken);

@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Enums;
+using RoomTrack.Profiles.Domain.Model.Enums;
 
-namespace BackendAwRoomTrack.API.Profiles.Interfaces.REST.Resources;
+namespace RoomTrack.Profiles.Interfaces.REST.Resources;
 
 public record StaffAssignmentResource(
     Guid Id,

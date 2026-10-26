@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.Incidents.Domain.Model.ValueObjects;
+using RoomTrack.Incidents.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Incidents.Domain.Model.Commands;
+namespace RoomTrack.Incidents.Domain.Model.Commands;
 
 /// <summary>A staff member reports an incident of a room (US-08).</summary>
 /// <param name="RoomId">The damaged room.</param>

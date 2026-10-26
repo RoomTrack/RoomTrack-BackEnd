@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Commands;
+using RoomTrack.Accommodations.Domain.Model.Aggregates;
+using RoomTrack.Accommodations.Domain.Model.Commands;
 
-namespace BackendAwRoomTrack.API.Accommodations.Domain.Services;
+namespace RoomTrack.Accommodations.Domain.Services;
 
 /// <summary>
 ///     Result of registering a hotel.
@@ -41,6 +41,6 @@ public interface IHotelCommandService
 
     /// <summary>Sets the payment methods of a hotel.</summary>
     /// <returns>The hotel, or null when it does not exist.</returns>
-    /// <exception cref="BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions.InvalidFieldsException">Invalid settings (every violation).</exception>
+    /// <exception cref="RoomTrack.Shared.Domain.Model.Exceptions.InvalidFieldsException">Invalid settings (every violation).</exception>
     Task<Hotel?> Handle(ConfigureHotelPaymentSettingsCommand command);
 }

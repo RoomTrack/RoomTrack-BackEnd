@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.IAM.Domain.Model.Enums;
+namespace RoomTrack.IAM.Domain.Model.Enums;
 
 /// <summary>Result of presenting a second-factor code.</summary>
 public enum MfaCodeOutcome

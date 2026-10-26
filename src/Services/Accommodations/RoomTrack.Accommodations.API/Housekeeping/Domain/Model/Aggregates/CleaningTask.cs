@@ -1,11 +1,12 @@
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Entities;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Events;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Events;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Housekeeping.Domain.Model.Entities;
+using RoomTrack.Housekeeping.Domain.Model.Events;
+using RoomTrack.Housekeeping.Domain.Model.Exceptions;
+using RoomTrack.Housekeeping.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Domain.Model;
+using RoomTrack.Shared.Domain.Model.Events;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.Housekeeping.Domain.Model.Aggregates;
+namespace RoomTrack.Housekeeping.Domain.Model.Aggregates;
 
 /// <summary>
 ///     The cleaning of a room, assigned to a housekeeping staff member (US-05) who updates it from their task list
@@ -17,7 +18,7 @@ namespace BackendAwRoomTrack.API.Housekeeping.Domain.Model.Aggregates;
 ///     transaction. Starting an already started task, or completing an already completed one, is a no-op so a client
 ///     replaying its offline queue does not fail.
 /// </remarks>
-public class CleaningTask : IHasDomainEvents
+public class CleaningTask : IHasDomainEvents, IHasConcurrencyVersion
 {
     public const int NotesMaxLength = 500;
     public const int CancellationReasonMaxLength = 500;
@@ -85,6 +86,12 @@ public class CleaningTask : IHasDomainEvents
     public string? CancellationReason { get; private set; }
 
     public bool IsOpen => Status is CleaningTaskStatus.Pending or CleaningTaskStatus.InProgress;
+
+    /// <summary>
+    ///     Optimistic concurrency: a reception change and a housekeeper's update made at once cannot overwrite each
+    ///     other (e.g. a cancelled task completed by its assignee); the second one is refused.
+    /// </summary>
+    public int Version { get; private set; }
 
     /// <summary>What happened to the task, oldest first.</summary>
     public IReadOnlyList<CleaningTaskHistoryEntry> History => _history.AsReadOnly();
@@ -188,13 +195,15 @@ public class CleaningTask : IHasDomainEvents
             actor.UserId, actor.Email, now));
     }
 
-    /// <summary>Re-classifies the urgency of an open task. The same priority is a no-op.</summary>
+    /// <summary>Re-classifies the urgency of an open task (its assignee is notified). The same priority is a no-op.</summary>
     public void ChangePriority(CleaningTaskPriority priority, CleaningTaskActor actor, DateTimeOffset now)
     {
         if (!actor.CanManage) throw new CleaningTaskManageNotAllowedException("re-prioritize");
         EnsureOpen();
         if (priority == Priority) return;
         Record(CleaningTaskHistoryAction.PriorityChanged, $"{Priority} → {priority}", actor, now);
+        _domainEvents.Add(new CleaningTaskPriorityChangedEvent(Id, HotelId, RoomId, AssigneeUserId, Priority, priority,
+            actor.UserId, now));
         Priority = priority;
     }
 

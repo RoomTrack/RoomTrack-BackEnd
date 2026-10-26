@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.IAM.Application.OutboundServices;
+namespace RoomTrack.IAM.Application.OutboundServices;
 
 /**
  * <summary>

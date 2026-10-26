@@ -1,20 +1,20 @@
-using BackendAwRoomTrack.API.Accommodations.Application.ACL;
-using BackendAwRoomTrack.API.Accommodations.Application.Internal.Configuration;
-using BackendAwRoomTrack.API.Accommodations.Application.Internal.EventHandlers;
-using BackendAwRoomTrack.API.Accommodations.Application.OutboundServices;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Events;
-using BackendAwRoomTrack.API.Accommodations.Infrastructure.Notifications;
-using BackendAwRoomTrack.API.Shared.Application.Internal.EventHandlers;
-using BackendAwRoomTrack.API.Accommodations.Application.Internal.CommandServices;
-using BackendAwRoomTrack.API.Accommodations.Application.Internal.QueryServices;
-using BackendAwRoomTrack.API.Accommodations.Domain.Repositories;
-using BackendAwRoomTrack.API.Accommodations.Domain.Services;
-using BackendAwRoomTrack.API.Accommodations.Infrastructure.Persistence.EFC.Repositories;
-using BackendAwRoomTrack.API.Accommodations.Interfaces.ACL;
-using BackendAwRoomTrack.API.Accommodations.Interfaces.REST.Authorization;
+using RoomTrack.Accommodations.Application.ACL;
+using RoomTrack.Accommodations.Application.Internal.Configuration;
+using RoomTrack.Accommodations.Application.Internal.EventHandlers;
+using RoomTrack.Accommodations.Application.OutboundServices;
+using RoomTrack.Accommodations.Domain.Model.Events;
+using RoomTrack.Accommodations.Infrastructure.Notifications;
+using RoomTrack.Shared.Application.Internal.EventHandlers;
+using RoomTrack.Accommodations.Application.Internal.CommandServices;
+using RoomTrack.Accommodations.Application.Internal.QueryServices;
+using RoomTrack.Accommodations.Domain.Repositories;
+using RoomTrack.Accommodations.Domain.Services;
+using RoomTrack.Accommodations.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.Accommodations.Interfaces.ACL;
+using RoomTrack.Accommodations.Interfaces.REST.Authorization;
 using Microsoft.AspNetCore.Authorization;
 
-namespace BackendAwRoomTrack.API.Accommodations.Infrastructure.Interfaces.ASP.Configuration.Extensions;
+namespace RoomTrack.Accommodations.Infrastructure.Interfaces.ASP.Configuration.Extensions;
 
 public static class WebApplicationBuilderExtensions
 {

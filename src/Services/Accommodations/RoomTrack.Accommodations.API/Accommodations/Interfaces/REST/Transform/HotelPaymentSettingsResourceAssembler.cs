@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Accommodations.Interfaces.REST.Resources;
+using RoomTrack.Accommodations.Domain.Model.Aggregates;
+using RoomTrack.Accommodations.Domain.Model.Commands;
+using RoomTrack.Accommodations.Interfaces.REST.Resources;
 
-namespace BackendAwRoomTrack.API.Accommodations.Interfaces.REST.Transform;
+namespace RoomTrack.Accommodations.Interfaces.REST.Transform;
 
 public static class HotelPaymentSettingsResourceAssembler
 {

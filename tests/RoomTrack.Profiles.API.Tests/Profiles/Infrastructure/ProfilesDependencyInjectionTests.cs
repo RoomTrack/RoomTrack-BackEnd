@@ -1,17 +1,17 @@
-using BackendAwRoomTrack.API.Accommodations.Interfaces.ACL;
-using BackendAwRoomTrack.API.Profiles.Application.Internal.CommandServices;
-using BackendAwRoomTrack.API.Profiles.Application.Internal.OutboundServices;
-using BackendAwRoomTrack.API.Profiles.Application.Internal.QueryServices;
-using BackendAwRoomTrack.API.Profiles.Infrastructure.Interfaces.ASP.Configuration.Extensions;
-using BackendAwRoomTrack.API.Profiles.Interfaces.ACL;
-using BackendAwRoomTrack.API.Shared.Application.OutboundServices;
-using BackendAwRoomTrack.API.Shared.Domain.Repositories;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Events;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Repositories;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Mediator.Cortex.Configuration.Extensions;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Repositories;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Services;
+using RoomTrack.Accommodations.Interfaces.ACL;
+using RoomTrack.Profiles.Application.Internal.CommandServices;
+using RoomTrack.Profiles.Application.Internal.OutboundServices;
+using RoomTrack.Profiles.Application.Internal.QueryServices;
+using RoomTrack.Profiles.Infrastructure.Interfaces.ASP.Configuration.Extensions;
+using RoomTrack.Profiles.Interfaces.ACL;
+using RoomTrack.Shared.Application.OutboundServices;
+using RoomTrack.Shared.Domain.Repositories;
+using RoomTrack.Shared.Infrastructure.Events;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.Shared.Infrastructure.Mediator.Cortex.Configuration.Extensions;
+using RoomTrack.Profiles.Domain.Repositories;
+using RoomTrack.Profiles.Domain.Services;
 using FluentAssertions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +20,7 @@ using RoomTrack.BuildingBlocks.Clients;
 using RoomTrack.Profiles.API.Infrastructure.Persistence;
 using Xunit;
 
-namespace BackendAwRoomTrack.API.Tests.Profiles.Infrastructure;
+namespace RoomTrack.Tests.Profiles.Infrastructure;
 
 public class ProfilesDependencyInjectionTests
 {

@@ -1,9 +1,9 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Accommodations.Interfaces.REST.Resources;
-using BackendAwRoomTrack.API.IAM.Interfaces.ACL;
+using RoomTrack.Accommodations.Domain.Model.Commands;
+using RoomTrack.Accommodations.Domain.Model.ValueObjects;
+using RoomTrack.Accommodations.Interfaces.REST.Resources;
+using RoomTrack.IAM.Interfaces.ACL;
 
-namespace BackendAwRoomTrack.API.Accommodations.Interfaces.REST.Transform;
+namespace RoomTrack.Accommodations.Interfaces.REST.Transform;
 
 public static class CreateHotelCommandFromResourceAssembler
 {

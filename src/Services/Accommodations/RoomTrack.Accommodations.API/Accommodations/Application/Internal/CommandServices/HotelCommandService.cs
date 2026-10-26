@@ -1,18 +1,18 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Bookings.Interfaces.ACL;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Accommodations.Domain.Repositories;
-using BackendAwRoomTrack.API.Accommodations.Domain.Services;
-using BackendAwRoomTrack.API.IAM.Interfaces.ACL;
-using BackendAwRoomTrack.API.Media.Interfaces.ACL;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Shared.Domain.Repositories;
+using RoomTrack.Accommodations.Domain.Model.Aggregates;
+using RoomTrack.Accommodations.Domain.Model.Exceptions;
+using RoomTrack.Accommodations.Domain.Model.ValueObjects;
+using RoomTrack.Bookings.Interfaces.ACL;
+using RoomTrack.Accommodations.Domain.Model.Commands;
+using RoomTrack.Accommodations.Domain.Repositories;
+using RoomTrack.Accommodations.Domain.Services;
+using RoomTrack.IAM.Interfaces.ACL;
+using RoomTrack.Media.Interfaces.ACL;
+using RoomTrack.Shared.Domain.Model.Exceptions;
+using RoomTrack.Shared.Domain.Repositories;
 using MassTransit;
 using RoomTrack.Contracts.Messaging;
 
-namespace BackendAwRoomTrack.API.Accommodations.Application.Internal.CommandServices;
+namespace RoomTrack.Accommodations.Application.Internal.CommandServices;
 
 /// <summary>
 /// Service implementation for handling hotel commands.

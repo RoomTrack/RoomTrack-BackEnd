@@ -1,9 +1,9 @@
-using BackendAwRoomTrack.API.Accommodations.Interfaces.ACL;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Bookings.Interfaces.REST.Resources;
+using RoomTrack.Accommodations.Interfaces.ACL;
+using RoomTrack.Bookings.Domain.Model.Aggregates;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Bookings.Interfaces.REST.Resources;
 
-namespace BackendAwRoomTrack.API.Bookings.Interfaces.REST.Transform;
+namespace RoomTrack.Bookings.Interfaces.REST.Transform;
 
 public static class BookingResourceFromEntityAssembler
 {
@@ -41,7 +41,8 @@ public static class BookingResourceFromEntityAssembler
         entity.CancellationReason?.ToString(),
         entity.CheckedInAt,
         entity.GuestProfileId,
-        entity.GuestId?.Value);
+        entity.GuestId?.Value,
+        CheckedOutAt: entity.CheckedOutAt);
 
     private static string RoomNumber(int roomId, IReadOnlyDictionary<int, string> roomNumbers) =>
         roomNumbers.TryGetValue(roomId, out var number) ? number : roomId.ToString();

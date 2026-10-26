@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Bookings.Domain.Model.Exceptions;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.Bookings.Domain.Model.Aggregates;
+namespace RoomTrack.Bookings.Domain.Model.Aggregates;
 
 /// <summary>Result of the automatic document validation.</summary>
 public enum CheckInStatus
@@ -47,6 +47,12 @@ public class DigitalCheckIn
     public DateTimeOffset CompletedAt { get; private set; }
 
     public GuestIdentityDocument Identity => new(DocumentType, DocumentNumber, Nationality);
+
+    /// <summary>The guest checked out: the room access code stops working now (it was valid until the check-out).</summary>
+    public void EndAccess(DateTimeOffset now)
+    {
+        if (now < AccessCodeValidUntil) AccessCodeValidUntil = now;
+    }
 
     /// <summary>
     ///     Records the approved check-in of <paramref name="booking"/>: the document passed the format validation

@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.IAM.Domain.Model.ValueObjects;
+using RoomTrack.IAM.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.IAM.Application.OutboundServices;
+namespace RoomTrack.IAM.Application.OutboundServices;
 
 /// <summary>
 ///     Tells whether the session of an access token is still valid (active user, current token version). The Identity

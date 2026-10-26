@@ -1,14 +1,14 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Bookings.Domain.Services;
-using BackendAwRoomTrack.API.Bookings.Interfaces.REST.Resources;
-using BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
+using RoomTrack.Bookings.Domain.Model.Queries;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Bookings.Domain.Services;
+using RoomTrack.Bookings.Interfaces.REST.Resources;
+using RoomTrack.IAM.Interfaces.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace BackendAwRoomTrack.API.Bookings.Interfaces.REST;
+namespace RoomTrack.Bookings.Interfaces.REST;
 
 /// <summary>Room availability for a stay, answered by the Bookings context.</summary>
 [ApiController]

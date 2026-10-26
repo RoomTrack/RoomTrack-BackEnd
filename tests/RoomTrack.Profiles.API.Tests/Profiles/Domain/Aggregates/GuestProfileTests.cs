@@ -1,12 +1,12 @@
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Aggregates;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Enums;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Events;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Domain.Model.Exceptions;
+using RoomTrack.Profiles.Domain.Model.Aggregates;
+using RoomTrack.Profiles.Domain.Model.Enums;
+using RoomTrack.Profiles.Domain.Model.Events;
+using RoomTrack.Profiles.Domain.Model.ValueObjects;
 using FluentAssertions;
 using Xunit;
 
-namespace BackendAwRoomTrack.API.Tests.Profiles.Domain.Aggregates;
+namespace RoomTrack.Tests.Profiles.Domain.Aggregates;
 
 public class GuestProfileTests
 {

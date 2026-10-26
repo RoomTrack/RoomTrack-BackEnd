@@ -1,10 +1,10 @@
-using BackendAwRoomTrack.API.Payments.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Payments.Domain.Repositories;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.Payments.Domain.Model.Aggregates;
+using RoomTrack.Payments.Domain.Repositories;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackendAwRoomTrack.API.Payments.Infrastructure.Persistence.EFC.Repositories;
+namespace RoomTrack.Payments.Infrastructure.Persistence.EFC.Repositories;
 
 public class PaymentRepository(AppDbContext context) : BaseRepository<Payment>(context), IPaymentRepository
 {

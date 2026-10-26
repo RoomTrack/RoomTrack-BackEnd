@@ -1,12 +1,12 @@
-using BackendAwRoomTrack.API.Accommodations.Interfaces.ACL;
-using BackendAwRoomTrack.API.Bookings.Application.OutboundServices;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Events;
-using BackendAwRoomTrack.API.Bookings.Domain.Repositories;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Constants;
-using BackendAwRoomTrack.API.IAM.Interfaces.ACL;
-using BackendAwRoomTrack.API.Shared.Application.Internal.EventHandlers;
+using RoomTrack.Accommodations.Interfaces.ACL;
+using RoomTrack.Bookings.Application.OutboundServices;
+using RoomTrack.Bookings.Domain.Model.Events;
+using RoomTrack.Bookings.Domain.Repositories;
+using RoomTrack.IAM.Domain.Model.Constants;
+using RoomTrack.IAM.Interfaces.ACL;
+using RoomTrack.Shared.Application.Internal.EventHandlers;
 
-namespace BackendAwRoomTrack.API.Bookings.Application.Internal.EventHandlers;
+namespace RoomTrack.Bookings.Application.Internal.EventHandlers;
 
 /// <summary>
 ///     A completed check-in notifies the housekeeping staff of the hotel and a request for help

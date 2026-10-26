@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Exceptions;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Bookings.Domain.Model.Exceptions;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
+namespace RoomTrack.Bookings.Domain.Model.ValueObjects;
 
 /// <summary>
 ///     The stay dates of a booking (<c>dates: DateRange</c> in the report's Booking component). Stays are counted in

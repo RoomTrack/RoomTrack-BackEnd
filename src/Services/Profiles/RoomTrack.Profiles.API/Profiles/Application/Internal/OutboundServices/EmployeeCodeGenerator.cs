@@ -1,14 +1,14 @@
 using System;
 using System.Data;
 using System.Threading.Tasks;
-using BackendAwRoomTrack.API.Profiles.Infrastructure.Persistence.EFC.Entities;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Services;
+using RoomTrack.Profiles.Infrastructure.Persistence.EFC.Entities;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration;
+using RoomTrack.Profiles.Domain.Model.ValueObjects;
+using RoomTrack.Profiles.Domain.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace BackendAwRoomTrack.API.Profiles.Application.Internal.OutboundServices;
+namespace RoomTrack.Profiles.Application.Internal.OutboundServices;
 
 /// <summary>
 /// Infrastructure outbound service for generating unique, sequential employee codes (EMP-XXXXX).

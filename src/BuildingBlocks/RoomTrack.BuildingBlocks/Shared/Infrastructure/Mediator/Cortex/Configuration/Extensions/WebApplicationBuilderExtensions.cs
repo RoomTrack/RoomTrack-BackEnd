@@ -1,7 +1,7 @@
 using Cortex.Mediator.Commands;
 using Cortex.Mediator.DependencyInjection;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Mediator.Cortex.Configuration.Extensions;
+namespace RoomTrack.Shared.Infrastructure.Mediator.Cortex.Configuration.Extensions;
 
 /// <summary>
 /// Provides extension methods for configuring Cortex Mediator services in the web application builder.

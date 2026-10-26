@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.IAM.Domain.Model.Enums;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Exceptions;
+using RoomTrack.IAM.Domain.Model.Enums;
+using RoomTrack.IAM.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.IAM.Infrastructure.Authentication;
+namespace RoomTrack.IAM.Infrastructure.Authentication;
 
 /// <summary>
 ///     Why a request's bearer token was not accepted: the stable code and the English detail of the 401/403, and for a

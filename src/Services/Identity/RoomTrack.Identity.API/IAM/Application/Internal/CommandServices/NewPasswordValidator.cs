@@ -1,10 +1,10 @@
-using BackendAwRoomTrack.API.IAM.Application.OutboundServices;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.IAM.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.IAM.Domain.Services;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.IAM.Application.OutboundServices;
+using RoomTrack.IAM.Domain.Model.Exceptions;
+using RoomTrack.IAM.Domain.Model.ValueObjects;
+using RoomTrack.IAM.Domain.Services;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.IAM.Application.Internal.CommandServices;
+namespace RoomTrack.IAM.Application.Internal.CommandServices;
 
 /// <summary>
 ///     Applies the password policy whenever a password is set (sign-up, account created by an administrator,

@@ -2,20 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BackendAwRoomTrack.API.Profiles.Application.Internal.Commands;
-using BackendAwRoomTrack.API.Profiles.Application.Internal.CommandServices;
-using BackendAwRoomTrack.API.Profiles.Application.Internal.Queries;
-using BackendAwRoomTrack.API.Profiles.Application.Internal.QueryServices;
-using BackendAwRoomTrack.API.Profiles.Interfaces.REST;
-using BackendAwRoomTrack.API.Profiles.Interfaces.REST.Resources;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Aggregates;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Enums;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects;
+using RoomTrack.Profiles.Application.Internal.Commands;
+using RoomTrack.Profiles.Application.Internal.CommandServices;
+using RoomTrack.Profiles.Application.Internal.Queries;
+using RoomTrack.Profiles.Application.Internal.QueryServices;
+using RoomTrack.Profiles.Interfaces.REST;
+using RoomTrack.Profiles.Interfaces.REST.Resources;
+using RoomTrack.Profiles.Domain.Model.Aggregates;
+using RoomTrack.Profiles.Domain.Model.Enums;
+using RoomTrack.Profiles.Domain.Model.ValueObjects;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Xunit;
 
-namespace BackendAwRoomTrack.API.Tests.Profiles.Interfaces.REST;
+namespace RoomTrack.Tests.Profiles.Interfaces.REST;
 
 public class StaffControllerTests
 {

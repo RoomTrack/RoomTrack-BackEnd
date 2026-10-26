@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Events;
+using RoomTrack.Accommodations.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Domain.Model.Events;
 
-namespace BackendAwRoomTrack.API.Accommodations.Domain.Model.Events;
+namespace RoomTrack.Accommodations.Domain.Model.Events;
 
 /// <summary>The status of a room changed.</summary>
 public sealed record RoomStatusChangedEvent(int RoomId, int HotelId, RoomStatus FromStatus, RoomStatus ToStatus,

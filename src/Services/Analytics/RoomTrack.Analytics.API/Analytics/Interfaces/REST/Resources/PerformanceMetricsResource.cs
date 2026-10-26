@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Analytics.Interfaces.REST.Resources;
+namespace RoomTrack.Analytics.Interfaces.REST.Resources;
 
 /// <summary>
 ///     Resource containing the performance metrics for the dashboard.

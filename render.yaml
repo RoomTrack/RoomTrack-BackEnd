@@ -285,3 +285,8 @@ services:
         sync: false
       - key: Email__From__Name
         value: RoomTrack
+      # Notificaciones push (US-22): Fcm con la clave JSON de una cuenta de servicio de Firebase; Log mientras no exista
+      - key: Push__Transport
+        value: Log
+      - key: Push__Fcm__ServiceAccountJson
+        sync: false

@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.IAM.Domain.Model.Enums;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Exceptions;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.IAM.Domain.Model.Enums;
+using RoomTrack.IAM.Domain.Model.Exceptions;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates;
+namespace RoomTrack.IAM.Domain.Model.Aggregates;
 
 /// <summary>
 ///     Single-use token sent by e-mail as a link: e-mail verification or password reset.

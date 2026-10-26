@@ -1,6 +1,6 @@
 ﻿using Humanizer;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration.Extensions;
+namespace RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration.Extensions;
 
 /// <summary>
 /// Provides extension methods for string manipulation, such as naming convention conversions.

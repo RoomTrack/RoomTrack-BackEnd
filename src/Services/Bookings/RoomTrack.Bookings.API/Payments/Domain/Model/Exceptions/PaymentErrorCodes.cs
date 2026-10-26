@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Payments.Domain.Model.Exceptions;
+namespace RoomTrack.Payments.Domain.Model.Exceptions;
 
 /// <summary>Stable error codes of the Payments context (payments registered by the hotel).</summary>
 public static class PaymentErrorCodes

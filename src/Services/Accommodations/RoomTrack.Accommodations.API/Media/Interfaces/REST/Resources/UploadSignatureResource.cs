@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Media.Interfaces.REST.Resources;
+namespace RoomTrack.Media.Interfaces.REST.Resources;
 
 /// <summary>
 ///     A signed authorization to upload ONE image straight to Cloudinary. Post the file as multipart to

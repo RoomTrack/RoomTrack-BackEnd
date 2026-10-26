@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Audit.Domain.Model.ValueObjects;
+namespace RoomTrack.Audit.Domain.Model.ValueObjects;
 
 /// <summary>
 ///     Structured facts of an audit entry (never an English sentence), so each client words them in its own

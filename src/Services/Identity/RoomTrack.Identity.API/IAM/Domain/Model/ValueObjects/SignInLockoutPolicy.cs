@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.IAM.Domain.Model.Exceptions;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.IAM.Domain.Model.Exceptions;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.IAM.Domain.Model.ValueObjects;
+namespace RoomTrack.IAM.Domain.Model.ValueObjects;
 
 /// <summary>
 ///     After <see cref="MaxConsecutiveFailures"/> consecutive failed sign-ins the account is locked

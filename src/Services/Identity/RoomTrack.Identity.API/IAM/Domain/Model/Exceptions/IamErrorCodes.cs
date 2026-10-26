@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.IAM.Domain.Model.Exceptions;
+namespace RoomTrack.IAM.Domain.Model.Exceptions;
 
 /// <summary>
 ///     Stable error codes of the IAM context: sign-in and sessions (<c>auth.*</c>), e-mail links, two-factor

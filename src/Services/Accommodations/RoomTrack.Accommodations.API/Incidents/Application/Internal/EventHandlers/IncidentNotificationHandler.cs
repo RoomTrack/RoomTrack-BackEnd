@@ -1,14 +1,14 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Accommodations.Domain.Services;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Constants;
-using BackendAwRoomTrack.API.IAM.Interfaces.ACL;
-using BackendAwRoomTrack.API.Incidents.Application.OutboundServices;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Events;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Incidents.Domain.Repositories;
-using BackendAwRoomTrack.API.Shared.Application.Internal.EventHandlers;
+using RoomTrack.Accommodations.Domain.Model.Queries;
+using RoomTrack.Accommodations.Domain.Services;
+using RoomTrack.IAM.Domain.Model.Constants;
+using RoomTrack.IAM.Interfaces.ACL;
+using RoomTrack.Incidents.Application.OutboundServices;
+using RoomTrack.Incidents.Domain.Model.Events;
+using RoomTrack.Incidents.Domain.Model.ValueObjects;
+using RoomTrack.Incidents.Domain.Repositories;
+using RoomTrack.Shared.Application.Internal.EventHandlers;
 
-namespace BackendAwRoomTrack.API.Incidents.Application.Internal.EventHandlers;
+namespace RoomTrack.Incidents.Application.Internal.EventHandlers;
 
 /// <summary>
 ///     Notifies the hotel staff of what happens to an incident. Recipients come from IAM through its ACL facade; the

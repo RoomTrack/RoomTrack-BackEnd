@@ -22,7 +22,7 @@ namespace RoomTrack.Identity.API.Infrastructure.Persistence.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Audit.Domain.Model.Aggregates.AuditEntry", b =>
+            modelBuilder.Entity("RoomTrack.Audit.Domain.Model.Aggregates.AuditEntry", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -97,7 +97,7 @@ namespace RoomTrack.Identity.API.Infrastructure.Persistence.Migrations
                     b.ToTable("audit_entries", (string)null);
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates.AccountToken", b =>
+            modelBuilder.Entity("RoomTrack.IAM.Domain.Model.Aggregates.AccountToken", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -151,7 +151,7 @@ namespace RoomTrack.Identity.API.Infrastructure.Persistence.Migrations
                     b.ToTable("account_tokens", (string)null);
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates.MfaRecoveryCode", b =>
+            modelBuilder.Entity("RoomTrack.IAM.Domain.Model.Aggregates.MfaRecoveryCode", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -187,7 +187,7 @@ namespace RoomTrack.Identity.API.Infrastructure.Persistence.Migrations
                     b.ToTable("mfa_recovery_codes", (string)null);
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates.RefreshToken", b =>
+            modelBuilder.Entity("RoomTrack.IAM.Domain.Model.Aggregates.RefreshToken", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -247,7 +247,7 @@ namespace RoomTrack.Identity.API.Infrastructure.Persistence.Migrations
                     b.ToTable("refresh_tokens", (string)null);
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates.User", b =>
+            modelBuilder.Entity("RoomTrack.IAM.Domain.Model.Aggregates.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -380,6 +380,81 @@ namespace RoomTrack.Identity.API.Infrastructure.Persistence.Migrations
                         .HasDatabaseName("i_x_users_status");
 
                     b.ToTable("users", (string)null);
+                });
+
+            modelBuilder.Entity("RoomTrack.Notifications.Domain.Model.Aggregates.NotificationPreferences", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
+                    b.Property<string>("DisabledCategoryCodes")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)")
+                        .HasColumnName("disabled_category_codes");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("UserId")
+                        .HasName("p_k_notification_preferences");
+
+                    b.ToTable("notification_preferences", (string)null);
+                });
+
+            modelBuilder.Entity("RoomTrack.Notifications.Domain.Model.Aggregates.PushDevice", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTimeOffset>("LastRegisteredAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("last_registered_at");
+
+                    b.Property<string>("Platform")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("platform");
+
+                    b.Property<DateTimeOffset>("RegisteredAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("registered_at");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(4096)
+                        .HasColumnType("varchar(4096)")
+                        .HasColumnName("token");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("char(64)")
+                        .HasColumnName("token_hash")
+                        .IsFixedLength();
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_push_devices");
+
+                    b.HasIndex("TokenHash")
+                        .IsUnique()
+                        .HasDatabaseName("i_x_push_devices__token_hash");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("i_x_push_devices__user_id");
+
+                    b.ToTable("push_devices", (string)null);
                 });
 
             modelBuilder.Entity("MassTransit.EntityFrameworkCoreIntegration.InboxState", b =>
@@ -623,9 +698,9 @@ namespace RoomTrack.Identity.API.Infrastructure.Persistence.Migrations
                     b.ToTable("data_protection_keys");
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates.AccountToken", b =>
+            modelBuilder.Entity("RoomTrack.IAM.Domain.Model.Aggregates.AccountToken", b =>
                 {
-                    b.HasOne("BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates.User", null)
+                    b.HasOne("RoomTrack.IAM.Domain.Model.Aggregates.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -633,9 +708,9 @@ namespace RoomTrack.Identity.API.Infrastructure.Persistence.Migrations
                         .HasConstraintName("f_k_account_tokens_users__user_id");
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates.MfaRecoveryCode", b =>
+            modelBuilder.Entity("RoomTrack.IAM.Domain.Model.Aggregates.MfaRecoveryCode", b =>
                 {
-                    b.HasOne("BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates.User", null)
+                    b.HasOne("RoomTrack.IAM.Domain.Model.Aggregates.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -643,9 +718,9 @@ namespace RoomTrack.Identity.API.Infrastructure.Persistence.Migrations
                         .HasConstraintName("f_k_mfa_recovery_codes_users__user_id");
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates.RefreshToken", b =>
+            modelBuilder.Entity("RoomTrack.IAM.Domain.Model.Aggregates.RefreshToken", b =>
                 {
-                    b.HasOne("BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates.User", null)
+                    b.HasOne("RoomTrack.IAM.Domain.Model.Aggregates.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

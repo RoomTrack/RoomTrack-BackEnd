@@ -1,5 +1,5 @@
-using BackendAwRoomTrack.API.Accommodations.Interfaces.ACL;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Internal;
+using RoomTrack.Accommodations.Interfaces.ACL;
+using RoomTrack.Shared.Infrastructure.Internal;
 
 namespace RoomTrack.BuildingBlocks.Clients;
 
@@ -49,6 +49,10 @@ public class HttpAccommodationsContextFacade(HttpClient httpClient)
     /// <remarks>Committed by the Accommodations service on its own: call it last, right before the caller commits.</remarks>
     public Task OccupyRoomForCheckInAsync(int roomId, int? guestUserId, string? guestEmail) =>
         PostAsync($"internal/v1/rooms/{roomId}/occupancy", new { guestUserId, guestEmail });
+
+    /// <remarks>Committed by the Accommodations service on its own: call it last, right before the caller commits.</remarks>
+    public Task VacateRoomAfterCheckOutAsync(int roomId, int? checkedOutByUserId, string? checkedOutByEmail) =>
+        PostAsync($"internal/v1/rooms/{roomId}/check-out", new { checkedOutByUserId, checkedOutByEmail });
 
     public async Task<IReadOnlyList<RoomOffer>> FetchRoomsOfferedForBookingAsync(int? hotelId) =>
         await GetAsync<List<RoomOffer>>(hotelId is null ? "internal/v1/rooms/offered" : $"internal/v1/rooms/offered?hotelId={hotelId}");

@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Events;
+using RoomTrack.Shared.Domain.Model.Events;
 
-namespace BackendAwRoomTrack.API.Shared.Application.Internal.EventHandlers;
+namespace RoomTrack.Shared.Application.Internal.EventHandlers;
 
 /// <summary>
 ///     Reacts to a domain event (e.g. the Audit context records the IAM access events). Handlers run in the scope

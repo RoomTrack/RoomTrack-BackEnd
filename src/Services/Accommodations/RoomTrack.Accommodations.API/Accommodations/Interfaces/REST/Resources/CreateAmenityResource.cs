@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace BackendAwRoomTrack.API.Accommodations.Interfaces.REST.Resources;
+namespace RoomTrack.Accommodations.Interfaces.REST.Resources;
 
 /// <summary>
 /// Resource definition for creating a new amenity.

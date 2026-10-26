@@ -1,9 +1,9 @@
-using BackendAwRoomTrack.API.IAM.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.Validation;
+using RoomTrack.IAM.Domain.Model.Exceptions;
+using RoomTrack.Shared.Infrastructure.Interfaces.ASP.Validation;
 using System.ComponentModel.DataAnnotations;
-using BackendAwRoomTrack.API.IAM.Domain.Model.ValueObjects;
+using RoomTrack.IAM.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.IAM.Interfaces.REST.Resources;
+namespace RoomTrack.IAM.Interfaces.REST.Resources;
 
 /// <summary>What an authenticator app needs to add the account.</summary>
 /// <param name="Secret">The shared secret in Base32, for manual entry.</param>

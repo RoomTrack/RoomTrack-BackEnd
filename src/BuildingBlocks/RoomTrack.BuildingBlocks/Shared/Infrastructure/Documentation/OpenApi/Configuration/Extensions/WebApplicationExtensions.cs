@@ -1,6 +1,6 @@
 using Scalar.AspNetCore;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Documentation.OpenApi.Configuration.Extensions;
+namespace RoomTrack.Shared.Infrastructure.Documentation.OpenApi.Configuration.Extensions;
 
 /// <summary>
 /// Extension methods for configuring the API documentation and CORS middleware in the application pipeline.

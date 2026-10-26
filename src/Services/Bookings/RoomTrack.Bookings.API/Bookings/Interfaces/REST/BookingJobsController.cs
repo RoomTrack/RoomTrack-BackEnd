@@ -1,12 +1,12 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Bookings.Domain.Services;
-using BackendAwRoomTrack.API.Bookings.Interfaces.REST.Resources;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Authentication.ScheduledJobs;
+using RoomTrack.Bookings.Domain.Model.Commands;
+using RoomTrack.Bookings.Domain.Services;
+using RoomTrack.Bookings.Interfaces.REST.Resources;
+using RoomTrack.Shared.Infrastructure.Authentication.ScheduledJobs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace BackendAwRoomTrack.API.Bookings.Interfaces.REST;
+namespace RoomTrack.Bookings.Interfaces.REST;
 
 /// <summary>
 ///     Scheduled jobs of the Bookings context, called by the external scheduler with <c>X-Cron-Key</c>. Kept apart

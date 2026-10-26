@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Accommodations.Domain.Model.Commands;
+namespace RoomTrack.Accommodations.Domain.Model.Commands;
 
 /// <summary>
 ///     Sets how the guests of <paramref name="HotelId"/> pay their bookings (replaces the previous settings).

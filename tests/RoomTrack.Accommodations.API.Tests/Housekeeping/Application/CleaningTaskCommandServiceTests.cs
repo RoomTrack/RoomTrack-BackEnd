@@ -3,42 +3,42 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BackendAwRoomTrack.API.Accommodations.Application.Internal.CommandServices;
-using BackendAwRoomTrack.API.Accommodations.Application.Internal.Configuration;
-using BackendAwRoomTrack.API.Accommodations.Application.Internal.QueryServices;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Entities;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Events;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Accommodations.Infrastructure.Persistence.EFC.Repositories;
-using BackendAwRoomTrack.API.Housekeeping.Application.Internal.CommandServices;
-using BackendAwRoomTrack.API.Housekeeping.Application.Internal.EventHandlers;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Housekeeping.Infrastructure.Persistence.EFC.Repositories;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Constants;
-using BackendAwRoomTrack.API.IAM.Interfaces.ACL;
-using BackendAwRoomTrack.API.Incidents.Application.Internal.CommandServices;
-using BackendAwRoomTrack.API.Incidents.Application.Internal.Configuration;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Incidents.Infrastructure.Persistence.EFC.Repositories;
-using BackendAwRoomTrack.API.Shared.Application.OutboundServices;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Repositories;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Events;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Accommodations.Application.Internal.CommandServices;
+using RoomTrack.Accommodations.Application.Internal.Configuration;
+using RoomTrack.Accommodations.Application.Internal.QueryServices;
+using RoomTrack.Accommodations.Domain.Model.Aggregates;
+using RoomTrack.Accommodations.Domain.Model.Commands;
+using RoomTrack.Accommodations.Domain.Model.Entities;
+using RoomTrack.Accommodations.Domain.Model.Events;
+using RoomTrack.Accommodations.Domain.Model.Exceptions;
+using RoomTrack.Accommodations.Domain.Model.ValueObjects;
+using RoomTrack.Accommodations.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.Housekeeping.Application.Internal.CommandServices;
+using RoomTrack.Housekeeping.Application.Internal.EventHandlers;
+using RoomTrack.Housekeeping.Domain.Model.Aggregates;
+using RoomTrack.Housekeeping.Domain.Model.Commands;
+using RoomTrack.Housekeeping.Domain.Model.Exceptions;
+using RoomTrack.Housekeeping.Domain.Model.ValueObjects;
+using RoomTrack.Housekeeping.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.IAM.Domain.Model.Constants;
+using RoomTrack.IAM.Interfaces.ACL;
+using RoomTrack.Incidents.Application.Internal.CommandServices;
+using RoomTrack.Incidents.Application.Internal.Configuration;
+using RoomTrack.Incidents.Domain.Model.Aggregates;
+using RoomTrack.Incidents.Domain.Model.Commands;
+using RoomTrack.Incidents.Domain.Model.ValueObjects;
+using RoomTrack.Incidents.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.Shared.Application.OutboundServices;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.Shared.Domain.Model.Events;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using RoomTrack.Accommodations.API.Infrastructure.Persistence;
 using Xunit;
 
-namespace BackendAwRoomTrack.API.Tests.Housekeeping.Application;
+namespace RoomTrack.Tests.Housekeeping.Application;
 
 /// <summary>
 ///     Cleaning task use cases against the real Rooms and Incidents contexts and an in-memory database: a task and the
@@ -51,8 +51,8 @@ public class CleaningTaskCommandServiceTests : IDisposable
     private static readonly CleaningTaskActor Beto = new(31, "beto@roomtrack.pe", CleaningTaskRole.Housekeeper);
     private static readonly IncidentActor Maintenance = new(20, "mantenimiento@roomtrack.pe", IsAdministrator: false);
 
-    private readonly AccommodationsDbContext _context = new(new DbContextOptionsBuilder<AccommodationsDbContext>()
-        .UseInMemoryDatabase(Guid.NewGuid().ToString()).Options);
+    private readonly string _databaseName = Guid.NewGuid().ToString();
+    private readonly AccommodationsDbContext _context;
     private readonly FakeIam _iam = new();
     private readonly CleaningTaskCommandService _service;
     private readonly IncidentCommandService _incidents;
@@ -63,6 +63,7 @@ public class CleaningTaskCommandServiceTests : IDisposable
 
     public CleaningTaskCommandServiceTests()
     {
+        _context = NewContext();
         var tasks = new CleaningTaskRepository(_context);
         var settings = new HotelHousekeepingSettingsRepository(_context);
         var strategy = new LeastWorkloadAssignmentStrategy(tasks, _iam);
@@ -81,6 +82,10 @@ public class CleaningTaskCommandServiceTests : IDisposable
     }
 
     public void Dispose() => _context.Dispose();
+
+    /// <summary>Another request (its own context) on the same database.</summary>
+    private AccommodationsDbContext NewContext() => new(new DbContextOptionsBuilder<AccommodationsDbContext>()
+        .UseInMemoryDatabase(_databaseName).Options);
 
     private void Seed()
     {
@@ -172,6 +177,37 @@ public class CleaningTaskCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task AutomaticReassignment_WithNobodyElseAvailable_ShouldFailInsteadOfKeepingTheSameAssignee()
+    {
+        _iam.Housekeeping.RemoveAll(contact => contact.UserId == Beto.UserId);
+        var task = await CreateAsync(Ana.UserId);
+
+        var act = () => _service.Handle(new AssignCleaningTaskCommand(task.Id, null, Reception));
+
+        (await act.Should().ThrowAsync<NoHousekeeperAvailableException>()).Which.Code
+            .Should().Be(CleaningTaskErrorCodes.NoHousekeeperAvailable);
+        task.AssigneeUserId.Should().Be(Ana.UserId);
+    }
+
+    [Fact]
+    public async Task TwoChangesOfTheSameTaskAtOnce_ShouldRefuseTheSecondOne()
+    {
+        var task = await CreateAsync(Ana.UserId);
+        await using var otherRequest = NewContext();
+        var readByTheOtherRequest = await otherRequest.Set<CleaningTask>().SingleAsync(t => t.Id == task.Id);
+
+        // Reception cancels the task while another request, which read it before, re-prioritizes it.
+        await _service.Handle(new CancelCleaningTaskCommand(task.Id, "Created by mistake", Reception));
+        readByTheOtherRequest.ChangePriority(CleaningTaskPriority.Urgent, Reception, DateTimeOffset.UtcNow);
+        var act = () => otherRequest.SaveChangesAsync();
+
+        await act.Should().ThrowAsync<DbUpdateConcurrencyException>();
+        task.Version.Should().Be(1);
+        await using var stored = NewContext();
+        (await stored.Set<CleaningTask>().SingleAsync(t => t.Id == task.Id)).Status.Should().Be(CleaningTaskStatus.Cancelled);
+    }
+
+    [Fact]
     public async Task StartAndComplete_ShouldTakeTheRoomToCleaningAndThenAvailable()
     {
         var task = await CreateAsync(Ana.UserId);
@@ -255,6 +291,19 @@ public class CleaningTaskCommandServiceTests : IDisposable
         task.CreatedByUserId.Should().BeNull();
         task.AssigneeUserId.Should().Be(Ana.UserId);
         task.AssignedAutomatically.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ACheckOut_ShouldLeaveTheRoomPendingCleaning_WithItsTask()
+    {
+        await _rooms.Handle(new OccupyRoomForCheckInCommand(_roomId, 50, "huesped@example.com"));
+
+        await _rooms.Handle(new VacateRoomAfterCheckOutCommand(_roomId, 50, "huesped@example.com"));
+
+        Room().Status.Should().Be(RoomStatus.Cleaning);
+        var task = _context.Set<CleaningTask>().Single();
+        task.RoomId.Should().Be(_roomId);
+        task.Status.Should().Be(CleaningTaskStatus.Pending);
     }
 
     [Fact]

@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Events;
+using RoomTrack.Shared.Domain.Model.Events;
 
-namespace BackendAwRoomTrack.API.Profiles.Application.Internal.OutboundServices;
+namespace RoomTrack.Profiles.Application.Internal.OutboundServices;
 
 public interface IDomainEventPublisher
 {

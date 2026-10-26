@@ -1,7 +1,7 @@
 using Apache.NMS;
 using Apache.NMS.ActiveMQ;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Messaging;
+namespace RoomTrack.Shared.Infrastructure.Messaging;
 
 
 // Controlador de Broker ActiveMQ para enviar mensajes a colas específicas. Se utiliza para la comunicación entre servicios en un sistema distribuido.

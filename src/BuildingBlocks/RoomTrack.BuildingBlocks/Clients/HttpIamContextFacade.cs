@@ -1,5 +1,5 @@
-using BackendAwRoomTrack.API.IAM.Interfaces.ACL;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Internal;
+using RoomTrack.IAM.Interfaces.ACL;
+using RoomTrack.Shared.Infrastructure.Internal;
 
 namespace RoomTrack.BuildingBlocks.Clients;
 

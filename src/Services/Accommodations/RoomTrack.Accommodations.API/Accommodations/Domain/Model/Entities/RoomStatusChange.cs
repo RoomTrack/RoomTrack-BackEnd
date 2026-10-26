@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.ValueObjects;
+using RoomTrack.Accommodations.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Accommodations.Domain.Model.Entities;
+namespace RoomTrack.Accommodations.Domain.Model.Entities;
 
 /// <summary>
 ///     One line of the status history of a room (date, time and user of every change). Recorded by

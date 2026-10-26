@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Marketing.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Marketing.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Shared.Domain.Repositories;
+using RoomTrack.Marketing.Domain.Model.Aggregates;
+using RoomTrack.Marketing.Domain.Model.Queries;
+using RoomTrack.Shared.Domain.Repositories;
 
-namespace BackendAwRoomTrack.API.Marketing.Domain.Repositories;
+namespace RoomTrack.Marketing.Domain.Repositories;
 
 public interface IDemoRequestRepository : IBaseRepository<DemoRequest>
 {

@@ -1,9 +1,12 @@
 using MassTransit;
 using RoomTrack.Notifications.Worker.Email;
 using RoomTrack.Notifications.Worker.Email.Configuration;
+using RoomTrack.Notifications.Worker.Push;
+using RoomTrack.Notifications.Worker.Push.Configuration;
 
-// Notifications worker: the only process that talks to the mail system. Every service publishes SendEmail messages
-// through its transactional outbox; this worker consumes them from RabbitMQ and delivers them, with redelivery.
+// Notifications worker: the only process that talks to the mail system and to the push provider. Every service
+// publishes SendEmail messages through its transactional outbox (and the Identity service DeliverPushNotification
+// messages for the devices of the users); this worker consumes them from RabbitMQ and delivers them, with redelivery.
 // It also answers /health over HTTP so it can run as a (free) web service on Render; the API gateway calls it to
 // keep it awake while the app is in use.
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHealthChecks();
 
 builder.Services.AddEmailTransports(builder.Configuration);
+builder.Services.AddPushTransports(builder.Configuration);
 
 var retry = builder.Configuration.GetSection($"{EmailSettings.SectionName}:Retry").Get<EmailSettings.RetrySettings>()
             ?? new EmailSettings.RetrySettings();
@@ -29,6 +33,12 @@ builder.Services.AddMassTransit(bus =>
             TimeSpan.FromMinutes(retry.MaxRetryDelayMinutes),
             TimeSpan.FromSeconds(retry.InitialRetryDelaySeconds)));
         // A few e-mails at a time per instance: plenty for this volume and gentle with the provider's rate limit.
+        consumer.ConcurrentMessageLimit = 4;
+    });
+    bus.AddConsumer<DeliverPushNotificationConsumer>(consumer =>
+    {
+        // A notification is only useful while it is recent: a few quick retries, then the "_error" queue.
+        consumer.UseMessageRetry(r => r.Exponential(5, TimeSpan.FromSeconds(5), TimeSpan.FromMinutes(5), TimeSpan.FromSeconds(10)));
         consumer.ConcurrentMessageLimit = 4;
     });
 

@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Commands;
+using RoomTrack.Accommodations.Domain.Model.Commands;
 
-namespace BackendAwRoomTrack.API.Accommodations.Domain.Model.Entities;
+namespace RoomTrack.Accommodations.Domain.Model.Entities;
 
 /// <summary>
 /// Represents a room type entity in the accommodations domain.

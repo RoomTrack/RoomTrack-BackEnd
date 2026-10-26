@@ -25,7 +25,7 @@ namespace RoomTrack.Analytics.API.Infrastructure.Persistence.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Analytics.Domain.Model.ReadModels.BookingFact", b =>
+            modelBuilder.Entity("RoomTrack.Analytics.Domain.Model.ReadModels.BookingFact", b =>
                 {
                     b.Property<int>("BookingId")
                         .HasColumnType("int")
@@ -66,7 +66,7 @@ namespace RoomTrack.Analytics.API.Infrastructure.Persistence.Migrations
                     b.ToTable("booking_facts");
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Analytics.Domain.Model.ReadModels.PaymentFact", b =>
+            modelBuilder.Entity("RoomTrack.Analytics.Domain.Model.ReadModels.PaymentFact", b =>
                 {
                     b.Property<int>("PaymentId")
                         .HasColumnType("int")
@@ -108,7 +108,7 @@ namespace RoomTrack.Analytics.API.Infrastructure.Persistence.Migrations
                     b.ToTable("payment_facts");
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Analytics.Domain.Model.ReadModels.RoomFact", b =>
+            modelBuilder.Entity("RoomTrack.Analytics.Domain.Model.ReadModels.RoomFact", b =>
                 {
                     b.Property<int>("RoomId")
                         .HasColumnType("int")

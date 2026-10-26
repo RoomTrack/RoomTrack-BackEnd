@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.RateLimiting;
+namespace RoomTrack.Shared.Infrastructure.Interfaces.ASP.RateLimiting;
 
 /// <summary>
 ///     Limits of the anonymous endpoints, per client IP (section <c>RateLimiting</c>, env vars

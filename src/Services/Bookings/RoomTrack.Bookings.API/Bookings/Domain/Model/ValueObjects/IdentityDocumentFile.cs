@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Exceptions;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Bookings.Domain.Model.Exceptions;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
+namespace RoomTrack.Bookings.Domain.Model.ValueObjects;
 
 /// <summary>
 ///     The photo or scan of the identity document uploaded at the check-in: JPEG, PNG or PDF of at

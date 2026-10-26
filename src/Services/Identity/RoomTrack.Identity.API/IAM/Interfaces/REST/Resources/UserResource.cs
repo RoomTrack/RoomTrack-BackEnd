@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.IAM.Interfaces.REST.Resources;
+namespace RoomTrack.IAM.Interfaces.REST.Resources;
 
 /// <summary>
 /// A user account as seen by the administration.

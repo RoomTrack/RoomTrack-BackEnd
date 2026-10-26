@@ -1,10 +1,10 @@
-using BackendAwRoomTrack.API.Profiles.Application.Internal.Commands;
-using BackendAwRoomTrack.API.Profiles.Interfaces.REST.Resources;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Aggregates;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Entities;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects;
+using RoomTrack.Profiles.Application.Internal.Commands;
+using RoomTrack.Profiles.Interfaces.REST.Resources;
+using RoomTrack.Profiles.Domain.Model.Aggregates;
+using RoomTrack.Profiles.Domain.Model.Entities;
+using RoomTrack.Profiles.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Profiles.Interfaces.REST.Transform;
+namespace RoomTrack.Profiles.Interfaces.REST.Transform;
 
 public static class StaffResourceAssembler
 {

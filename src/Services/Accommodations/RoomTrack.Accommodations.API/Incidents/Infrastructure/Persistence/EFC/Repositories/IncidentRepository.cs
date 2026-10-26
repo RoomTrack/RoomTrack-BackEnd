@@ -1,11 +1,11 @@
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Incidents.Domain.Repositories;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
+using RoomTrack.Incidents.Domain.Model.Aggregates;
+using RoomTrack.Incidents.Domain.Model.Queries;
+using RoomTrack.Incidents.Domain.Model.ValueObjects;
+using RoomTrack.Incidents.Domain.Repositories;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackendAwRoomTrack.API.Incidents.Infrastructure.Persistence.EFC.Repositories;
+namespace RoomTrack.Incidents.Infrastructure.Persistence.EFC.Repositories;
 
 public class IncidentRepository(AppDbContext context) : IIncidentRepository
 {

@@ -1,19 +1,19 @@
-using BackendAwRoomTrack.API.Bookings.Application.ACL;
-using BackendAwRoomTrack.API.Bookings.Application.Internal.Configuration;
-using BackendAwRoomTrack.API.Bookings.Application.Internal.EventHandlers;
-using BackendAwRoomTrack.API.Bookings.Application.OutboundServices;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Events;
-using BackendAwRoomTrack.API.Bookings.Infrastructure.Notifications;
-using BackendAwRoomTrack.API.Bookings.Infrastructure.Storage;
-using BackendAwRoomTrack.API.Shared.Application.Internal.EventHandlers;
-using BackendAwRoomTrack.API.Bookings.Application.Internal.CommandServices;
-using BackendAwRoomTrack.API.Bookings.Application.Internal.QueryServices;
-using BackendAwRoomTrack.API.Bookings.Domain.Repositories;
-using BackendAwRoomTrack.API.Bookings.Domain.Services;
-using BackendAwRoomTrack.API.Bookings.Infrastructure.Persistence.EFC.Repositories;
-using BackendAwRoomTrack.API.Bookings.Interfaces.ACL;
+using RoomTrack.Bookings.Application.ACL;
+using RoomTrack.Bookings.Application.Internal.Configuration;
+using RoomTrack.Bookings.Application.Internal.EventHandlers;
+using RoomTrack.Bookings.Application.OutboundServices;
+using RoomTrack.Bookings.Domain.Model.Events;
+using RoomTrack.Bookings.Infrastructure.Notifications;
+using RoomTrack.Bookings.Infrastructure.Storage;
+using RoomTrack.Shared.Application.Internal.EventHandlers;
+using RoomTrack.Bookings.Application.Internal.CommandServices;
+using RoomTrack.Bookings.Application.Internal.QueryServices;
+using RoomTrack.Bookings.Domain.Repositories;
+using RoomTrack.Bookings.Domain.Services;
+using RoomTrack.Bookings.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.Bookings.Interfaces.ACL;
 
-namespace BackendAwRoomTrack.API.Bookings.Infrastructure.Interfaces.ASP.Configuration.Extensions;
+namespace RoomTrack.Bookings.Infrastructure.Interfaces.ASP.Configuration.Extensions;
 
 public static class WebApplicationBuilderExtensions
 {
@@ -46,6 +46,7 @@ public static class WebApplicationBuilderExtensions
         builder.Services.AddScoped<IDomainEventHandler<BookingConfirmedEvent>>(sp => sp.GetRequiredService<BookingGuestNotificationHandler>());
         builder.Services.AddScoped<IDomainEventHandler<BookingCancelledEvent>>(sp => sp.GetRequiredService<BookingGuestNotificationHandler>());
         builder.Services.AddScoped<IDomainEventHandler<BookingRescheduledEvent>>(sp => sp.GetRequiredService<BookingGuestNotificationHandler>());
+        builder.Services.AddScoped<IDomainEventHandler<GuestCheckedOutEvent>>(sp => sp.GetRequiredService<BookingGuestNotificationHandler>());
 
         // Domain Services
         builder.Services.AddScoped<RoomAvailabilityService>();

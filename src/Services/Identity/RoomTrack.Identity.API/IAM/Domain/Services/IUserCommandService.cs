@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Commands;
+using RoomTrack.IAM.Domain.Model.Aggregates;
+using RoomTrack.IAM.Domain.Model.Commands;
 
-namespace BackendAwRoomTrack.API.IAM.Domain.Services;
+namespace RoomTrack.IAM.Domain.Services;
 
 /**
  * <summary>

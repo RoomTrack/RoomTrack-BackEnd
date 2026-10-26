@@ -1,10 +1,10 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.Validation;
+using RoomTrack.Bookings.Domain.Model.Exceptions;
+using RoomTrack.Shared.Infrastructure.Interfaces.ASP.Validation;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Bookings.Interfaces.REST.Resources;
+namespace RoomTrack.Bookings.Interfaces.REST.Resources;
 
 /// <summary>The digital check-in form (multipart/form-data).</summary>
 public class CheckInFormResource : IValidatableObject

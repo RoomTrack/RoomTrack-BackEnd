@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Exceptions;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
-namespace BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects;
+using RoomTrack.Profiles.Domain.Model.Exceptions;
+using RoomTrack.Shared.Domain.Model.Exceptions;
+namespace RoomTrack.Profiles.Domain.Model.ValueObjects;
 
 public record DateRange
 {

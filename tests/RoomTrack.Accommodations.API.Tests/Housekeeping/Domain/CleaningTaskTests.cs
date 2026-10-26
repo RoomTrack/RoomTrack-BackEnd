@@ -1,14 +1,14 @@
 using System;
 using System.Linq;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Events;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Housekeeping.Domain.Model.Aggregates;
+using RoomTrack.Housekeeping.Domain.Model.Events;
+using RoomTrack.Housekeeping.Domain.Model.Exceptions;
+using RoomTrack.Housekeeping.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 using FluentAssertions;
 using Xunit;
 
-namespace BackendAwRoomTrack.API.Tests.Housekeeping.Domain;
+namespace RoomTrack.Tests.Housekeeping.Domain;
 
 public class CleaningTaskTests
 {
@@ -164,7 +164,7 @@ public class CleaningTaskTests
 
         task.Status.Should().Be(CleaningTaskStatus.InProgress);
         task.ImpedimentIncidentIds.Should().Equal(42);
-        task.History.Last().Should().Match<BackendAwRoomTrack.API.Housekeeping.Domain.Model.Entities.CleaningTaskHistoryEntry>(
+        task.History.Last().Should().Match<RoomTrack.Housekeeping.Domain.Model.Entities.CleaningTaskHistoryEntry>(
             entry => entry.Action == CleaningTaskHistoryAction.ImpedimentReported && entry.Detail == "Broken mirror");
     }
 

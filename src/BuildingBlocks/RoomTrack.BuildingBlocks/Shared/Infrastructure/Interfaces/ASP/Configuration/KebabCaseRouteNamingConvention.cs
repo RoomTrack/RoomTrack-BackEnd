@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.Configuration.Extensions;
+using RoomTrack.Shared.Infrastructure.Interfaces.ASP.Configuration.Extensions;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.Configuration;
+namespace RoomTrack.Shared.Infrastructure.Interfaces.ASP.Configuration;
 
 /// <summary>
 /// Convention for naming routes in kebab-case.

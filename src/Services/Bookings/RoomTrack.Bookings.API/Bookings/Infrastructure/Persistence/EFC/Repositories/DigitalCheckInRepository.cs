@@ -1,9 +1,9 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Bookings.Domain.Repositories;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
+using RoomTrack.Bookings.Domain.Model.Aggregates;
+using RoomTrack.Bookings.Domain.Repositories;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackendAwRoomTrack.API.Bookings.Infrastructure.Persistence.EFC.Repositories;
+namespace RoomTrack.Bookings.Infrastructure.Persistence.EFC.Repositories;
 
 public class DigitalCheckInRepository(AppDbContext context) : IDigitalCheckInRepository
 {

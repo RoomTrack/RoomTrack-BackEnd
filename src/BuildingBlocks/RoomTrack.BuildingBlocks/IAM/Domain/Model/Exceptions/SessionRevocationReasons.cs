@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.IAM.Domain.Model.Enums;
+using RoomTrack.IAM.Domain.Model.Enums;
 
-namespace BackendAwRoomTrack.API.IAM.Domain.Model.Exceptions;
+namespace RoomTrack.IAM.Domain.Model.Exceptions;
 
 /// <summary>Stable codes of <see cref="SessionRevocationReason"/>, as written in the <c>reason</c> of a 401.</summary>
 public static class SessionRevocationReasons

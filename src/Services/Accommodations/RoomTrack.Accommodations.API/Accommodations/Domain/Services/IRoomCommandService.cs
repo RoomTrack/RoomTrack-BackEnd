@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Commands;
+using RoomTrack.Accommodations.Domain.Model.Aggregates;
+using RoomTrack.Accommodations.Domain.Model.Commands;
 
-namespace BackendAwRoomTrack.API.Accommodations.Domain.Services;
+namespace RoomTrack.Accommodations.Domain.Services;
 
 /// <summary>
 /// Defines the contract for services that handle room state changes.
@@ -29,6 +29,9 @@ public interface IRoomCommandService
 
     /// <summary>The room of a completed check-in becomes Occupied (must be Available).</summary>
     Task<Room> Handle(OccupyRoomForCheckInCommand command);
+
+    /// <summary>The room of a check-out goes to Cleaning (when it is still Occupied).</summary>
+    Task<Room> Handle(VacateRoomAfterCheckOutCommand command);
 
     /// <summary>A blocking incident takes the room out of service. Runs in the caller's unit of work.</summary>
     Task<Room> Handle(HoldRoomForIncidentCommand command);

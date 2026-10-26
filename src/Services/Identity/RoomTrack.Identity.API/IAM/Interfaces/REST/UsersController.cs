@@ -1,15 +1,15 @@
-using BackendAwRoomTrack.API.IAM.Domain.Model.Commands;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Queries;
-using BackendAwRoomTrack.API.IAM.Domain.Services;
-using BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
-using BackendAwRoomTrack.API.IAM.Interfaces.REST.Resources;
-using BackendAwRoomTrack.API.IAM.Interfaces.REST.Transform;
+using RoomTrack.IAM.Domain.Model.Commands;
+using RoomTrack.IAM.Domain.Model.Exceptions;
+using RoomTrack.IAM.Domain.Model.Queries;
+using RoomTrack.IAM.Domain.Services;
+using RoomTrack.IAM.Interfaces.Authorization;
+using RoomTrack.IAM.Interfaces.REST.Resources;
+using RoomTrack.IAM.Interfaces.REST.Transform;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace BackendAwRoomTrack.API.IAM.Interfaces.REST;
+namespace RoomTrack.IAM.Interfaces.REST;
 
 /// <summary>
 ///     The user's controller

@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.Validation;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Incidents.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Infrastructure.Interfaces.ASP.Validation;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.Incidents.Interfaces.REST.Resources;
+namespace RoomTrack.Incidents.Interfaces.REST.Resources;
 
 /// <summary>A new incident of a room.</summary>
 public record ReportIncidentResource : IValidatableObject

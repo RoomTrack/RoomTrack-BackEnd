@@ -1,13 +1,13 @@
-using BackendAwRoomTrack.API.Marketing.Application.Internal.CommandServices;
-using BackendAwRoomTrack.API.Marketing.Application.Internal.Configuration;
-using BackendAwRoomTrack.API.Marketing.Application.Internal.QueryServices;
-using BackendAwRoomTrack.API.Marketing.Application.OutboundServices;
-using BackendAwRoomTrack.API.Marketing.Domain.Repositories;
-using BackendAwRoomTrack.API.Marketing.Domain.Services;
-using BackendAwRoomTrack.API.Marketing.Infrastructure.Notifications;
-using BackendAwRoomTrack.API.Marketing.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.Marketing.Application.Internal.CommandServices;
+using RoomTrack.Marketing.Application.Internal.Configuration;
+using RoomTrack.Marketing.Application.Internal.QueryServices;
+using RoomTrack.Marketing.Application.OutboundServices;
+using RoomTrack.Marketing.Domain.Repositories;
+using RoomTrack.Marketing.Domain.Services;
+using RoomTrack.Marketing.Infrastructure.Notifications;
+using RoomTrack.Marketing.Infrastructure.Persistence.EFC.Repositories;
 
-namespace BackendAwRoomTrack.API.Marketing.Infrastructure.Interfaces.ASP.Configuration.Extensions;
+namespace RoomTrack.Marketing.Infrastructure.Interfaces.ASP.Configuration.Extensions;
 
 public static class WebApplicationBuilderExtensions
 {

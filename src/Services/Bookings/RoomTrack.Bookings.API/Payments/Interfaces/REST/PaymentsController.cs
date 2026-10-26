@@ -1,14 +1,14 @@
-using BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
-using BackendAwRoomTrack.API.Payments.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Payments.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Payments.Domain.Services;
-using BackendAwRoomTrack.API.Payments.Interfaces.REST.Resources;
-using BackendAwRoomTrack.API.Payments.Interfaces.REST.Transform;
+using RoomTrack.IAM.Interfaces.Authorization;
+using RoomTrack.Payments.Domain.Model.Commands;
+using RoomTrack.Payments.Domain.Model.Queries;
+using RoomTrack.Payments.Domain.Services;
+using RoomTrack.Payments.Interfaces.REST.Resources;
+using RoomTrack.Payments.Interfaces.REST.Transform;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace BackendAwRoomTrack.API.Payments.Interfaces.REST;
+namespace RoomTrack.Payments.Interfaces.REST;
 
 /// <summary>
 ///     Payments of bookings (D1: paying confirms the booking). The hotel registers the payments it receives (Yape,

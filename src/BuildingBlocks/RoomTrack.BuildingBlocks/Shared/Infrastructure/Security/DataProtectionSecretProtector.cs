@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Shared.Application.OutboundServices;
+using RoomTrack.Shared.Application.OutboundServices;
 using Microsoft.AspNetCore.DataProtection;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Security;
+namespace RoomTrack.Shared.Infrastructure.Security;
 
 /// <summary>Adapter of <see cref="ISecretProtector"/> on ASP.NET Core Data Protection (AES-256-CBC + HMAC-SHA256, rotated keys).</summary>
 public class DataProtectionSecretProtector(IDataProtectionProvider dataProtectionProvider) : ISecretProtector

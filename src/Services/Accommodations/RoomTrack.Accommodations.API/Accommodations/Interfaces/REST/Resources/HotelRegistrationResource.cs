@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Accommodations.Interfaces.REST.Resources;
+namespace RoomTrack.Accommodations.Interfaces.REST.Resources;
 
 /// <summary>
 ///     A registered hotel and, when a hotel administrator registered their own hotel, their new

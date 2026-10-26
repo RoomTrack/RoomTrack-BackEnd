@@ -1,12 +1,12 @@
 using System;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Bookings.Domain.Model.Aggregates;
+using RoomTrack.Bookings.Domain.Model.Exceptions;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
 using FluentAssertions;
 using Xunit;
-using static BackendAwRoomTrack.API.Tests.Bookings.BookingTestData;
+using static RoomTrack.Tests.Bookings.BookingTestData;
 
-namespace BackendAwRoomTrack.API.Tests.Bookings.Domain;
+namespace RoomTrack.Tests.Bookings.Domain;
 
 public class BookingTests
 {

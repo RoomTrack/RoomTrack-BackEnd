@@ -1,9 +1,9 @@
 using System.Security.Cryptography;
 using System.Text;
-using BackendAwRoomTrack.API.IAM.Application.OutboundServices;
+using RoomTrack.IAM.Application.OutboundServices;
 using Microsoft.AspNetCore.WebUtilities;
 
-namespace BackendAwRoomTrack.API.IAM.Infrastructure.Tokens.Opaque;
+namespace RoomTrack.IAM.Infrastructure.Tokens.Opaque;
 
 /// <summary>
 ///     256-bit random tokens (base64url, safe in links) stored as SHA-256 hashes. A fast hash is enough: the input

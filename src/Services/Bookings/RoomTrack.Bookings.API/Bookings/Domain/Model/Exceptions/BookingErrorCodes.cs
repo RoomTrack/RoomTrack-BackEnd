@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Bookings.Domain.Model.Exceptions;
+namespace RoomTrack.Bookings.Domain.Model.Exceptions;
 
 /// <summary>Stable error codes of the Bookings context (<c>check_in.*</c> is, not in the backlog).</summary>
 public static class BookingErrorCodes
@@ -26,6 +26,8 @@ public static class BookingErrorCodes
 
     public const string CheckInAssistanceNotAllowed = "check_in.assistance_not_allowed";
     public const string CheckInStayEnded = "check_in.stay_ended";
+    public const string CheckOutNotCheckedIn = "check_out.not_checked_in";
+    public const string CheckOutAlreadyCompleted = "check_out.already_completed";
     public const string CheckInMessageTooLong = "check_in.message_too_long";
     public const string CheckInAlreadyCompleted = "check_in.already_completed";
     public const string CheckInBookingNotConfirmed = "check_in.booking_not_confirmed";
@@ -40,6 +42,9 @@ public static class BookingErrorCodes
     public const string CheckInForeignerCardInvalid = "check_in.foreigner_card_invalid";
     public const string CheckInForeignerCardOnlyForForeigners = "check_in.foreigner_card_only_for_foreigners";
     public const string CheckInDocumentTypeUnknown = "check_in.document_type_unknown";
+
+    public const string PageInvalid = "booking.page_invalid";
+    public const string PageSizeInvalid = "booking.page_size_invalid";
 
     /// <summary>An invariant of a Bookings aggregate that only a programming error can break.</summary>
     public const string InternalInvariant = "booking.internal_invariant";

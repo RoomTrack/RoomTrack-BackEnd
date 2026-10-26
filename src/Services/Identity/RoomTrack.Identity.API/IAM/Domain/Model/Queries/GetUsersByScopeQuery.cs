@@ -1,4 +1,4 @@
-﻿namespace BackendAwRoomTrack.API.IAM.Domain.Model.Queries;
+﻿namespace RoomTrack.IAM.Domain.Model.Queries;
 
 /// <summary>
 ///     Query to retrieve all users that a specific actor has access to, based on their organizational scope.

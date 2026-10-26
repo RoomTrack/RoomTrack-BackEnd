@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.IAM.Domain.Model.Enums;
+namespace RoomTrack.IAM.Domain.Model.Enums;
 
 /// <summary>Why a refresh token stopped being usable.</summary>
 public enum RefreshTokenRevocationReason

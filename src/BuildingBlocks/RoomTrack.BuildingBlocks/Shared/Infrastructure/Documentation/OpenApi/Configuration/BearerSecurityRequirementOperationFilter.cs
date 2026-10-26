@@ -1,9 +1,9 @@
-using BackendAwRoomTrack.API.Shared.Infrastructure.Authentication.ScheduledJobs;
+using RoomTrack.Shared.Infrastructure.Authentication.ScheduledJobs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Documentation.OpenApi.Configuration;
+namespace RoomTrack.Shared.Infrastructure.Documentation.OpenApi.Configuration;
 
 /// <summary>
 ///     Documents how each operation is authenticated: anonymous operations get nothing, scheduler operations

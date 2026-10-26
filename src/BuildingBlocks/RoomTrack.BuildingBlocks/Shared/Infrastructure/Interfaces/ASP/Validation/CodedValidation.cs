@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.Validation;
+namespace RoomTrack.Shared.Infrastructure.Interfaces.ASP.Validation;
 
 /// <summary>
 ///     A validation attribute of a request resource that names the stable code of its rule (e.g.

@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Payments.Domain.Model.ValueObjects;
+namespace RoomTrack.Payments.Domain.Model.ValueObjects;
 
 /// <summary>How the guest paid the hotel.</summary>
 public enum PaymentMethod

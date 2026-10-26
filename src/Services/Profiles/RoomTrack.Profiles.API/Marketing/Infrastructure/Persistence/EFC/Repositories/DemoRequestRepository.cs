@@ -1,12 +1,12 @@
-using BackendAwRoomTrack.API.Marketing.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Marketing.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Marketing.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Marketing.Domain.Repositories;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.Marketing.Domain.Model.Aggregates;
+using RoomTrack.Marketing.Domain.Model.Queries;
+using RoomTrack.Marketing.Domain.Model.ValueObjects;
+using RoomTrack.Marketing.Domain.Repositories;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackendAwRoomTrack.API.Marketing.Infrastructure.Persistence.EFC.Repositories;
+namespace RoomTrack.Marketing.Infrastructure.Persistence.EFC.Repositories;
 
 public class DemoRequestRepository(AppDbContext context) : BaseRepository<DemoRequest>(context), IDemoRequestRepository
 {

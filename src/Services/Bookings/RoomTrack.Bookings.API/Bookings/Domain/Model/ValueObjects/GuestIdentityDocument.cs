@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Exceptions;
+using RoomTrack.Bookings.Domain.Model.Exceptions;
 using System.Text.RegularExpressions;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
+namespace RoomTrack.Bookings.Domain.Model.ValueObjects;
 
 /// <summary>Identity documents accepted at the digital check-in.</summary>
 public enum IdentityDocumentType

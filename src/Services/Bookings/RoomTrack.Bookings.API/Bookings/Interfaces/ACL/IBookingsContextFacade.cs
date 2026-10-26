@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Bookings.Interfaces.ACL;
+namespace RoomTrack.Bookings.Interfaces.ACL;
 
 /// <summary>
 ///     Snapshot of a booking exposed to other bounded contexts (no domain entity leaks through the ACL).
@@ -42,6 +42,6 @@ public interface IBookingsContextFacade
     ///     Confirms the booking because its payment was registered (D1), through the Bookings application layer.
     ///     Changes pending in the shared unit of work (the new payment) are committed together.
     /// </summary>
-    /// <exception cref="BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions.EntityNotFoundException">The booking does not exist.</exception>
+    /// <exception cref="RoomTrack.Shared.Domain.Model.Exceptions.EntityNotFoundException">The booking does not exist.</exception>
     Task<bool> ConfirmBookingAsync(int bookingId);
 }

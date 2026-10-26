@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Payments.Domain.Model.Aggregates;
+using RoomTrack.Payments.Domain.Model.Aggregates;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackendAwRoomTrack.API.Payments.Infrastructure.Persistence.EFC.Configuration.Extensions;
+namespace RoomTrack.Payments.Infrastructure.Persistence.EFC.Configuration.Extensions;
 
 public static class ModelBuilderExtensions
 {

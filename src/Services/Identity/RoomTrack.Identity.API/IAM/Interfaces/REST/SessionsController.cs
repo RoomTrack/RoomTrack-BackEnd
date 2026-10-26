@@ -1,11 +1,11 @@
-using BackendAwRoomTrack.API.IAM.Domain.Model.Commands;
-using BackendAwRoomTrack.API.IAM.Domain.Services;
-using BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
+using RoomTrack.IAM.Domain.Model.Commands;
+using RoomTrack.IAM.Domain.Services;
+using RoomTrack.IAM.Interfaces.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace BackendAwRoomTrack.API.IAM.Interfaces.REST;
+namespace RoomTrack.IAM.Interfaces.REST;
 
 /// <summary>Session management of the signed-in user.</summary>
 [Authorize]

@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Analytics.Domain.Model.Aggregates;
+namespace RoomTrack.Analytics.Domain.Model.Aggregates;
 
 /// <summary>
 /// Represents a snapshot of the hotel's performance metrics.

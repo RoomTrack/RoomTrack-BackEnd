@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Options;
 
-namespace BackendAwRoomTrack.API.Media.Infrastructure.Cloudinary;
+namespace RoomTrack.Media.Infrastructure.Cloudinary;
 
 /// <summary>
 ///     Validates <see cref="CloudinarySettings"/> when the host starts (<c>ValidateOnStart</c>):

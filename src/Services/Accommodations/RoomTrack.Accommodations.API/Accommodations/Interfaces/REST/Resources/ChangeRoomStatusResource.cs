@@ -1,9 +1,9 @@
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.Validation;
+using RoomTrack.Shared.Domain.Model.Exceptions;
+using RoomTrack.Shared.Infrastructure.Interfaces.ASP.Validation;
 using System.ComponentModel.DataAnnotations;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.ValueObjects;
+using RoomTrack.Accommodations.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Accommodations.Interfaces.REST.Resources;
+namespace RoomTrack.Accommodations.Interfaces.REST.Resources;
 
 /// <summary>New status of a room.</summary>
 public record ChangeRoomStatusResource : IValidatableObject

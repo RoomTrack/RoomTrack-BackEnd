@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Shared.Domain.Repositories;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
+using RoomTrack.Shared.Domain.Repositories;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Repositories;
+namespace RoomTrack.Shared.Infrastructure.Persistence.EFC.Repositories;
 
 /// <summary>
 /// Base implementation of the repository pattern using Entity Framework Core.

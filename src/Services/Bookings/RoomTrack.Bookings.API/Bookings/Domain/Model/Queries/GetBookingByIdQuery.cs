@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Bookings.Domain.Model.Queries;
+namespace RoomTrack.Bookings.Domain.Model.Queries;
 
 /// <summary>
 /// Query to retrieve a booking by its identifier. With a requester, the booking is only returned when it is

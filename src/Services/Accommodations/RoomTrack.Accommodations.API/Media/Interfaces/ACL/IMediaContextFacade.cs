@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Media.Interfaces.ACL;
+namespace RoomTrack.Media.Interfaces.ACL;
 
 /// <summary>Anti-corruption layer facade of the Media context (where the images of the hotels live).</summary>
 public interface IMediaContextFacade

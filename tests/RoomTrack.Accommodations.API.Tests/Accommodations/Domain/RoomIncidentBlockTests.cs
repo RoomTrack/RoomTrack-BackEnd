@@ -1,12 +1,12 @@
 using System;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.ValueObjects;
+using RoomTrack.Accommodations.Domain.Model.Aggregates;
+using RoomTrack.Accommodations.Domain.Model.Commands;
+using RoomTrack.Accommodations.Domain.Model.Exceptions;
+using RoomTrack.Accommodations.Domain.Model.ValueObjects;
 using FluentAssertions;
 using Xunit;
 
-namespace BackendAwRoomTrack.API.Tests.Accommodations.Domain;
+namespace RoomTrack.Tests.Accommodations.Domain;
 
 public class RoomIncidentBlockTests
 {

@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
+namespace RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration;
 
 /// <summary>
 ///     Design-time factory for <c>dotnet ef</c> (migrations are created without a running database). Each service

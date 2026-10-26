@@ -1,10 +1,10 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Accommodations.Domain.Repositories;
-using BackendAwRoomTrack.API.Accommodations.Domain.Services;
-using BackendAwRoomTrack.API.Accommodations.Interfaces.ACL;
+using RoomTrack.Accommodations.Domain.Model.Commands;
+using RoomTrack.Accommodations.Domain.Model.Queries;
+using RoomTrack.Accommodations.Domain.Repositories;
+using RoomTrack.Accommodations.Domain.Services;
+using RoomTrack.Accommodations.Interfaces.ACL;
 
-namespace BackendAwRoomTrack.API.Accommodations.Application.ACL;
+namespace RoomTrack.Accommodations.Application.ACL;
 
 public class AccommodationsContextFacade(
     IHotelQueryService hotelQueryService,
@@ -15,6 +15,9 @@ public class AccommodationsContextFacade(
 {
     public Task OccupyRoomForCheckInAsync(int roomId, int? guestUserId, string? guestEmail) =>
         roomCommandService.Handle(new OccupyRoomForCheckInCommand(roomId, guestUserId, guestEmail));
+
+    public Task VacateRoomAfterCheckOutAsync(int roomId, int? checkedOutByUserId, string? checkedOutByEmail) =>
+        roomCommandService.Handle(new VacateRoomAfterCheckOutCommand(roomId, checkedOutByUserId, checkedOutByEmail));
 
     public async Task<RoomOffer?> LockRoomForBookingAsync(int roomId)
     {

@@ -59,8 +59,8 @@ deploy/mysql/init/             crea un esquema y un usuario por servicio
 ```
 
 Dentro de cada servicio el código mantiene las capas de DDD del monolito (`Domain`, `Application`,
-`Infrastructure`, `Interfaces`) y sus namespaces originales (`BackendAwRoomTrack.API.<Contexto>...`), para que la
-migración fuera un movimiento de archivos y no una reescritura. Lo nuevo de cada servicio está en el namespace
+`Infrastructure`, `Interfaces`) en el namespace de su bounded context (`RoomTrack.<Contexto>...`, p. ej.
+`RoomTrack.Housekeeping.Domain.Model.Aggregates`). Lo propio de cada servicio está en el namespace
 `RoomTrack.<Servicio>.API` (su `DbContext`, su API interna y su `Program.cs`).
 
 ### Cómo se comunican los servicios

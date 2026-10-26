@@ -1,18 +1,18 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using BackendAwRoomTrack.API.Profiles.Application.Internal.OutboundServices;
-using BackendAwRoomTrack.API.Profiles.Infrastructure.Persistence.EFC.Repositories;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Aggregates;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Enums;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects;
+using RoomTrack.Profiles.Application.Internal.OutboundServices;
+using RoomTrack.Profiles.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration;
+using RoomTrack.Profiles.Domain.Model.Aggregates;
+using RoomTrack.Profiles.Domain.Model.Enums;
+using RoomTrack.Profiles.Domain.Model.ValueObjects;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using RoomTrack.Profiles.API.Infrastructure.Persistence;
 
-namespace BackendAwRoomTrack.API.Tests.Profiles.Infrastructure.Persistence;
+namespace RoomTrack.Tests.Profiles.Infrastructure.Persistence;
 
 public class ProfilesPersistenceTests
 {

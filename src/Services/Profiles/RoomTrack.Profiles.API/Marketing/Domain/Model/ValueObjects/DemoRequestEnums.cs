@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Marketing.Domain.Model.ValueObjects;
+namespace RoomTrack.Marketing.Domain.Model.ValueObjects;
 
 /// <summary>Kind of accommodation the visitor runs (segments).</summary>
 public enum AccommodationType { Boutique, Alternative, Chain }

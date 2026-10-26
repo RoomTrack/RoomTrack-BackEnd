@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Marketing.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Marketing.Domain.Model.ValueObjects;
+using RoomTrack.Marketing.Domain.Model.Aggregates;
+using RoomTrack.Marketing.Domain.Model.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackendAwRoomTrack.API.Marketing.Infrastructure.Persistence.EFC.Configuration.Extensions;
+namespace RoomTrack.Marketing.Infrastructure.Persistence.EFC.Configuration.Extensions;
 
 public static class ModelBuilderExtensions
 {

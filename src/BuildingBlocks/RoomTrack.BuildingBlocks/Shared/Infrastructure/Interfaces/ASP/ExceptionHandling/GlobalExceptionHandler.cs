@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.ExceptionHandling;
+namespace RoomTrack.Shared.Infrastructure.Interfaces.ASP.ExceptionHandling;
 
 /// <summary>
 ///     Converts unhandled exceptions into RFC 7807 ProblemDetails responses.
@@ -30,6 +30,8 @@ public class GlobalExceptionHandler(
 
         var detail = statusCode >= StatusCodes.Status500InternalServerError
             ? environment.IsDevelopment() ? exception.ToString() : "An unexpected error occurred."
+            : exception is DbUpdateConcurrencyException
+                ? "The record was changed by someone else at the same time. Reload it and try again."
             : exception is DbUpdateException
                 ? "The operation conflicts with existing data (for example a referenced record does not exist or a unique value is duplicated)."
                 : exception.Message;

@@ -1,11 +1,11 @@
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Repositories;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Aggregates;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Repositories;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.Profiles.Domain.Model.Aggregates;
+using RoomTrack.Profiles.Domain.Model.ValueObjects;
+using RoomTrack.Profiles.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackendAwRoomTrack.API.Profiles.Infrastructure.Persistence.EFC.Repositories;
+namespace RoomTrack.Profiles.Infrastructure.Persistence.EFC.Repositories;
 
 public class StaffProfileRepository(AppDbContext context)
     : BaseRepository<StaffProfile>(context), IStaffProfileRepository

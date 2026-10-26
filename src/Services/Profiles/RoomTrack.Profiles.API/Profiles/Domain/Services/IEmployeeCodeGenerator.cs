@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects;
+using RoomTrack.Profiles.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.Domain.Profiles.Domain.Services;
+namespace RoomTrack.Profiles.Domain.Services;
 
 public interface IEmployeeCodeGenerator
 {

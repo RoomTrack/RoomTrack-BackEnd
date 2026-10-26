@@ -1,9 +1,9 @@
-using BackendAwRoomTrack.API.Marketing.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Marketing.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Marketing.Domain.Repositories;
-using BackendAwRoomTrack.API.Marketing.Domain.Services;
+using RoomTrack.Marketing.Domain.Model.Aggregates;
+using RoomTrack.Marketing.Domain.Model.Queries;
+using RoomTrack.Marketing.Domain.Repositories;
+using RoomTrack.Marketing.Domain.Services;
 
-namespace BackendAwRoomTrack.API.Marketing.Application.Internal.QueryServices;
+namespace RoomTrack.Marketing.Application.Internal.QueryServices;
 
 public class DemoRequestQueryService(IDemoRequestRepository demoRequestRepository) : IDemoRequestQueryService
 {

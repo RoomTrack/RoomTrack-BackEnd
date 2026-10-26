@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BackendAwRoomTrack.API.IAM.Interfaces.REST.Resources;
+namespace RoomTrack.IAM.Interfaces.REST.Resources;
 
 /// <summary>
 ///     Resource representing the payload for a password change request.

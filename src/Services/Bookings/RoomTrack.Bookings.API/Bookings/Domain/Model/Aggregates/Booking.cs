@@ -1,11 +1,11 @@
-using BackendAwRoomTrack.API.Accommodations.Interfaces.ACL;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Events;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Events;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Accommodations.Interfaces.ACL;
+using RoomTrack.Bookings.Domain.Model.Events;
+using RoomTrack.Bookings.Domain.Model.Exceptions;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Domain.Model.Events;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.Bookings.Domain.Model.Aggregates;
+namespace RoomTrack.Bookings.Domain.Model.Aggregates;
 
 /// <summary>
 ///     Booking aggregate: a room of a hotel reserved for a guest for a <see cref="DateRange"/>.
@@ -16,7 +16,7 @@ namespace BackendAwRoomTrack.API.Bookings.Domain.Model.Aggregates;
 ///         <item><b>Confirmed</b>: its payment was registered. Only a payment confirms a booking.</item>
 ///         <item><b>CheckedIn</b>: the guest completed the digital check-in; the stay is in progress.</item>
 ///         <item><b>Cancelled</b>: by the guest, by the hotel or by the payment deadline. Frees its nights.</item>
-///         <item><b>Completed</b>: reserved for the check-out (not implemented yet).</item>
+///         <item><b>Completed</b>: the guest checked out (digitally or at the front desk); the stay ended.</item>
 ///     </list>
 /// </summary>
 public class Booking : IHasDomainEvents
@@ -77,6 +77,10 @@ public class Booking : IHasDomainEvents
     public DateTimeOffset? CancelledAt { get; private set; }
     public CancellationReason? CancellationReason { get; private set; }
     public DateTimeOffset? CheckedInAt { get; private set; }
+    public DateTimeOffset? CheckedOutAt { get; private set; }
+
+    /// <summary>Who checked the guest out: the guest themselves or a front desk staff member (assisted check-out).</summary>
+    public int? CheckedOutByUserId { get; private set; }
 
     /// <summary>The stay dates.</summary>
     public DateRange Dates => new(CheckInDate, CheckOutDate);
@@ -259,6 +263,28 @@ public class Booking : IHasDomainEvents
         Status = BookingStatus.CheckedIn;
         CheckedInAt = now;
         _domainEvents.Add(new GuestCheckedInEvent(Id, Code.Value, HotelId, RoomId, now));
+    }
+
+    /// <summary>
+    ///     The stay ends (US-14, US-27): the guest checks out from the app, or the front desk of the hotel does it for
+    ///     them. Only a CheckedIn booking; on any day of the stay (an early check-out frees the remaining nights, since
+    ///     a Completed booking no longer holds the room). The charges of the stay are settled with the folio (US-16).
+    /// </summary>
+    public void CheckOut(BookingRequester requester, DateTime hotelToday, DateTimeOffset now)
+    {
+        var assisted = !requester.IsGuest;
+        if (assisted ? !requester.OperatesHotel(HotelId) : !IsOwnedBy(requester))
+            throw new BookingNotFoundException(Id);
+        if (Status == BookingStatus.Completed)
+            throw new InvalidBookingTransitionException(BookingErrorCodes.CheckOutAlreadyCompleted, "The check-out of this booking is already completed.");
+        if (Status != BookingStatus.CheckedIn)
+            throw new InvalidBookingTransitionException(BookingErrorCodes.CheckOutNotCheckedIn,
+                $"Only a checked-in stay can check out; this booking is {Status.ToString().ToLowerInvariant()}.");
+
+        Status = BookingStatus.Completed;
+        CheckedOutAt = now;
+        CheckedOutByUserId = requester.UserId;
+        _domainEvents.Add(new GuestCheckedOutEvent(Id, Code.Value, HotelId, RoomId, assisted, hotelToday.Date < CheckOutDate.Date, now));
     }
 
     /// <summary>

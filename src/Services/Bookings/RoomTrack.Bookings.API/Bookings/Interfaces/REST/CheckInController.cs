@@ -1,24 +1,24 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Bookings.Domain.Services;
-using BackendAwRoomTrack.API.Bookings.Interfaces.REST.Resources;
-using BackendAwRoomTrack.API.Bookings.Interfaces.REST.Transform;
-using BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
+using RoomTrack.Bookings.Domain.Model.Commands;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Bookings.Domain.Services;
+using RoomTrack.Bookings.Interfaces.REST.Resources;
+using RoomTrack.Bookings.Interfaces.REST.Transform;
+using RoomTrack.IAM.Interfaces.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace BackendAwRoomTrack.API.Bookings.Interfaces.REST;
+namespace RoomTrack.Bookings.Interfaces.REST;
 
 /// <summary>
-///     Digital check-in of a booking. <b>Not part of the current backlog</b>: kept in the API (like the IoT
-///     emulator) but no client uses it yet.
+///     Check-in of a booking: digital, by the guest (US-13), or at the front desk for a guest who arrives without having
+///     done it (US-27).
 /// </summary>
 [Authorize]
 [ApiController]
 [Route("api/v1/bookings/{bookingId:int}/check-in")]
 [Produces("application/json")]
-[Tags("Check-in (not part of the current backlog)")]
+[Tags("Check-in")]
 public class CheckInController(ICheckInService checkInService) : ControllerBase
 {
     /// <summary>Largest multipart request accepted (the document itself is limited to 5 MB).</summary>
@@ -28,8 +28,9 @@ public class CheckInController(ICheckInService checkInService) : ControllerBase
     /// <remarks>
     ///     <c>multipart/form-data</c> with <c>documentType</c> (DNI, PASSPORT, CE), <c>documentNumber</c>,
     ///     <c>nationality</c> (ISO alpha-2) and <c>document</c> (JPG, PNG or PDF, ≤ 5 MB, checked by content).
-    ///     Only the guest of a <b>Confirmed</b> (paid) booking, from the check-in day until the day before the
-    ///     check-out (hotel time). The document format is validated automatically; when it passes, the check-in is
+    ///     The guest of a <b>Confirmed</b> (paid) booking, or the front desk of its hotel registering the document of a
+    ///     guest at the desk (assisted check-in, US-27), from the check-in day until the day before the check-out
+    ///     (hotel time). The document format is validated automatically; when it passes, the check-in is
     ///     approved at once: the booking becomes <c>CheckedIn</c>, the room <c>Occupied</c>, the response carries the
     ///     6-digit room <c>accessCode</c> (valid until the check-out) and the hotel's housekeeping is notified by
     ///     e-mail. Errors: 400 per field (<c>documentNumber</c>, <c>nationality</c>, <c>documentType</c>,
@@ -82,6 +83,28 @@ public class CheckInController(ICheckInService checkInService) : ControllerBase
     {
         await checkInService.Handle(new RequestCheckInAssistanceCommand(bookingId, User.ToBookingRequester(), resource?.Message));
         return Accepted(new { message = "The front desk has been notified and will contact you shortly." });
+    }
+
+    /// <summary>Rooms the guest can move into now, when the room of the booking is not ready (US-27).</summary>
+    /// <remarks>
+    ///     For the front desk, when the check-in is refused because the room is not ready (409): the rooms of the hotel
+    ///     ready now and free until the check-out, same room type and same price first. A paid booking can move
+    ///     (<c>PATCH /api/v1/bookings/{id}</c> with the <c>roomId</c>) to a room whose stay costs the same.
+    /// </remarks>
+    [HttpGet("alternatives")]
+    [Authorize(Policy = Policies.ManageBookings)]
+    [SwaggerOperation(Summary = "Rooms ready now for a guest whose room is not ready", OperationId = "GetCheckInAlternatives")]
+    [ProducesResponseType(typeof(IEnumerable<AvailableRoomResource>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> GetAlternatives(int bookingId)
+    {
+        var rooms = await checkInService.FindAlternativeRoomsAsync(bookingId, User.ToBookingRequester());
+        return Ok(rooms.Select(available => new AvailableRoomResource(
+            available.Room.RoomId, available.Room.HotelId, available.Room.RoomTypeId, available.Room.RoomTypeName,
+            available.Room.Description, available.Room.Amenities, available.Room.Status, true,
+            available.Room.PricePerNight, available.Nights, available.TotalPrice,
+            DateOnly.FromDateTime(available.Dates.CheckIn), DateOnly.FromDateTime(available.Dates.CheckOut), available.Room.Number)));
     }
 
     private static CheckInResource ToResource(CheckInResult result) => new(

@@ -1,11 +1,11 @@
-using BackendAwRoomTrack.API.Accommodations.Interfaces.ACL;
-using BackendAwRoomTrack.API.Bookings.Application.Internal.Configuration;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Bookings.Domain.Repositories;
-using BackendAwRoomTrack.API.Bookings.Domain.Services;
+using RoomTrack.Accommodations.Interfaces.ACL;
+using RoomTrack.Bookings.Application.Internal.Configuration;
+using RoomTrack.Bookings.Domain.Model.Queries;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Bookings.Domain.Repositories;
+using RoomTrack.Bookings.Domain.Services;
 
-namespace BackendAwRoomTrack.API.Bookings.Application.Internal.QueryServices;
+namespace RoomTrack.Bookings.Application.Internal.QueryServices;
 
 /// <summary>
 ///     Combines the rooms offered by the Accommodations context (through its ACL facade) with the active bookings of

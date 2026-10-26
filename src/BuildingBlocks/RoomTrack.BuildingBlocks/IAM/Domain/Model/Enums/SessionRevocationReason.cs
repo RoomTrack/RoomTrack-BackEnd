@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.IAM.Domain.Model.Enums;
+namespace RoomTrack.IAM.Domain.Model.Enums;
 
 /// <summary>
 ///     Why the sessions of a user were ended (every access and refresh token issued before stops working). The

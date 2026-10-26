@@ -1,9 +1,9 @@
-using BackendAwRoomTrack.API.Housekeeping.Domain.Repositories;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Services;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Constants;
-using BackendAwRoomTrack.API.IAM.Interfaces.ACL;
+using RoomTrack.Housekeeping.Domain.Repositories;
+using RoomTrack.Housekeeping.Domain.Services;
+using RoomTrack.IAM.Domain.Model.Constants;
+using RoomTrack.IAM.Interfaces.ACL;
 
-namespace BackendAwRoomTrack.API.Housekeeping.Application.Internal.CommandServices;
+namespace RoomTrack.Housekeeping.Application.Internal.CommandServices;
 
 /// <summary>
 ///     Automatic assignment of US-05: the active housekeeping staff member of the hotel with the fewest open
@@ -15,10 +15,12 @@ public class LeastWorkloadAssignmentStrategy(
 {
     public async Task<int?> SelectAssigneeAsync(int hotelId, int? excludingUserId = null)
     {
+        // A reassignment moves the task to someone else (US-05): the current assignee is never chosen again, so with
+        // nobody else available there is no candidate instead of a silent "reassignment" to the same person.
         var candidates = (await iamContextFacade.ListHotelStaffAsync(hotelId, [UserRoles.Housekeeping]))
-            .Select(contact => contact.UserId).Distinct().ToList();
-        if (excludingUserId is { } excluded && candidates.Any(userId => userId != excluded))
-            candidates.Remove(excluded);
+            .Select(contact => contact.UserId).Distinct()
+            .Where(userId => userId != excludingUserId)
+            .ToList();
         if (candidates.Count == 0) return null;
 
         var openTasks = await cleaningTaskRepository.CountOpenByAssigneeAsync(hotelId);

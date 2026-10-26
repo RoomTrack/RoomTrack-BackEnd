@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.Marketing.Infrastructure.Persistence.EFC.Configuration.Extensions;
-using BackendAwRoomTrack.API.Profiles.Infrastructure.Persistence.EFC.Configuration.Extensions;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
+using RoomTrack.Marketing.Infrastructure.Persistence.EFC.Configuration.Extensions;
+using RoomTrack.Profiles.Infrastructure.Persistence.EFC.Configuration.Extensions;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration;
 using Microsoft.EntityFrameworkCore;
 
 namespace RoomTrack.Profiles.API.Infrastructure.Persistence;

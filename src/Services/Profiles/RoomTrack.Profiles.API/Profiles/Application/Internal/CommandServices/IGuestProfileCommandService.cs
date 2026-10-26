@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Profiles.Application.Internal.Commands;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Aggregates;
+using RoomTrack.Profiles.Application.Internal.Commands;
+using RoomTrack.Profiles.Domain.Model.Aggregates;
 
-namespace BackendAwRoomTrack.API.Profiles.Application.Internal.CommandServices;
+namespace RoomTrack.Profiles.Application.Internal.CommandServices;
 
 public interface IGuestProfileCommandService
 {

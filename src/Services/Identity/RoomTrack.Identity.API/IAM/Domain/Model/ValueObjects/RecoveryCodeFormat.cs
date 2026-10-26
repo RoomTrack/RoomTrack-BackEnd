@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace BackendAwRoomTrack.API.IAM.Domain.Model.ValueObjects;
+namespace RoomTrack.IAM.Domain.Model.ValueObjects;
 
 /// <summary>
 ///     One-time recovery codes: 10 characters shown as <c>XXXXX-XXXXX</c> from an alphabet

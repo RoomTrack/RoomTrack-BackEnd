@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Bookings.Domain.Model.Commands;
+namespace RoomTrack.Bookings.Domain.Model.Commands;
 
 /// <summary>
 ///     Command to place a new booking (guest, staff).

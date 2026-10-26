@@ -1,9 +1,9 @@
-using BackendAwRoomTrack.API.Marketing.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Marketing.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Marketing.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Marketing.Interfaces.REST.Resources;
+using RoomTrack.Marketing.Domain.Model.Aggregates;
+using RoomTrack.Marketing.Domain.Model.Commands;
+using RoomTrack.Marketing.Domain.Model.Queries;
+using RoomTrack.Marketing.Interfaces.REST.Resources;
 
-namespace BackendAwRoomTrack.API.Marketing.Interfaces.REST.Transform;
+namespace RoomTrack.Marketing.Interfaces.REST.Transform;
 
 public static class DemoRequestAssemblers
 {

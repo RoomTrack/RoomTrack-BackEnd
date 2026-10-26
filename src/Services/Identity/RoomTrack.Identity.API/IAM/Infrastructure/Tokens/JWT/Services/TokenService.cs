@@ -1,14 +1,14 @@
 using System.Globalization;
 using System.Security.Claims;
-using BackendAwRoomTrack.API.IAM.Application.OutboundServices;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.IAM.Infrastructure.Tokens.JWT.Configuration;
-using BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
+using RoomTrack.IAM.Application.OutboundServices;
+using RoomTrack.IAM.Domain.Model.Aggregates;
+using RoomTrack.IAM.Infrastructure.Tokens.JWT.Configuration;
+using RoomTrack.IAM.Interfaces.Authorization;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 
-namespace BackendAwRoomTrack.API.IAM.Infrastructure.Tokens.JWT.Services;
+namespace RoomTrack.IAM.Infrastructure.Tokens.JWT.Services;
 
 /// <summary>
 ///     Issues HS256 access tokens whose claims are exactly the ones the JWT bearer handler reads

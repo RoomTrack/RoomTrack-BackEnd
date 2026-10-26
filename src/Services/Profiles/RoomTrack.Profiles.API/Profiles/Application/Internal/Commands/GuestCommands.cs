@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Enums;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects;
+using RoomTrack.Profiles.Domain.Model.Enums;
+using RoomTrack.Profiles.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Profiles.Application.Internal.Commands;
+namespace RoomTrack.Profiles.Application.Internal.Commands;
 
 public record CreateGuestProfileCommand(
     string FirstName,

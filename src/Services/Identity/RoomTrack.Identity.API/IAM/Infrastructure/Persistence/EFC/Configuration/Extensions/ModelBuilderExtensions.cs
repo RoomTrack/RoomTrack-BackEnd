@@ -1,9 +1,9 @@
-using BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Enums;
-using BackendAwRoomTrack.API.IAM.Domain.Model.ValueObjects;
+using RoomTrack.IAM.Domain.Model.Aggregates;
+using RoomTrack.IAM.Domain.Model.Enums;
+using RoomTrack.IAM.Domain.Model.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackendAwRoomTrack.API.IAM.Infrastructure.Persistence.EFC.Configuration.Extensions;
+namespace RoomTrack.IAM.Infrastructure.Persistence.EFC.Configuration.Extensions;
 
 public static class ModelBuilderExtensions
 {

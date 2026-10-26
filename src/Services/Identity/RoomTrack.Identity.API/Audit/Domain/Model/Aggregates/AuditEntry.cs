@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Audit.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Audit.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Audit.Domain.Model.Exceptions;
+using RoomTrack.Audit.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.Audit.Domain.Model.Aggregates;
+namespace RoomTrack.Audit.Domain.Model.Aggregates;
 
 /// <summary>
 ///     One line of the access audit log (date, time, user and action). Immutable once recorded.

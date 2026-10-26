@@ -25,7 +25,7 @@ namespace RoomTrack.Identity.API.Infrastructure.Persistence.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Audit.Domain.Model.Aggregates.AuditEntry", b =>
+            modelBuilder.Entity("RoomTrack.Audit.Domain.Model.Aggregates.AuditEntry", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -100,7 +100,7 @@ namespace RoomTrack.Identity.API.Infrastructure.Persistence.Migrations
                     b.ToTable("audit_entries", (string)null);
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates.AccountToken", b =>
+            modelBuilder.Entity("RoomTrack.IAM.Domain.Model.Aggregates.AccountToken", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -154,7 +154,7 @@ namespace RoomTrack.Identity.API.Infrastructure.Persistence.Migrations
                     b.ToTable("account_tokens", (string)null);
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates.MfaRecoveryCode", b =>
+            modelBuilder.Entity("RoomTrack.IAM.Domain.Model.Aggregates.MfaRecoveryCode", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -190,7 +190,7 @@ namespace RoomTrack.Identity.API.Infrastructure.Persistence.Migrations
                     b.ToTable("mfa_recovery_codes", (string)null);
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates.RefreshToken", b =>
+            modelBuilder.Entity("RoomTrack.IAM.Domain.Model.Aggregates.RefreshToken", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -250,7 +250,7 @@ namespace RoomTrack.Identity.API.Infrastructure.Persistence.Migrations
                     b.ToTable("refresh_tokens", (string)null);
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates.User", b =>
+            modelBuilder.Entity("RoomTrack.IAM.Domain.Model.Aggregates.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -626,9 +626,9 @@ namespace RoomTrack.Identity.API.Infrastructure.Persistence.Migrations
                     b.ToTable("data_protection_keys");
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates.AccountToken", b =>
+            modelBuilder.Entity("RoomTrack.IAM.Domain.Model.Aggregates.AccountToken", b =>
                 {
-                    b.HasOne("BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates.User", null)
+                    b.HasOne("RoomTrack.IAM.Domain.Model.Aggregates.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -636,9 +636,9 @@ namespace RoomTrack.Identity.API.Infrastructure.Persistence.Migrations
                         .HasConstraintName("f_k_account_tokens_users__user_id");
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates.MfaRecoveryCode", b =>
+            modelBuilder.Entity("RoomTrack.IAM.Domain.Model.Aggregates.MfaRecoveryCode", b =>
                 {
-                    b.HasOne("BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates.User", null)
+                    b.HasOne("RoomTrack.IAM.Domain.Model.Aggregates.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -646,9 +646,9 @@ namespace RoomTrack.Identity.API.Infrastructure.Persistence.Migrations
                         .HasConstraintName("f_k_mfa_recovery_codes_users__user_id");
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates.RefreshToken", b =>
+            modelBuilder.Entity("RoomTrack.IAM.Domain.Model.Aggregates.RefreshToken", b =>
                 {
-                    b.HasOne("BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates.User", null)
+                    b.HasOne("RoomTrack.IAM.Domain.Model.Aggregates.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

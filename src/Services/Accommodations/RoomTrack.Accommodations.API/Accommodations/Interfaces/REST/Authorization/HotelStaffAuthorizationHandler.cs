@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
+using RoomTrack.Accommodations.Domain.Model.Aggregates;
+using RoomTrack.IAM.Interfaces.Authorization;
 using Microsoft.AspNetCore.Authorization;
 
-namespace BackendAwRoomTrack.API.Accommodations.Interfaces.REST.Authorization;
+namespace RoomTrack.Accommodations.Interfaces.REST.Authorization;
 
 /// <summary>Requirement "the requester works at this hotel" (e.g. reads its payment methods).</summary>
 public sealed class HotelStaffRequirement : IAuthorizationRequirement

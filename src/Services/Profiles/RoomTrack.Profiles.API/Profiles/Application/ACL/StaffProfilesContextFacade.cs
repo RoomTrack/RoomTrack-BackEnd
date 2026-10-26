@@ -1,14 +1,14 @@
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Exceptions;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Profiles.Application.Internal.Commands;
-using BackendAwRoomTrack.API.Profiles.Application.Internal.CommandServices;
-using BackendAwRoomTrack.API.Profiles.Application.Internal.Queries;
-using BackendAwRoomTrack.API.Profiles.Application.Internal.QueryServices;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Enums;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Profiles.Interfaces.ACL;
+using RoomTrack.Profiles.Domain.Model.Exceptions;
+using RoomTrack.Shared.Domain.Model.Exceptions;
+using RoomTrack.Profiles.Application.Internal.Commands;
+using RoomTrack.Profiles.Application.Internal.CommandServices;
+using RoomTrack.Profiles.Application.Internal.Queries;
+using RoomTrack.Profiles.Application.Internal.QueryServices;
+using RoomTrack.Profiles.Domain.Model.Enums;
+using RoomTrack.Profiles.Domain.Model.ValueObjects;
+using RoomTrack.Profiles.Interfaces.ACL;
 
-namespace BackendAwRoomTrack.API.Profiles.Application.ACL;
+namespace RoomTrack.Profiles.Application.ACL;
 
 public class StaffProfilesContextFacade(
     IStaffProfileCommandService staffProfileCommandService,

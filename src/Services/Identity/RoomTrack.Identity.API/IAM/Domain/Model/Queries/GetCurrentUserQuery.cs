@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.IAM.Domain.Model.Queries;
+namespace RoomTrack.IAM.Domain.Model.Queries;
 
 /// <summary>The signed-in user's account (profile, like OpenID Connect <c>userinfo</c>).</summary>
 /// <param name="UserId">The user identified by the access token.</param>

@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.RateLimiting;
+namespace RoomTrack.Shared.Infrastructure.Interfaces.ASP.RateLimiting;
 
 /// <summary>Names of the rate limiting policies used with <c>[EnableRateLimiting]</c>.</summary>
 public static class RateLimitPolicies

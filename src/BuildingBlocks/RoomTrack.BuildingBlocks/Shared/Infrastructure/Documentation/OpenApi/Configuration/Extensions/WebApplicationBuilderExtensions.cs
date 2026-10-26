@@ -1,7 +1,7 @@
 using Microsoft.OpenApi.Models;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Documentation.OpenApi.Configuration;
+using RoomTrack.Shared.Infrastructure.Documentation.OpenApi.Configuration;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Documentation.OpenApi.Configuration.Extensions;
+namespace RoomTrack.Shared.Infrastructure.Documentation.OpenApi.Configuration.Extensions;
 
 /// <summary>
 /// Extension methods for configuring the OpenAPI documentation of a service (CORS is handled by the API gateway).

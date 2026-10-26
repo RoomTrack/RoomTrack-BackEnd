@@ -1,0 +1,66 @@
+name: CI
+
+# Builds the solution and runs the test suite on every pull request and on every push to develop and main, so a
+# change only reaches develop (and from there main) with the tests passing.
+
+on:
+  push:
+    branches: [ "develop", "main" ]
+  pull_request:
+    branches: [ "develop", "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    # Real MySQL for the integration tests that need row locks and concurrent connections
+    # (they are skipped when TEST_MYSQL_CONNECTION does not reach a server).
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: roomtrack_ci
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proomtrack_ci --silent"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=30
+
+    env:
+      DOTNET_NOLOGO: true
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+      TEST_MYSQL_CONNECTION: server=127.0.0.1;port=3306;user=root;password=roomtrack_ci;database=roomtrack_ci_tests;
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Restore
+        run: dotnet restore RoomTrack.sln
+
+      - name: Build
+        run: dotnet build RoomTrack.sln --configuration Release --no-restore
+
+      - name: Test
+        run: >-
+          dotnet test RoomTrack.sln --configuration Release --no-build
+          --logger "trx;LogFilePrefix=results"
+          --collect:"XPlat Code Coverage"
+          --results-directory TestResults
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: TestResults

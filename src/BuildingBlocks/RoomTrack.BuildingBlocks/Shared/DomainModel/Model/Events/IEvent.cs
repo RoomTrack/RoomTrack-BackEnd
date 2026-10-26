@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.Domain.Shared.Domain.Model.Events;
+namespace RoomTrack.Shared.Domain.Model.Events;
 
 /// <summary>
 /// Defines a domain event contract with occurrence timestamp.

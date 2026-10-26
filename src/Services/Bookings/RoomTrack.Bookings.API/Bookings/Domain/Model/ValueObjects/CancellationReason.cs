@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
+namespace RoomTrack.Bookings.Domain.Model.ValueObjects;
 
 /// <summary>Why a booking was cancelled.</summary>
 public enum CancellationReason

@@ -1,11 +1,11 @@
-using BackendAwRoomTrack.API.Media.Application.ACL;
-using BackendAwRoomTrack.API.Media.Application.Internal.CommandServices;
-using BackendAwRoomTrack.API.Media.Application.OutboundServices;
-using BackendAwRoomTrack.API.Media.Infrastructure.Cloudinary;
-using BackendAwRoomTrack.API.Media.Interfaces.ACL;
+using RoomTrack.Media.Application.ACL;
+using RoomTrack.Media.Application.Internal.CommandServices;
+using RoomTrack.Media.Application.OutboundServices;
+using RoomTrack.Media.Infrastructure.Cloudinary;
+using RoomTrack.Media.Interfaces.ACL;
 using Microsoft.Extensions.Options;
 
-namespace BackendAwRoomTrack.API.Media.Infrastructure.Interfaces.ASP.Configuration.Extensions;
+namespace RoomTrack.Media.Infrastructure.Interfaces.ASP.Configuration.Extensions;
 
 public static class WebApplicationBuilderExtensions
 {

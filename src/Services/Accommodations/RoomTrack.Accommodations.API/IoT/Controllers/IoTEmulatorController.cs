@@ -1,13 +1,13 @@
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Accommodations.Interfaces.ACL;
-using BackendAwRoomTrack.API.Controllers.Authorization;
-using BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
+using RoomTrack.Shared.Domain.Model.Exceptions;
+using RoomTrack.Accommodations.Interfaces.ACL;
+using RoomTrack.Controllers.Authorization;
+using RoomTrack.IAM.Interfaces.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using BackendAwRoomTrack.API.Models.IoT;
-using BackendAwRoomTrack.API.Infrastructure.Telemetry;
+using RoomTrack.Models.IoT;
+using RoomTrack.Infrastructure.Telemetry;
 
-namespace BackendAwRoomTrack.API.Controllers;
+namespace RoomTrack.Controllers;
 
 // In-memory IoT emulator. Real route: /api/v1/io-t-emulator/... (kebab-case convention).
 // Authorization (R5): roles per endpoint come from Policies; the room itself is checked with

@@ -1,9 +1,9 @@
-using BackendAwRoomTrack.API.Analytics.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Analytics.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Analytics.Domain.Repositories;
-using BackendAwRoomTrack.API.Analytics.Domain.Services;
+using RoomTrack.Analytics.Domain.Model.Aggregates;
+using RoomTrack.Analytics.Domain.Model.Queries;
+using RoomTrack.Analytics.Domain.Repositories;
+using RoomTrack.Analytics.Domain.Services;
 
-namespace BackendAwRoomTrack.API.Analytics.Application.Internal.QueryServices;
+namespace RoomTrack.Analytics.Application.Internal.QueryServices;
 
 /// <summary>
 /// Service to handle analytics data retrieval.

@@ -1,18 +1,18 @@
-using BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
-using BackendAwRoomTrack.API.Marketing.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Marketing.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Marketing.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Marketing.Domain.Services;
-using BackendAwRoomTrack.API.Marketing.Interfaces.REST.Resources;
-using BackendAwRoomTrack.API.Marketing.Interfaces.REST.Transform;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Authentication.ScheduledJobs;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.RateLimiting;
+using RoomTrack.IAM.Interfaces.Authorization;
+using RoomTrack.Marketing.Domain.Model.Commands;
+using RoomTrack.Marketing.Domain.Model.Queries;
+using RoomTrack.Marketing.Domain.Model.ValueObjects;
+using RoomTrack.Marketing.Domain.Services;
+using RoomTrack.Marketing.Interfaces.REST.Resources;
+using RoomTrack.Marketing.Interfaces.REST.Transform;
+using RoomTrack.Shared.Infrastructure.Authentication.ScheduledJobs;
+using RoomTrack.Shared.Infrastructure.Interfaces.ASP.RateLimiting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace BackendAwRoomTrack.API.Marketing.Interfaces.REST;
+namespace RoomTrack.Marketing.Interfaces.REST;
 
 /// <summary>
 ///     Demo requests from the landing: submission with immediate confirmation, the sales team's list and

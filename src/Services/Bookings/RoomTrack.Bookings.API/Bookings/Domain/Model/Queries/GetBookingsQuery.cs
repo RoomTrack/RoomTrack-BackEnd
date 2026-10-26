@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Bookings.Domain.Model.Queries;
+namespace RoomTrack.Bookings.Domain.Model.Queries;
 
 /// <summary>The bookings visible to the requester (a guest: their own; hotel staff: all), newest first.</summary>
 public record GetBookingsQuery(BookingRequester Requester);

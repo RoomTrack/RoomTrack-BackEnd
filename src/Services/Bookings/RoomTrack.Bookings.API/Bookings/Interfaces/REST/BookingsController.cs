@@ -1,18 +1,19 @@
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Bookings.Domain.Services;
-using BackendAwRoomTrack.API.Bookings.Interfaces.REST.Resources;
-using BackendAwRoomTrack.API.Bookings.Interfaces.REST.Transform;
-using BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
+using System.Globalization;
+using RoomTrack.Shared.Domain.Model.Exceptions;
+using RoomTrack.Bookings.Domain.Model.Exceptions;
+using RoomTrack.Bookings.Domain.Model.Commands;
+using RoomTrack.Bookings.Domain.Model.Queries;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Bookings.Domain.Services;
+using RoomTrack.Bookings.Interfaces.REST.Resources;
+using RoomTrack.Bookings.Interfaces.REST.Transform;
+using RoomTrack.IAM.Interfaces.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace BackendAwRoomTrack.API.Bookings.Interfaces.REST;
+namespace RoomTrack.Bookings.Interfaces.REST;
 
 /// <summary>
 ///     Bookings: guest self-service and centralized management by the hotel.
@@ -75,16 +76,32 @@ public class BookingsController(
             await ToResourceWithPaymentInstructionsAsync(booking));
     }
 
-    /// <summary>Lists the bookings visible to the requester, newest first.</summary>
+    /// <summary>
+    ///     Lists the bookings visible to the requester, newest first. Without <paramref name="page"/> and
+    ///     <paramref name="pageSize"/> the whole list is returned (as before); with either of them, only that page
+    ///     (page 1 and 20 bookings by default, at most 100) and the total of the list in the <c>X-Total-Count</c> header.
+    /// </summary>
     [HttpGet]
     [Authorize(Policy = Policies.ReadBookings)]
     [SwaggerOperation(Summary = "List bookings", OperationId = "GetAllBookings")]
     [ProducesResponseType(typeof(IEnumerable<BookingResource>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAllBookings()
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetAllBookings([FromQuery] int? page = null, [FromQuery] int? pageSize = null)
     {
-        var bookings = await bookingQueryService.Handle(new GetBookingsQuery(User.ToBookingRequester()));
-        return Ok(await ToResourcesAsync(bookings));
+        if (page is null && pageSize is null)
+        {
+            var bookings = await bookingQueryService.Handle(new GetBookingsQuery(User.ToBookingRequester()));
+            return Ok(await ToResourcesAsync(bookings));
+        }
+
+        var result = await bookingQueryService.Handle(new GetBookingsPageQuery(User.ToBookingRequester(),
+            new PageRequest(page ?? 1, pageSize ?? PageRequest.DefaultPageSize)));
+        Response.Headers[TotalCountHeader] = result.TotalCount.ToString(CultureInfo.InvariantCulture);
+        return Ok(await ToResourcesAsync(result.Items));
     }
+
+    /// <summary>Total of a paged list (exposed to the browser apps by the gateway's CORS policy).</summary>
+    public const string TotalCountHeader = "X-Total-Count";
 
     /// <summary>Lists the bookings of a room (hotel staff of that room's hotel).</summary>
     [HttpGet("room/{roomId:int}")]

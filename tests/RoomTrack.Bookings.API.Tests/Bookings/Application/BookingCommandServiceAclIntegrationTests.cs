@@ -2,24 +2,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BackendAwRoomTrack.API.Accommodations.Interfaces.ACL;
-using BackendAwRoomTrack.API.Bookings.Application.Internal.CommandServices;
-using BackendAwRoomTrack.API.Bookings.Application.Internal.Configuration;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Bookings.Domain.Repositories;
-using BackendAwRoomTrack.API.Bookings.Domain.Services;
-using BackendAwRoomTrack.API.IAM.Interfaces.ACL;
-using BackendAwRoomTrack.API.Profiles.Interfaces.ACL;
-using BackendAwRoomTrack.API.Shared.Domain.Repositories;
+using RoomTrack.Accommodations.Interfaces.ACL;
+using RoomTrack.Bookings.Application.Internal.CommandServices;
+using RoomTrack.Bookings.Application.Internal.Configuration;
+using RoomTrack.Bookings.Domain.Model.Aggregates;
+using RoomTrack.Bookings.Domain.Model.Commands;
+using RoomTrack.Bookings.Domain.Model.Queries;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Bookings.Domain.Repositories;
+using RoomTrack.Bookings.Domain.Services;
+using RoomTrack.IAM.Interfaces.ACL;
+using RoomTrack.Profiles.Interfaces.ACL;
+using RoomTrack.Shared.Domain.Repositories;
 using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Xunit;
-using static BackendAwRoomTrack.API.Tests.Bookings.BookingTestData;
+using static RoomTrack.Tests.Bookings.BookingTestData;
 
-namespace BackendAwRoomTrack.API.Tests.Bookings.Application;
+namespace RoomTrack.Tests.Bookings.Application;
 
 public class BookingCommandServiceAclIntegrationTests
 {
@@ -47,6 +48,8 @@ public class BookingCommandServiceAclIntegrationTests
         public Task<IEnumerable<Booking>> FindByOwnerAsync(int userId, Guid? guestProfileId) => Task.FromResult(Enumerable.Empty<Booking>());
 
         public Task<IEnumerable<Booking>> ListNewestFirstAsync(int? hotelId) => Task.FromResult(Enumerable.Empty<Booking>());
+        public Task<BookingPage> FindPageByOwnerAsync(int userId, Guid? guestProfileId, PageRequest page) => Task.FromResult(new BookingPage([], 0));
+        public Task<BookingPage> ListPageNewestFirstAsync(int? hotelId, PageRequest page) => Task.FromResult(new BookingPage([], 0));
 
         public Task<IEnumerable<Booking>> FindByRoomIdAsync(int roomId) => Task.FromResult(Enumerable.Empty<Booking>());
 
@@ -135,6 +138,7 @@ public class BookingCommandServiceAclIntegrationTests
         public Task<int?> FetchHotelIdOfRoomAsync(int roomId) => Task.FromResult<int?>(HotelId);
 
         public Task OccupyRoomForCheckInAsync(int roomId, int? guestUserId, string? guestEmail) => Task.CompletedTask;
+        public Task VacateRoomAfterCheckOutAsync(int roomId, int? checkedOutByUserId, string? checkedOutByEmail) => Task.CompletedTask;
 
         public Task<IReadOnlyList<RoomOffer>> FetchRoomsOfferedForBookingAsync(int? hotelId) =>
             Task.FromResult<IReadOnlyList<RoomOffer>>([]);

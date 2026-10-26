@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Incidents.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Incidents.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.Incidents.Domain.Model.Exceptions;
+namespace RoomTrack.Incidents.Domain.Model.Exceptions;
 
 /// <summary>Stable error codes of the Incidents context.</summary>
 public static class IncidentErrorCodes
