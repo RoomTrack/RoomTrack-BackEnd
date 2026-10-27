@@ -1,13 +1,13 @@
-using BackendAwRoomTrack.API.IAM.Domain.Model.Exceptions;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Events;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Constants;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Enums;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Events;
-using BackendAwRoomTrack.API.IAM.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.IAM.Domain.Services;
+using RoomTrack.IAM.Domain.Model.Exceptions;
+using RoomTrack.Shared.Domain.Model.Events;
+using RoomTrack.Shared.Domain.Model.Exceptions;
+using RoomTrack.IAM.Domain.Model.Constants;
+using RoomTrack.IAM.Domain.Model.Enums;
+using RoomTrack.IAM.Domain.Model.Events;
+using RoomTrack.IAM.Domain.Model.ValueObjects;
+using RoomTrack.IAM.Domain.Services;
 
-namespace BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates;
+namespace RoomTrack.IAM.Domain.Model.Aggregates;
 
 /// <summary>
 /// User Aggregate Root.

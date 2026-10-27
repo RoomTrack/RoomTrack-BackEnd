@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Options;
 
-namespace BackendAwRoomTrack.API.Bookings.Application.Internal.Configuration;
+namespace RoomTrack.Bookings.Application.Internal.Configuration;
 
 /// <summary>The hotels' calendar: today's date and instants in the hotel time zone (<see cref="BookingPolicySettings.TimeZone"/>).</summary>
 public class HotelCalendar(IOptions<BookingPolicySettings> settings, TimeProvider timeProvider)

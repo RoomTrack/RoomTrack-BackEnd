@@ -1,11 +1,12 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Bookings.Domain.Repositories;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.Bookings.Domain.Model.Aggregates;
+using RoomTrack.Bookings.Domain.Model.Queries;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Bookings.Domain.Repositories;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackendAwRoomTrack.API.Bookings.Infrastructure.Persistence.EFC.Repositories;
+namespace RoomTrack.Bookings.Infrastructure.Persistence.EFC.Repositories;
 
 public class BookingRepository(AppDbContext context) : BaseRepository<Booking>(context), IBookingRepository
 {
@@ -13,20 +14,34 @@ public class BookingRepository(AppDbContext context) : BaseRepository<Booking>(c
     private static readonly BookingStatus[] ActiveStatuses =
         [BookingStatus.Pending, BookingStatus.Confirmed, BookingStatus.CheckedIn];
 
-    public async Task<IEnumerable<Booking>> FindByOwnerAsync(int userId, Guid? guestProfileId)
-    {
-        var guestId = new GuestId(userId);
-        return await Context.Set<Booking>()
-            .Where(b => b.GuestId == guestId || (guestProfileId != null && b.GuestProfileId == guestProfileId))
-            .OrderByDescending(b => b.Id)
-            .ToListAsync();
-    }
+    public async Task<IEnumerable<Booking>> FindByOwnerAsync(int userId, Guid? guestProfileId) =>
+        await OwnedBy(userId, guestProfileId).OrderByDescending(b => b.Id).ToListAsync();
 
     public async Task<IEnumerable<Booking>> ListNewestFirstAsync(int? hotelId) =>
-        await Context.Set<Booking>()
-            .Where(b => hotelId == null || b.HotelId == hotelId)
-            .OrderByDescending(b => b.Id)
-            .ToListAsync();
+        await OfHotel(hotelId).OrderByDescending(b => b.Id).ToListAsync();
+
+    public Task<BookingPage> FindPageByOwnerAsync(int userId, Guid? guestProfileId, PageRequest page) =>
+        PageNewestFirstAsync(OwnedBy(userId, guestProfileId), page);
+
+    public Task<BookingPage> ListPageNewestFirstAsync(int? hotelId, PageRequest page) =>
+        PageNewestFirstAsync(OfHotel(hotelId), page);
+
+    private IQueryable<Booking> OwnedBy(int userId, Guid? guestProfileId)
+    {
+        var guestId = new GuestId(userId);
+        return Context.Set<Booking>()
+            .Where(b => b.GuestId == guestId || (guestProfileId != null && b.GuestProfileId == guestProfileId));
+    }
+
+    private IQueryable<Booking> OfHotel(int? hotelId) =>
+        Context.Set<Booking>().Where(b => hotelId == null || b.HotelId == hotelId);
+
+    private static async Task<BookingPage> PageNewestFirstAsync(IQueryable<Booking> bookings, PageRequest page)
+    {
+        var total = await bookings.CountAsync();
+        var items = await bookings.OrderByDescending(b => b.Id).Skip(page.Skip).Take(page.PageSize).ToListAsync();
+        return new BookingPage(items, total);
+    }
 
     public async Task<IEnumerable<Booking>> FindByRoomIdAsync(int roomId)
     {

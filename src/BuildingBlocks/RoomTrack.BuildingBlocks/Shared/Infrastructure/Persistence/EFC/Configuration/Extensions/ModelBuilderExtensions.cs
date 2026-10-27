@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration.Extensions;
+namespace RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration.Extensions;
 
 /// <summary>
 /// Provides extension methods for <see cref="ModelBuilder"/> to configure database naming conventions.

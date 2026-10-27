@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.ReverseProxy;
+namespace RoomTrack.Shared.Infrastructure.Interfaces.ASP.ReverseProxy;
 
 /// <summary>
 ///     Proxies allowed to report the client address through <c>X-Forwarded-For</c> / <c>X-Forwarded-Proto</c>

@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Entities;
+using RoomTrack.Accommodations.Domain.Model.Entities;
 
-namespace BackendAwRoomTrack.API.Accommodations.Domain.Repositories;
+namespace RoomTrack.Accommodations.Domain.Repositories;
 
 /// <summary>Status history of the rooms. Append-only.</summary>
 public interface IRoomStatusChangeRepository

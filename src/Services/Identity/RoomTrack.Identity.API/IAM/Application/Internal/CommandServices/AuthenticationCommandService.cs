@@ -1,19 +1,19 @@
-using BackendAwRoomTrack.API.IAM.Application.Internal.Configuration;
-using BackendAwRoomTrack.API.IAM.Application.OutboundServices;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Commands;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Constants;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Enums;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Events;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.IAM.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.IAM.Domain.Repositories;
-using BackendAwRoomTrack.API.IAM.Domain.Services;
-using BackendAwRoomTrack.API.Shared.Application.OutboundServices;
-using BackendAwRoomTrack.API.Shared.Domain.Repositories;
+using RoomTrack.IAM.Application.Internal.Configuration;
+using RoomTrack.IAM.Application.OutboundServices;
+using RoomTrack.IAM.Domain.Model.Aggregates;
+using RoomTrack.IAM.Domain.Model.Commands;
+using RoomTrack.IAM.Domain.Model.Constants;
+using RoomTrack.IAM.Domain.Model.Enums;
+using RoomTrack.IAM.Domain.Model.Events;
+using RoomTrack.IAM.Domain.Model.Exceptions;
+using RoomTrack.IAM.Domain.Model.ValueObjects;
+using RoomTrack.IAM.Domain.Repositories;
+using RoomTrack.IAM.Domain.Services;
+using RoomTrack.Shared.Application.OutboundServices;
+using RoomTrack.Shared.Domain.Repositories;
 using Microsoft.Extensions.Options;
 
-namespace BackendAwRoomTrack.API.IAM.Application.Internal.CommandServices;
+namespace RoomTrack.IAM.Application.Internal.CommandServices;
 
 /// <summary>
 ///     Orchestrates the account and session use cases. Rules live in the aggregates (<see cref="User"/> lockout and

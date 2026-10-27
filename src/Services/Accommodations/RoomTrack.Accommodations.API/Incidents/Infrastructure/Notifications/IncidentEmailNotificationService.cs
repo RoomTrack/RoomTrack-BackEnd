@@ -1,13 +1,13 @@
 using System.Globalization;
-using BackendAwRoomTrack.API.IAM.Interfaces.ACL;
-using BackendAwRoomTrack.API.Incidents.Application.OutboundServices;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Shared.Application.OutboundServices;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Configuration;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Email.Templates;
+using RoomTrack.IAM.Interfaces.ACL;
+using RoomTrack.Incidents.Application.OutboundServices;
+using RoomTrack.Incidents.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Application.OutboundServices;
+using RoomTrack.Shared.Infrastructure.Configuration;
+using RoomTrack.Shared.Infrastructure.Email.Templates;
 using Microsoft.Extensions.Options;
 
-namespace BackendAwRoomTrack.API.Incidents.Infrastructure.Notifications;
+namespace RoomTrack.Incidents.Infrastructure.Notifications;
 
 /// <summary>Incident e-mails to the hotel staff (neutral Spanish) with a link to the incident in the web app.</summary>
 public class IncidentEmailNotificationService(

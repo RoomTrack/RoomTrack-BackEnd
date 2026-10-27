@@ -1,8 +1,8 @@
 using System.Globalization;
-using BackendAwRoomTrack.API.Payments.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Payments.Interfaces.REST.Resources;
+using RoomTrack.Payments.Domain.Model.Aggregates;
+using RoomTrack.Payments.Interfaces.REST.Resources;
 
-namespace BackendAwRoomTrack.API.Payments.Interfaces.REST.Transform;
+namespace RoomTrack.Payments.Interfaces.REST.Transform;
 
 public static class PaymentResourceFromEntityAssembler
 {

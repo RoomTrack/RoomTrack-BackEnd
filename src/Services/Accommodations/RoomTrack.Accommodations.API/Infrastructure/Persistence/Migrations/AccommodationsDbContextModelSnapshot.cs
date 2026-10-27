@@ -22,7 +22,7 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates.Hotel", b =>
+            modelBuilder.Entity("RoomTrack.Accommodations.Domain.Model.Aggregates.Hotel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -86,7 +86,7 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                     b.ToTable("hotels", (string)null);
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates.Room", b =>
+            modelBuilder.Entity("RoomTrack.Accommodations.Domain.Model.Aggregates.Room", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -155,7 +155,7 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                     b.ToTable("rooms", (string)null);
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Accommodations.Domain.Model.Entities.Amenity", b =>
+            modelBuilder.Entity("RoomTrack.Accommodations.Domain.Model.Entities.Amenity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -231,7 +231,7 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                         });
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Accommodations.Domain.Model.Entities.HotelCategory", b =>
+            modelBuilder.Entity("RoomTrack.Accommodations.Domain.Model.Entities.HotelCategory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -284,7 +284,7 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                         });
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Accommodations.Domain.Model.Entities.RoomStatusChange", b =>
+            modelBuilder.Entity("RoomTrack.Accommodations.Domain.Model.Entities.RoomStatusChange", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -341,7 +341,7 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                     b.ToTable("room_status_changes", (string)null);
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Accommodations.Domain.Model.Entities.RoomType", b =>
+            modelBuilder.Entity("RoomTrack.Accommodations.Domain.Model.Entities.RoomType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -368,7 +368,164 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                     b.ToTable("room_types", (string)null);
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Housekeeping.Domain.Model.Aggregates.CleaningTask", b =>
+            modelBuilder.Entity("RoomTrack.GuestRequests.Domain.Model.Aggregates.GuestRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Area")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("area");
+
+                    b.Property<int?>("AssigneeUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("assignee_user_id");
+
+                    b.Property<int?>("BookingId")
+                        .HasColumnType("int")
+                        .HasColumnName("booking_id");
+
+                    b.Property<DateTimeOffset?>("CancelledAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("cancelled_at");
+
+                    b.Property<string>("ClosingNote")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)")
+                        .HasColumnName("closing_note");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at");
+
+                    b.Property<bool>("CreatedByGuest")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("created_by_guest");
+
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)")
+                        .HasColumnName("description");
+
+                    b.Property<DateTimeOffset>("EstimatedAttentionBy")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("estimated_attention_by");
+
+                    b.Property<int?>("GuestUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("guest_user_id");
+
+                    b.Property<int>("HotelId")
+                        .HasColumnType("int")
+                        .HasColumnName("hotel_id");
+
+                    b.Property<DateTimeOffset?>("ResolvedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("resolved_at");
+
+                    b.Property<int>("RoomId")
+                        .HasColumnType("int")
+                        .HasColumnName("room_id");
+
+                    b.Property<DateTimeOffset?>("StartedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("started_at");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("status");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("varchar(120)")
+                        .HasColumnName("title");
+
+                    b.Property<int>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("int")
+                        .HasColumnName("version");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_guest_requests");
+
+                    b.HasIndex("GuestUserId")
+                        .HasDatabaseName("i_x_guest_requests__guest_user_id");
+
+                    b.HasIndex("HotelId", "Status")
+                        .HasDatabaseName("i_x_guest_requests__hotel_id__status");
+
+                    b.HasIndex("HotelId", "Area", "Status")
+                        .HasDatabaseName("i_x_guest_requests__hotel_id__area__status");
+
+                    b.ToTable("guest_requests", (string)null);
+                });
+
+            modelBuilder.Entity("RoomTrack.GuestRequests.Domain.Model.Entities.GuestRequestHistoryEntry", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("action");
+
+                    b.Property<string>("ActorEmail")
+                        .HasMaxLength(254)
+                        .HasColumnType("varchar(254)")
+                        .HasColumnName("actor_email");
+
+                    b.Property<int?>("ActorUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("actor_user_id");
+
+                    b.Property<string>("Detail")
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)")
+                        .HasColumnName("detail");
+
+                    b.Property<int>("GuestRequestId")
+                        .HasColumnType("int")
+                        .HasColumnName("guest_request_id");
+
+                    b.Property<DateTimeOffset>("OccurredAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("occurred_at");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("status");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_guest_request_histories");
+
+                    b.HasIndex("GuestRequestId", "OccurredAt")
+                        .HasDatabaseName("i_x_guest_request_histories__guest_request_id__occurred_at");
+
+                    b.ToTable("guest_request_histories", (string)null);
+                });
+
+            modelBuilder.Entity("RoomTrack.Housekeeping.Domain.Model.Aggregates.CleaningTask", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -443,6 +600,11 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                         .HasColumnType("varchar(20)")
                         .HasColumnName("status");
 
+                    b.Property<int>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("int")
+                        .HasColumnName("version");
+
                     b.HasKey("Id")
                         .HasName("p_k_cleaning_tasks");
 
@@ -458,7 +620,7 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                     b.ToTable("cleaning_tasks", (string)null);
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Housekeeping.Domain.Model.Aggregates.HotelHousekeepingSettings", b =>
+            modelBuilder.Entity("RoomTrack.Housekeeping.Domain.Model.Aggregates.HotelHousekeepingSettings", b =>
                 {
                     b.Property<int>("HotelId")
                         .HasColumnType("int")
@@ -482,7 +644,7 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                     b.ToTable("hotel_housekeeping_settings", (string)null);
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Housekeeping.Domain.Model.Entities.CleaningTaskHistoryEntry", b =>
+            modelBuilder.Entity("RoomTrack.Housekeeping.Domain.Model.Entities.CleaningTaskHistoryEntry", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -538,7 +700,7 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                     b.ToTable("cleaning_task_histories", (string)null);
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Incidents.Domain.Model.Aggregates.Incident", b =>
+            modelBuilder.Entity("RoomTrack.Incidents.Domain.Model.Aggregates.Incident", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -624,6 +786,11 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                         .HasColumnType("varchar(120)")
                         .HasColumnName("title");
 
+                    b.Property<int>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("int")
+                        .HasColumnName("version");
+
                     b.HasKey("Id")
                         .HasName("p_k_incidents");
 
@@ -639,7 +806,7 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                     b.ToTable("incidents", (string)null);
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Incidents.Domain.Model.Entities.IncidentHistoryEntry", b =>
+            modelBuilder.Entity("RoomTrack.Incidents.Domain.Model.Entities.IncidentHistoryEntry", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -689,6 +856,123 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                         .HasDatabaseName("i_x_incident_histories__incident_id__occurred_at");
 
                     b.ToTable("incident_histories", (string)null);
+                });
+
+            modelBuilder.Entity("RoomTrack.Messaging.Domain.Model.Aggregates.Conversation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Area")
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("area");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at");
+
+                    b.Property<int?>("GuestUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("guest_user_id");
+
+                    b.Property<int>("HotelId")
+                        .HasColumnType("int")
+                        .HasColumnName("hotel_id");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("varchar(60)")
+                        .HasColumnName("key");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("kind");
+
+                    b.Property<DateTimeOffset?>("LastMessageAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("last_message_at");
+
+                    b.Property<int>("MessageCount")
+                        .HasColumnType("int")
+                        .HasColumnName("message_count");
+
+                    b.Property<string>("Subject")
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("subject");
+
+                    b.Property<int?>("SubjectId")
+                        .HasColumnType("int")
+                        .HasColumnName("subject_id");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_conversations");
+
+                    b.HasIndex("GuestUserId")
+                        .HasDatabaseName("i_x_conversations__guest_user_id");
+
+                    b.HasIndex("Kind", "Key")
+                        .HasDatabaseName("i_x_conversations__kind__key");
+
+                    b.HasIndex("HotelId", "Kind", "Key")
+                        .IsUnique()
+                        .HasDatabaseName("i_x_conversations__hotel_id__kind__key");
+
+                    b.ToTable("conversations", (string)null);
+                });
+
+            modelBuilder.Entity("RoomTrack.Messaging.Domain.Model.Entities.ConversationMessage", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("varchar(2000)")
+                        .HasColumnName("body");
+
+                    b.Property<int>("ConversationId")
+                        .HasColumnType("int")
+                        .HasColumnName("conversation_id");
+
+                    b.Property<bool>("SenderIsGuest")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("sender_is_guest");
+
+                    b.Property<string>("SenderName")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("varchar(120)")
+                        .HasColumnName("sender_name");
+
+                    b.Property<int>("SenderUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("sender_user_id");
+
+                    b.Property<DateTimeOffset>("SentAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("sent_at");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_conversation_messages");
+
+                    b.HasIndex("ConversationId", "Id")
+                        .HasDatabaseName("i_x_conversation_messages__conversation_id__id");
+
+                    b.ToTable("conversation_messages", (string)null);
                 });
 
             modelBuilder.Entity("MassTransit.EntityFrameworkCoreIntegration.InboxState", b =>
@@ -932,9 +1216,9 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                     b.ToTable("data_protection_keys");
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates.Hotel", b =>
+            modelBuilder.Entity("RoomTrack.Accommodations.Domain.Model.Aggregates.Hotel", b =>
                 {
-                    b.OwnsOne("BackendAwRoomTrack.API.Accommodations.Domain.Model.ValueObjects.HotelPaymentSettings", "PaymentSettings", b1 =>
+                    b.OwnsOne("RoomTrack.Accommodations.Domain.Model.ValueObjects.HotelPaymentSettings", "PaymentSettings", b1 =>
                         {
                             b1.Property<int>("HotelId")
                                 .HasColumnType("int");
@@ -981,16 +1265,16 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                     b.Navigation("PaymentSettings");
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates.Room", b =>
+            modelBuilder.Entity("RoomTrack.Accommodations.Domain.Model.Aggregates.Room", b =>
                 {
-                    b.HasOne("BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates.Hotel", "Hotel")
+                    b.HasOne("RoomTrack.Accommodations.Domain.Model.Aggregates.Hotel", "Hotel")
                         .WithMany("Rooms")
                         .HasForeignKey("HotelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("f_k_rooms_hotels__hotel_id");
 
-                    b.HasOne("BackendAwRoomTrack.API.Accommodations.Domain.Model.Entities.RoomType", "RoomType")
+                    b.HasOne("RoomTrack.Accommodations.Domain.Model.Entities.RoomType", "RoomType")
                         .WithMany()
                         .HasForeignKey("RoomTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1002,9 +1286,9 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                     b.Navigation("RoomType");
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Accommodations.Domain.Model.Entities.RoomStatusChange", b =>
+            modelBuilder.Entity("RoomTrack.Accommodations.Domain.Model.Entities.RoomStatusChange", b =>
                 {
-                    b.HasOne("BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates.Room", null)
+                    b.HasOne("RoomTrack.Accommodations.Domain.Model.Aggregates.Room", null)
                         .WithMany()
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1012,9 +1296,19 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                         .HasConstraintName("f_k_room_status_changes_rooms__room_id");
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Housekeeping.Domain.Model.Entities.CleaningTaskHistoryEntry", b =>
+            modelBuilder.Entity("RoomTrack.GuestRequests.Domain.Model.Entities.GuestRequestHistoryEntry", b =>
                 {
-                    b.HasOne("BackendAwRoomTrack.API.Housekeeping.Domain.Model.Aggregates.CleaningTask", null)
+                    b.HasOne("RoomTrack.GuestRequests.Domain.Model.Aggregates.GuestRequest", null)
+                        .WithMany("History")
+                        .HasForeignKey("GuestRequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("f_k_guest_request_histories_guest_requests__guest_request_id");
+                });
+
+            modelBuilder.Entity("RoomTrack.Housekeeping.Domain.Model.Entities.CleaningTaskHistoryEntry", b =>
+                {
+                    b.HasOne("RoomTrack.Housekeeping.Domain.Model.Aggregates.CleaningTask", null)
                         .WithMany("History")
                         .HasForeignKey("CleaningTaskId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1022,14 +1316,26 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                         .HasConstraintName("f_k_cleaning_task_histories_cleaning_tasks__cleaning_task_id");
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Incidents.Domain.Model.Entities.IncidentHistoryEntry", b =>
+            modelBuilder.Entity("RoomTrack.Incidents.Domain.Model.Entities.IncidentHistoryEntry", b =>
                 {
-                    b.HasOne("BackendAwRoomTrack.API.Incidents.Domain.Model.Aggregates.Incident", null)
+                    b.HasOne("RoomTrack.Incidents.Domain.Model.Aggregates.Incident", null)
                         .WithMany("History")
                         .HasForeignKey("IncidentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("f_k_incident_histories_incidents__incident_id");
+                });
+
+            modelBuilder.Entity("RoomTrack.Messaging.Domain.Model.Entities.ConversationMessage", b =>
+                {
+                    b.HasOne("RoomTrack.Messaging.Domain.Model.Aggregates.Conversation", "Conversation")
+                        .WithMany()
+                        .HasForeignKey("ConversationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("f_k_conversation_messages_conversations__conversation_id");
+
+                    b.Navigation("Conversation");
                 });
 
             modelBuilder.Entity("MassTransit.EntityFrameworkCoreIntegration.OutboxMessage", b =>
@@ -1046,17 +1352,22 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                         .HasConstraintName("f_k_outbox_messages_inbox_states__inbox_message_id__inbox_consumer_id");
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates.Hotel", b =>
+            modelBuilder.Entity("RoomTrack.Accommodations.Domain.Model.Aggregates.Hotel", b =>
                 {
                     b.Navigation("Rooms");
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Housekeeping.Domain.Model.Aggregates.CleaningTask", b =>
+            modelBuilder.Entity("RoomTrack.GuestRequests.Domain.Model.Aggregates.GuestRequest", b =>
                 {
                     b.Navigation("History");
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Incidents.Domain.Model.Aggregates.Incident", b =>
+            modelBuilder.Entity("RoomTrack.Housekeeping.Domain.Model.Aggregates.CleaningTask", b =>
+                {
+                    b.Navigation("History");
+                });
+
+            modelBuilder.Entity("RoomTrack.Incidents.Domain.Model.Aggregates.Incident", b =>
                 {
                     b.Navigation("History");
                 });

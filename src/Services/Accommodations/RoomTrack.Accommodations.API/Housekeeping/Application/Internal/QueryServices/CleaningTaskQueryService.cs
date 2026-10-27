@@ -1,9 +1,9 @@
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Repositories;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Services;
+using RoomTrack.Housekeeping.Domain.Model.Aggregates;
+using RoomTrack.Housekeeping.Domain.Model.Queries;
+using RoomTrack.Housekeeping.Domain.Repositories;
+using RoomTrack.Housekeeping.Domain.Services;
 
-namespace BackendAwRoomTrack.API.Housekeeping.Application.Internal.QueryServices;
+namespace RoomTrack.Housekeeping.Application.Internal.QueryServices;
 
 public class CleaningTaskQueryService(
     ICleaningTaskRepository cleaningTaskRepository,

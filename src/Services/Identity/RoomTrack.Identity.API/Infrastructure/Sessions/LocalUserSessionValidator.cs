@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.IAM.Application.OutboundServices;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Queries;
-using BackendAwRoomTrack.API.IAM.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.IAM.Domain.Services;
+using RoomTrack.IAM.Application.OutboundServices;
+using RoomTrack.IAM.Domain.Model.Queries;
+using RoomTrack.IAM.Domain.Model.ValueObjects;
+using RoomTrack.IAM.Domain.Services;
 
 namespace RoomTrack.Identity.API.Infrastructure.Sessions;
 

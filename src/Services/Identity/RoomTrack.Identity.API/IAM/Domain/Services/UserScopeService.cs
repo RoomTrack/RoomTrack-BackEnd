@@ -1,7 +1,7 @@
-﻿using BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Constants;
+﻿using RoomTrack.IAM.Domain.Model.Aggregates;
+using RoomTrack.IAM.Domain.Model.Constants;
 
-namespace BackendAwRoomTrack.API.IAM.Domain.Services;
+namespace RoomTrack.IAM.Domain.Services;
 
 /// <summary>
 /// Implementation of user scope isolation based on hotel and chain affiliation.

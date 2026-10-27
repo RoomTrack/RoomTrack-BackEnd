@@ -1,10 +1,10 @@
-using BackendAwRoomTrack.API.Analytics.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Analytics.Domain.Model.ReadModels;
-using BackendAwRoomTrack.API.Analytics.Domain.Repositories;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
+using RoomTrack.Analytics.Domain.Model.Aggregates;
+using RoomTrack.Analytics.Domain.Model.ReadModels;
+using RoomTrack.Analytics.Domain.Repositories;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackendAwRoomTrack.API.Analytics.Infrastructure.Persistence.EFC.Repositories;
+namespace RoomTrack.Analytics.Infrastructure.Persistence.EFC.Repositories;
 
 /// <summary>
 /// Implementation of the analytics repository on the service's own read model (rooms, bookings and payments

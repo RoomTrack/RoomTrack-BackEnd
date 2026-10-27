@@ -1,10 +1,10 @@
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Enums;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Domain.Model.Exceptions;
+using RoomTrack.Profiles.Domain.Model.Enums;
+using RoomTrack.Profiles.Domain.Model.ValueObjects;
 using FluentAssertions;
 using Xunit;
 
-namespace BackendAwRoomTrack.API.Tests.Profiles.Domain.ValueObjects;
+namespace RoomTrack.Tests.Profiles.Domain.ValueObjects;
 
 public class ValueObjectsTests
 {

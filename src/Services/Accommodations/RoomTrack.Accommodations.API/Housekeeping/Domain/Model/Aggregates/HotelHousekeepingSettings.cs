@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Housekeeping.Domain.Model.Aggregates;
+namespace RoomTrack.Housekeeping.Domain.Model.Aggregates;
 
 /// <summary>
 ///     How a hotel distributes its cleaning tasks. A hotel without settings has the automatic assignment off: new

@@ -1,11 +1,11 @@
 using System.Collections.Concurrent;
 using System.Reflection;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Mediator;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Events;
+using RoomTrack.Shared.Infrastructure.Mediator;
+using RoomTrack.Shared.Domain.Model.Events;
 using Cortex.Mediator;
 using Cortex.Mediator.Notifications;
 
-namespace BackendAwRoomTrack.API.Profiles.Application.Internal.OutboundServices;
+namespace RoomTrack.Profiles.Application.Internal.OutboundServices;
 
 public class DomainEventPublisher(IMediator mediator) : IDomainEventPublisher
 {

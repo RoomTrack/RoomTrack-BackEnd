@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Marketing.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Marketing.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.Marketing.Domain.Model.Queries;
+namespace RoomTrack.Marketing.Domain.Model.Queries;
 
 /// <summary>Demo requests, newest first, optionally by status (sales team).</summary>
 public sealed record GetDemoRequestsQuery

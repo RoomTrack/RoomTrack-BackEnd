@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Audit.Domain.Model.ValueObjects;
+namespace RoomTrack.Audit.Domain.Model.ValueObjects;
 
 /// <summary>
 ///     Which entries a reader may see (R4/D2): a chain administrator sees every entry; a hotel administrator only

@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Profiles.Application.Internal.Queries;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Aggregates;
+using RoomTrack.Profiles.Application.Internal.Queries;
+using RoomTrack.Profiles.Domain.Model.Aggregates;
 
-namespace BackendAwRoomTrack.API.Profiles.Application.Internal.QueryServices;
+namespace RoomTrack.Profiles.Application.Internal.QueryServices;
 
 public interface IGuestProfileQueryService
 {

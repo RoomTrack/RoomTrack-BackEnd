@@ -1,9 +1,9 @@
-using BackendAwRoomTrack.API.Audit.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Audit.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Audit.Domain.Repositories;
-using BackendAwRoomTrack.API.Audit.Domain.Services;
+using RoomTrack.Audit.Domain.Model.Aggregates;
+using RoomTrack.Audit.Domain.Model.Queries;
+using RoomTrack.Audit.Domain.Repositories;
+using RoomTrack.Audit.Domain.Services;
 
-namespace BackendAwRoomTrack.API.Audit.Application.Internal.QueryServices;
+namespace RoomTrack.Audit.Application.Internal.QueryServices;
 
 public class AuditQueryService(IAuditEntryRepository auditEntryRepository) : IAuditQueryService
 {

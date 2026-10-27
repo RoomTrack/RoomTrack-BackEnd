@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Analytics.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Analytics.Domain.Model.Queries;
+using RoomTrack.Analytics.Domain.Model.Aggregates;
+using RoomTrack.Analytics.Domain.Model.Queries;
 
-namespace BackendAwRoomTrack.API.Analytics.Domain.Services;
+namespace RoomTrack.Analytics.Domain.Services;
 
 /// <summary>
 /// Service contract for handling analytics queries.

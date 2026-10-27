@@ -1,14 +1,14 @@
-using BackendAwRoomTrack.API.Accommodations.Interfaces.ACL;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Bookings.Domain.Repositories;
-using BackendAwRoomTrack.API.Bookings.Domain.Services;
-using BackendAwRoomTrack.API.Profiles.Interfaces.ACL;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Accommodations.Interfaces.ACL;
+using RoomTrack.Bookings.Domain.Model.Aggregates;
+using RoomTrack.Bookings.Domain.Model.Exceptions;
+using RoomTrack.Bookings.Domain.Model.Queries;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Bookings.Domain.Repositories;
+using RoomTrack.Bookings.Domain.Services;
+using RoomTrack.Profiles.Interfaces.ACL;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.Bookings.Application.Internal.QueryServices;
+namespace RoomTrack.Bookings.Application.Internal.QueryServices;
 
 /// <summary>
 /// Booking queries. Visibility follows the Booking aggregate (<see cref="Booking.IsVisibleTo"/>): a guest sees their
@@ -50,6 +50,22 @@ public class BookingQueryService(
 
         requester = await ResolveGuestProfileAsync(requester);
         return await bookingRepository.FindByOwnerAsync(requester.UserId, requester.GuestProfileId);
+    }
+
+    public async Task<BookingPage> Handle(GetBookingsPageQuery query)
+    {
+        // Same visibility as GetBookingsQuery.
+        var requester = query.Requester;
+        if (!requester.IsGuest)
+        {
+            if (requester.AllHotels) return await bookingRepository.ListPageNewestFirstAsync(null, query.Page);
+            return requester.StaffHotelId is { } hotelId
+                ? await bookingRepository.ListPageNewestFirstAsync(hotelId, query.Page)
+                : new BookingPage([], 0);
+        }
+
+        requester = await ResolveGuestProfileAsync(requester);
+        return await bookingRepository.FindPageByOwnerAsync(requester.UserId, requester.GuestProfileId, query.Page);
     }
 
     public async Task<IEnumerable<Booking>> Handle(GetBookingsByRoomIdQuery query)

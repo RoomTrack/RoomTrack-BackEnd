@@ -1,10 +1,10 @@
 using System.Net;
 using System.Text.Json;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.ExceptionHandling;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Shared.Infrastructure.Interfaces.ASP.ExceptionHandling;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Internal;
+namespace RoomTrack.Shared.Infrastructure.Internal;
 
 /// <summary>
 ///     Base of the HTTP adapters that implement an ACL port by calling the owning service's internal API.

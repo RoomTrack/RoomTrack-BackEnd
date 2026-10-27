@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
+using RoomTrack.Accommodations.Domain.Model.Aggregates;
+using RoomTrack.IAM.Interfaces.Authorization;
 using Microsoft.AspNetCore.Authorization;
 
-namespace BackendAwRoomTrack.API.Accommodations.Interfaces.REST.Authorization;
+namespace RoomTrack.Accommodations.Interfaces.REST.Authorization;
 
 /// <summary>Requirement "the requester operates this room" (e.g. changes its status).</summary>
 public sealed class RoomOperationsRequirement : IAuthorizationRequirement

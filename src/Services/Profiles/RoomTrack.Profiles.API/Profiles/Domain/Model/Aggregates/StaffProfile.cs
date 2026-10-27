@@ -1,12 +1,12 @@
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Exceptions;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Entities;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Enums;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Events;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Events;
+using RoomTrack.Profiles.Domain.Model.Exceptions;
+using RoomTrack.Shared.Domain.Model.Exceptions;
+using RoomTrack.Profiles.Domain.Model.Entities;
+using RoomTrack.Profiles.Domain.Model.Enums;
+using RoomTrack.Profiles.Domain.Model.Events;
+using RoomTrack.Profiles.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Domain.Model.Events;
 
-namespace BackendAwRoomTrack.Domain.Profiles.Domain.Model.Aggregates;
+namespace RoomTrack.Profiles.Domain.Model.Aggregates;
 
 public class StaffProfile
 {

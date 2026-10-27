@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Authentication.ScheduledJobs;
+namespace RoomTrack.Shared.Infrastructure.Authentication.ScheduledJobs;
 
 /// <summary>
 ///     Shared secret of the external scheduler (GitHub Actions cron) that triggers scheduled jobs such as the demo

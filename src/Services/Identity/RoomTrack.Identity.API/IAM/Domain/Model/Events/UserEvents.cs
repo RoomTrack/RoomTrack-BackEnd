@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Events;
+using RoomTrack.Shared.Domain.Model.Events;
 
-namespace BackendAwRoomTrack.API.IAM.Domain.Model.Events;
+namespace RoomTrack.IAM.Domain.Model.Events;
 
 // Published language of the IAM context: access-related facts other contexts may react to (the Audit context
 // records them). Every event carries the hotel of the account so readers can scope them.

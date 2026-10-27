@@ -1,11 +1,11 @@
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Repositories;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
+using RoomTrack.Housekeeping.Domain.Model.Aggregates;
+using RoomTrack.Housekeeping.Domain.Model.Queries;
+using RoomTrack.Housekeeping.Domain.Model.ValueObjects;
+using RoomTrack.Housekeeping.Domain.Repositories;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackendAwRoomTrack.API.Housekeeping.Infrastructure.Persistence.EFC.Repositories;
+namespace RoomTrack.Housekeeping.Infrastructure.Persistence.EFC.Repositories;
 
 public class CleaningTaskRepository(AppDbContext context) : ICleaningTaskRepository
 {

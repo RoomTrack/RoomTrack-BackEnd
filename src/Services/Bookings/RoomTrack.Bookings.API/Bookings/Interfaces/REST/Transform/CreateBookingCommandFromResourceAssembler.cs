@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Bookings.Interfaces.REST.Resources;
+using RoomTrack.Bookings.Domain.Model.Commands;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Bookings.Interfaces.REST.Resources;
 
-namespace BackendAwRoomTrack.API.Bookings.Interfaces.REST.Transform;
+namespace RoomTrack.Bookings.Interfaces.REST.Transform;
 
 public static class CreateBookingCommandFromResourceAssembler
 {

@@ -1,14 +1,14 @@
 using System;
 using System.Linq;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Events;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Incidents.Domain.Model.Aggregates;
+using RoomTrack.Incidents.Domain.Model.Events;
+using RoomTrack.Incidents.Domain.Model.Exceptions;
+using RoomTrack.Incidents.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 using FluentAssertions;
 using Xunit;
 
-namespace BackendAwRoomTrack.API.Tests.Incidents.Domain;
+namespace RoomTrack.Tests.Incidents.Domain;
 
 public class IncidentTests
 {

@@ -1,9 +1,9 @@
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.Validation;
+using RoomTrack.Shared.Domain.Model.Exceptions;
+using RoomTrack.Shared.Infrastructure.Interfaces.ASP.Validation;
 using System.ComponentModel.DataAnnotations;
-using BackendAwRoomTrack.API.Payments.Domain.Model.ValueObjects;
+using RoomTrack.Payments.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Payments.Interfaces.REST.Resources;
+namespace RoomTrack.Payments.Interfaces.REST.Resources;
 
 /// <summary>A payment received by the hotel for a booking. There is no amount: it is the booking total.</summary>
 public record RegisterPaymentResource : IValidatableObject

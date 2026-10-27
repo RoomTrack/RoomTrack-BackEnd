@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using BackendAwRoomTrack.API.IAM.Domain.Model.ValueObjects;
+using RoomTrack.IAM.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.IAM.Application.Internal.Configuration;
+namespace RoomTrack.IAM.Application.Internal.Configuration;
 
 /// <summary>
 ///     Account security settings (section <c>AccountSecurity</c>, env vars <c>AccountSecurity__*</c>), validated

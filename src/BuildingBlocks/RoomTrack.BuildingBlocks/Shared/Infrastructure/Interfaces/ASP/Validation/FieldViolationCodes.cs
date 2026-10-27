@@ -1,8 +1,8 @@
 using System.Globalization;
 using System.ComponentModel.DataAnnotations;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.Validation;
+namespace RoomTrack.Shared.Infrastructure.Interfaces.ASP.Validation;
 
 /// <summary>
 ///     Remembers, for the current request, the stable code of every model validation error, keyed by its message

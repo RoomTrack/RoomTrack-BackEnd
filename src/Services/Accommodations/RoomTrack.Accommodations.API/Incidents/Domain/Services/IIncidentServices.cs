@@ -1,13 +1,13 @@
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Queries;
+using RoomTrack.Incidents.Domain.Model.Aggregates;
+using RoomTrack.Incidents.Domain.Model.Commands;
+using RoomTrack.Incidents.Domain.Model.Queries;
 
-namespace BackendAwRoomTrack.API.Incidents.Domain.Services;
+namespace RoomTrack.Incidents.Domain.Services;
 
 public interface IIncidentCommandService
 {
     /// <summary>Reports an incident; a blocking one takes its room out of service in the same transaction.</summary>
-    /// <exception cref="BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions.EntityNotFoundException">The room does not exist.</exception>
+    /// <exception cref="RoomTrack.Shared.Domain.Model.Exceptions.EntityNotFoundException">The room does not exist.</exception>
     Task<Incident> Handle(ReportIncidentCommand command);
 
     /// <returns>The incident, or null when it does not exist.</returns>

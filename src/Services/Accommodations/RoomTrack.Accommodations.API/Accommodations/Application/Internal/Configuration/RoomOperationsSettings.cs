@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace BackendAwRoomTrack.API.Accommodations.Application.Internal.Configuration;
+namespace RoomTrack.Accommodations.Application.Internal.Configuration;
 
 /// <summary>Room operations (section <c>Rooms</c>, env vars <c>Rooms__*</c>). Validated at startup.</summary>
 public class RoomOperationsSettings

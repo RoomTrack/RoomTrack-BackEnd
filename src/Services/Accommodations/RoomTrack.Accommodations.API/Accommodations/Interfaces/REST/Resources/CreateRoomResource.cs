@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace BackendAwRoomTrack.API.Accommodations.Interfaces.REST.Resources;
+namespace RoomTrack.Accommodations.Interfaces.REST.Resources;
 
 /// <summary>A new room of a hotel.</summary>
 public record CreateRoomResource

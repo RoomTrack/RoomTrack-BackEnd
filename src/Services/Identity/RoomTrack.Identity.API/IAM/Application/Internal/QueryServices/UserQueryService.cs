@@ -1,10 +1,10 @@
-using BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Queries;
-using BackendAwRoomTrack.API.IAM.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.IAM.Domain.Repositories;
-using BackendAwRoomTrack.API.IAM.Domain.Services;
+using RoomTrack.IAM.Domain.Model.Aggregates;
+using RoomTrack.IAM.Domain.Model.Queries;
+using RoomTrack.IAM.Domain.Model.ValueObjects;
+using RoomTrack.IAM.Domain.Repositories;
+using RoomTrack.IAM.Domain.Services;
 
-namespace BackendAwRoomTrack.API.IAM.Application.Internal.QueryServices;
+namespace RoomTrack.IAM.Application.Internal.QueryServices;
 
 public class UserQueryService(
     IUserRepository userRepository,

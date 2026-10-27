@@ -1,11 +1,11 @@
-using BackendAwRoomTrack.API.Profiles.Application.Internal.Commands;
-using BackendAwRoomTrack.API.Profiles.Application.Internal.OutboundServices;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Aggregates;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Repositories;
-using BackendAwRoomTrack.API.Shared.Domain.Repositories;
+using RoomTrack.Profiles.Application.Internal.Commands;
+using RoomTrack.Profiles.Application.Internal.OutboundServices;
+using RoomTrack.Profiles.Domain.Model.Aggregates;
+using RoomTrack.Profiles.Domain.Model.ValueObjects;
+using RoomTrack.Profiles.Domain.Repositories;
+using RoomTrack.Shared.Domain.Repositories;
 
-namespace BackendAwRoomTrack.API.Profiles.Application.Internal.CommandServices;
+namespace RoomTrack.Profiles.Application.Internal.CommandServices;
 
 public class GuestProfileCommandService(
     IGuestProfileRepository guestProfileRepository,

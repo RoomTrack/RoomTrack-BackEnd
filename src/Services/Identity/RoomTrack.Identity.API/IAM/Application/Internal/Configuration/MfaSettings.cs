@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace BackendAwRoomTrack.API.IAM.Application.Internal.Configuration;
+namespace RoomTrack.IAM.Application.Internal.Configuration;
 
 /// <summary>Two-factor authentication (section <c>Mfa</c>, env vars <c>Mfa__*</c>). Validated at startup.</summary>
 public class MfaSettings

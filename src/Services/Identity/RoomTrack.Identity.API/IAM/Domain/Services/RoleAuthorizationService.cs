@@ -1,8 +1,8 @@
-﻿using BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Constants;
-using BackendAwRoomTrack.API.IAM.Domain.Model.ValueObjects;
+﻿using RoomTrack.IAM.Domain.Model.Aggregates;
+using RoomTrack.IAM.Domain.Model.Constants;
+using RoomTrack.IAM.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.IAM.Domain.Services;
+namespace RoomTrack.IAM.Domain.Services;
 
 /// <summary>
 /// Implementation of role-hierarchy authorization rules.

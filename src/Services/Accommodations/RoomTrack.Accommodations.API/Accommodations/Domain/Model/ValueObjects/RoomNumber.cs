@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Exceptions;
+using RoomTrack.Accommodations.Domain.Model.Exceptions;
 using System.Text.RegularExpressions;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.Accommodations.Domain.Model.ValueObjects;
+namespace RoomTrack.Accommodations.Domain.Model.ValueObjects;
 
 /// <summary>Rules of the room number: 1 to 10 letters, digits or hyphens, stored in upper case.</summary>
 public static partial class RoomNumber

@@ -1,6 +1,6 @@
 using Microsoft.IdentityModel.JsonWebTokens;
 
-namespace BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
+namespace RoomTrack.IAM.Interfaces.Authorization;
 
 /// <summary>
 ///     Claim names carried by the RoomTrack access token (published language of the IAM bounded context).

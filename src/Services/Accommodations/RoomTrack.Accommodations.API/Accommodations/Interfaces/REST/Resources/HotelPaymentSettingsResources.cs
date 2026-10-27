@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Accommodations.Interfaces.REST.Resources;
+namespace RoomTrack.Accommodations.Interfaces.REST.Resources;
 
 /// <summary>How the guests of a hotel pay their bookings. Every member is null until it is configured.</summary>
 /// <param name="HotelId">The hotel.</param>

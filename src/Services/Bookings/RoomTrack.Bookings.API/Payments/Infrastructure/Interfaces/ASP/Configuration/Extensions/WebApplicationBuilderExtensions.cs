@@ -1,15 +1,15 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Events;
-using BackendAwRoomTrack.API.Payments.Application.Internal.CommandServices;
-using BackendAwRoomTrack.API.Payments.Application.Internal.EventHandlers;
-using BackendAwRoomTrack.API.Payments.Application.OutboundServices;
-using BackendAwRoomTrack.API.Payments.Infrastructure.Gateways;
-using BackendAwRoomTrack.API.Shared.Application.Internal.EventHandlers;
-using BackendAwRoomTrack.API.Payments.Application.Internal.QueryServices;
-using BackendAwRoomTrack.API.Payments.Domain.Repositories;
-using BackendAwRoomTrack.API.Payments.Domain.Services;
-using BackendAwRoomTrack.API.Payments.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.Bookings.Domain.Model.Events;
+using RoomTrack.Payments.Application.Internal.CommandServices;
+using RoomTrack.Payments.Application.Internal.EventHandlers;
+using RoomTrack.Payments.Application.OutboundServices;
+using RoomTrack.Payments.Infrastructure.Gateways;
+using RoomTrack.Shared.Application.Internal.EventHandlers;
+using RoomTrack.Payments.Application.Internal.QueryServices;
+using RoomTrack.Payments.Domain.Repositories;
+using RoomTrack.Payments.Domain.Services;
+using RoomTrack.Payments.Infrastructure.Persistence.EFC.Repositories;
 
-namespace BackendAwRoomTrack.API.Payments.Infrastructure.Interfaces.ASP.Configuration.Extensions;
+namespace RoomTrack.Payments.Infrastructure.Interfaces.ASP.Configuration.Extensions;
 
 public static class WebApplicationBuilderExtensions
 {

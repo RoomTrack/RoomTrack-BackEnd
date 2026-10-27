@@ -1,15 +1,15 @@
 using System.Globalization;
-using BackendAwRoomTrack.API.Accommodations.Interfaces.ACL;
-using BackendAwRoomTrack.API.Bookings.Application.Internal.Configuration;
-using BackendAwRoomTrack.API.Bookings.Application.OutboundServices;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Shared.Application.OutboundServices;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Configuration;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Email.Templates;
+using RoomTrack.Accommodations.Interfaces.ACL;
+using RoomTrack.Bookings.Application.Internal.Configuration;
+using RoomTrack.Bookings.Application.OutboundServices;
+using RoomTrack.Bookings.Domain.Model.Aggregates;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Application.OutboundServices;
+using RoomTrack.Shared.Infrastructure.Configuration;
+using RoomTrack.Shared.Infrastructure.Email.Templates;
 using Microsoft.Extensions.Options;
 
-namespace BackendAwRoomTrack.API.Bookings.Infrastructure.Notifications;
+namespace RoomTrack.Bookings.Infrastructure.Notifications;
 
 /// <summary>Booking e-mails to the guest (neutral Spanish), with a link to their bookings in the web app.</summary>
 public class BookingEmailNotificationService(
@@ -61,6 +61,16 @@ public class BookingEmailNotificationService(
             .Action("Buscar otra habitación", urls.Value.WebLink("bookings"))
             .To(booking.GuestEmail, $"Reserva {booking.Code} cancelada"));
     }
+
+    public Task SendCheckedOutAsync(Booking booking, BookingPlace place) =>
+        emailSender.SendAsync(EmailLayout.Create()
+            .Greeting(Greeting(booking))
+            .Paragraph($"Tu check-out en {HotelName(place.Hotel)} quedó registrado. Gracias por hospedarte con nosotros.")
+            .Paragraph($"Resumen de tu estancia (reserva {booking.Code}): habitación {place.RoomNumber}, {Stay(booking)}.")
+            .Paragraph($"{booking.Nights} {(booking.Nights == 1 ? "noche" : "noches")} × {Money(booking.PricePerNight)} = {Money(booking.TotalPrice)}.")
+            .Paragraph("El código de acceso de tu habitación ya no funciona. Si olvidaste algo, contacta a recepción.")
+            .Action("Ver mis reservas", urls.Value.WebLink("bookings"))
+            .To(booking.GuestEmail, $"Check-out de tu reserva {booking.Code}"));
 
     public Task SendBookingRescheduledAsync(Booking booking, BookingPlace place, DateTime previousCheckIn,
         DateTime previousCheckOut, string previousRoomNumber) =>

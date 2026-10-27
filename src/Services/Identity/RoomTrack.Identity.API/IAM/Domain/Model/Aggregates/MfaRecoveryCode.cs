@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.IAM.Domain.Model.Exceptions;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.IAM.Domain.Model.Exceptions;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates;
+namespace RoomTrack.IAM.Domain.Model.Aggregates;
 
 /// <summary>
 ///     A one-time recovery code of a user's second factor. Only a password-grade hash is stored

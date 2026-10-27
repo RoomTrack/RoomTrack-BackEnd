@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace BackendAwRoomTrack.API.Incidents.Application.Internal.Configuration;
+namespace RoomTrack.Incidents.Application.Internal.Configuration;
 
 /// <summary>Incident follow-up (section <c>Incidents</c>, env vars <c>Incidents__*</c>). Validated at startup.</summary>
 public class IncidentSettings

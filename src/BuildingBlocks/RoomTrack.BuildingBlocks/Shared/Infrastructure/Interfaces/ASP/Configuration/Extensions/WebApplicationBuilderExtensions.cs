@@ -1,14 +1,14 @@
-using BackendAwRoomTrack.API.Shared.Application.OutboundServices;
-using BackendAwRoomTrack.API.Shared.Domain.Repositories;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Events;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Email.Configuration;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.ExceptionHandling;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.Validation;
+using RoomTrack.Shared.Application.OutboundServices;
+using RoomTrack.Shared.Domain.Repositories;
+using RoomTrack.Shared.Infrastructure.Events;
+using RoomTrack.Shared.Infrastructure.Email.Configuration;
+using RoomTrack.Shared.Infrastructure.Interfaces.ASP.ExceptionHandling;
+using RoomTrack.Shared.Infrastructure.Interfaces.ASP.Validation;
 using Microsoft.AspNetCore.Mvc;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Repositories;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Security;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.Shared.Infrastructure.Security;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.Configuration.Extensions;
+namespace RoomTrack.Shared.Infrastructure.Interfaces.ASP.Configuration.Extensions;
 
 /// <summary>
 /// Provides extension methods for configuring shared services in the web application builder.

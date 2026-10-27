@@ -1,5 +1,5 @@
-using BackendAwRoomTrack.API.Accommodations.Interfaces.ACL;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Internal;
+using RoomTrack.Accommodations.Interfaces.ACL;
+using RoomTrack.Shared.Infrastructure.Internal;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +7,8 @@ namespace RoomTrack.Accommodations.API.Interfaces.Internal;
 
 /// <summary>Body of the occupation of a room by the guest of a completed check-in.</summary>
 public sealed record OccupyRoomRequest(int? GuestUserId, string? GuestEmail);
+/// <summary>Body of the check-out of the guest of a room.</summary>
+public sealed record VacateRoomRequest(int? CheckedOutByUserId, string? CheckedOutByEmail);
 
 /// <summary>
 ///     Internal API of the Accommodations service (the <see cref="IAccommodationsContextFacade"/> port), called by the
@@ -37,6 +39,13 @@ public class AccommodationsInternalController(IAccommodationsContextFacade accom
     public async Task<IActionResult> OccupyRoom(int roomId, OccupyRoomRequest request)
     {
         await accommodationsContextFacade.OccupyRoomForCheckInAsync(roomId, request.GuestUserId, request.GuestEmail);
+        return NoContent();
+    }
+
+    [HttpPost("rooms/{roomId:int}/check-out")]
+    public async Task<IActionResult> VacateRoom(int roomId, VacateRoomRequest request)
+    {
+        await accommodationsContextFacade.VacateRoomAfterCheckOutAsync(roomId, request.CheckedOutByUserId, request.CheckedOutByEmail);
         return NoContent();
     }
 

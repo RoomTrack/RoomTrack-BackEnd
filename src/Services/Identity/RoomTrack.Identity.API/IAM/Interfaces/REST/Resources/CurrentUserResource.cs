@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.IAM.Interfaces.REST.Resources;
+namespace RoomTrack.IAM.Interfaces.REST.Resources;
 
 /// <summary>
 ///     Profile of the signed-in user (<c>GET /users/me</c>, like OpenID Connect <c>userinfo</c>), read from the

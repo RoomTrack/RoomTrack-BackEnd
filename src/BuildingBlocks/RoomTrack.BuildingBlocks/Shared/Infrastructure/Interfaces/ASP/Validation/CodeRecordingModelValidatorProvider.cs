@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.Validation;
+namespace RoomTrack.Shared.Infrastructure.Interfaces.ASP.Validation;
 
 /// <summary>
 ///     Runs after the built-in validator providers and wraps their validators so every model validation error also

@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Marketing.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Marketing.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Marketing.Domain.Model.Exceptions;
+using RoomTrack.Marketing.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.Marketing.Domain.Model.Aggregates;
+namespace RoomTrack.Marketing.Domain.Model.Aggregates;
 
 /// <summary>
 ///     A visitor of the landing asks for a demo of RoomTrack. It is confirmed immediately by e-mail, the

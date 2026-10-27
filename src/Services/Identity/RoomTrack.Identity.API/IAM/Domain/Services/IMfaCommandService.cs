@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.IAM.Domain.Model.Commands;
+using RoomTrack.IAM.Domain.Model.Commands;
 
-namespace BackendAwRoomTrack.API.IAM.Domain.Services;
+namespace RoomTrack.IAM.Domain.Services;
 
 /// <summary>The data an authenticator app needs: the Base32 secret and the <c>otpauth://</c> URI of the QR code.</summary>
 public sealed record MfaEnrollment(string Secret, string OtpAuthUri, string Issuer, string AccountName, int Digits, int PeriodSeconds, string Algorithm);

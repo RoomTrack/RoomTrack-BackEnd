@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Accommodations.Interfaces.ACL;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Aggregates;
+using RoomTrack.Accommodations.Interfaces.ACL;
+using RoomTrack.Bookings.Domain.Model.Aggregates;
 
-namespace BackendAwRoomTrack.API.Bookings.Application.OutboundServices;
+namespace RoomTrack.Bookings.Application.OutboundServices;
 
 /// <summary>Where a booking is: its hotel and the number of its room (as guests and staff know it).</summary>
 public sealed record BookingPlace(HotelSummary? Hotel, string RoomNumber);
@@ -23,6 +23,12 @@ public interface IBookingNotificationService
 
     /// <summary>The booking was cancelled (by the guest, the hotel or the payment deadline).</summary>
     Task SendBookingCancelledAsync(Booking booking, BookingPlace place);
+
+    /// <summary>
+    ///     The guest checked out: the summary of the stay (US-14, "comprobante digital de mi estancia"). The tax receipt
+    ///     of the payments is issued with the folio (US-17).
+    /// </summary>
+    Task SendCheckedOutAsync(Booking booking, BookingPlace place);
 
     /// <summary>The dates or the room changed.</summary>
     Task SendBookingRescheduledAsync(Booking booking, BookingPlace place, DateTime previousCheckIn, DateTime previousCheckOut, string previousRoomNumber);

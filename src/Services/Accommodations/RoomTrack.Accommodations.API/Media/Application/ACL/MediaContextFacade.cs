@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Media.Application.OutboundServices;
-using BackendAwRoomTrack.API.Media.Interfaces.ACL;
+using RoomTrack.Media.Application.OutboundServices;
+using RoomTrack.Media.Interfaces.ACL;
 
-namespace BackendAwRoomTrack.API.Media.Application.ACL;
+namespace RoomTrack.Media.Application.ACL;
 
 public class MediaContextFacade(IUploadSignatureService uploadSignatureService) : IMediaContextFacade
 {

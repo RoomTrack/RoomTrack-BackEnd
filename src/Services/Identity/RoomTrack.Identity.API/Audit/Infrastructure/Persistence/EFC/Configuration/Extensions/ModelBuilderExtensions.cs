@@ -1,10 +1,10 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using BackendAwRoomTrack.API.Audit.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Audit.Domain.Model.Aggregates;
+using RoomTrack.Audit.Domain.Model.ValueObjects;
+using RoomTrack.Audit.Domain.Model.Aggregates;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackendAwRoomTrack.API.Audit.Infrastructure.Persistence.EFC.Configuration.Extensions;
+namespace RoomTrack.Audit.Infrastructure.Persistence.EFC.Configuration.Extensions;
 
 public static class ModelBuilderExtensions
 {

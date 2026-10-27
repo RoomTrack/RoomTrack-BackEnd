@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackendAwRoomTrack.API.shared.Infrastructure.Persistence.EFC.Configuration.Extensions;
+namespace RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration.Extensions;
 
 /// <summary>
 /// Provides extension methods for <see cref="WebApplicationBuilder"/> to configure persistence-related services.

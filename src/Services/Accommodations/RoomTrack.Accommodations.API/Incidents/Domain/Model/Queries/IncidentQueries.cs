@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.Incidents.Domain.Model.ValueObjects;
+using RoomTrack.Incidents.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Incidents.Domain.Model.Queries;
+namespace RoomTrack.Incidents.Domain.Model.Queries;
 
 /// <summary>An incident with its history.</summary>
 public record GetIncidentByIdQuery(int IncidentId);

@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Accommodations.Domain.Model.Commands;
+namespace RoomTrack.Accommodations.Domain.Model.Commands;
 
 /// <summary>
 /// Command to delete an existing hotel aggregate.

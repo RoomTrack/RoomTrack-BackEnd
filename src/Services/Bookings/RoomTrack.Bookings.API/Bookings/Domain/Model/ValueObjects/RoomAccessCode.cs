@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 
-namespace BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
+namespace RoomTrack.Bookings.Domain.Model.ValueObjects;
 
 /// <summary>
 ///     Digital access to the room given at the check-in: a random 6-digit code for the door keypad,

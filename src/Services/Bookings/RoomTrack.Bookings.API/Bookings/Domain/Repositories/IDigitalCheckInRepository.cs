@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Aggregates;
+using RoomTrack.Bookings.Domain.Model.Aggregates;
 
-namespace BackendAwRoomTrack.API.Bookings.Domain.Repositories;
+namespace RoomTrack.Bookings.Domain.Repositories;
 
 /// <summary>Digital check-ins.</summary>
 public interface IDigitalCheckInRepository

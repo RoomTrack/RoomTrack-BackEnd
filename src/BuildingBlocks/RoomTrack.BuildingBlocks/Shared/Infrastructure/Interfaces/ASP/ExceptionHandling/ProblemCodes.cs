@@ -1,10 +1,10 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.Validation;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Shared.Infrastructure.Interfaces.ASP.Validation;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.ExceptionHandling;
+namespace RoomTrack.Shared.Infrastructure.Interfaces.ASP.ExceptionHandling;
 
 /// <summary>
 ///     Gives every ProblemDetails the API writes a stable, machine-readable <c>code</c> extension, in one place

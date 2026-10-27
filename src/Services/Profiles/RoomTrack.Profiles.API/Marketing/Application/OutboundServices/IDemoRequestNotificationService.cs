@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.Marketing.Domain.Model.Aggregates;
+using RoomTrack.Marketing.Domain.Model.Aggregates;
 
-namespace BackendAwRoomTrack.API.Marketing.Application.OutboundServices;
+namespace RoomTrack.Marketing.Application.OutboundServices;
 
 /// <summary>E-mails of the demo request flow. Call it before the unit of work commits (outbox).</summary>
 public interface IDemoRequestNotificationService

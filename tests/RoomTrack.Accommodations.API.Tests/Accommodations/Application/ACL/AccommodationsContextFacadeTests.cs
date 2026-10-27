@@ -1,20 +1,20 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using BackendAwRoomTrack.API.Accommodations.Application.ACL;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Accommodations.Domain.Services;
-using BackendAwRoomTrack.API.Accommodations.Infrastructure.Interfaces.ASP.Configuration.Extensions;
-using BackendAwRoomTrack.API.Accommodations.Interfaces.ACL;
-using BackendAwRoomTrack.API.Bookings.Interfaces.ACL;
-using BackendAwRoomTrack.API.IAM.Interfaces.ACL;
-using BackendAwRoomTrack.API.Shared.Application.OutboundServices;
-using BackendAwRoomTrack.API.Shared.Domain.Repositories;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Events;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.Accommodations.Application.ACL;
+using RoomTrack.Accommodations.Domain.Model.Aggregates;
+using RoomTrack.Accommodations.Domain.Model.Commands;
+using RoomTrack.Accommodations.Domain.Model.Queries;
+using RoomTrack.Accommodations.Domain.Services;
+using RoomTrack.Accommodations.Infrastructure.Interfaces.ASP.Configuration.Extensions;
+using RoomTrack.Accommodations.Interfaces.ACL;
+using RoomTrack.Bookings.Interfaces.ACL;
+using RoomTrack.IAM.Interfaces.ACL;
+using RoomTrack.Shared.Application.OutboundServices;
+using RoomTrack.Shared.Domain.Repositories;
+using RoomTrack.Shared.Infrastructure.Events;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Repositories;
 using FluentAssertions;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
@@ -24,7 +24,7 @@ using RoomTrack.Accommodations.API.Infrastructure.Persistence;
 using RoomTrack.BuildingBlocks.Clients;
 using Xunit;
 
-namespace BackendAwRoomTrack.API.Tests.Accommodations.Application.ACL;
+namespace RoomTrack.Tests.Accommodations.Application.ACL;
 
 public class AccommodationsContextFacadeTests
 {

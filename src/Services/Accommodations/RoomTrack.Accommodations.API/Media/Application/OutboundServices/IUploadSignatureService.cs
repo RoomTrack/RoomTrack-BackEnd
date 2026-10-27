@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Media.Application.OutboundServices;
+namespace RoomTrack.Media.Application.OutboundServices;
 
 /// <summary>
 ///     Everything a browser needs to upload one file straight to the media library with a short-lived signature

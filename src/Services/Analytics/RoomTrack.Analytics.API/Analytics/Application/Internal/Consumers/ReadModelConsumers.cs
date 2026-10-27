@@ -1,9 +1,9 @@
-using BackendAwRoomTrack.API.Analytics.Domain.Model.ReadModels;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
+using RoomTrack.Analytics.Domain.Model.ReadModels;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration;
 using MassTransit;
 using RoomTrack.Contracts.Messaging;
 
-namespace BackendAwRoomTrack.API.Analytics.Application.Internal.Consumers;
+namespace RoomTrack.Analytics.Application.Internal.Consumers;
 
 // Consumers of the integration events that feed the read model of the metrics. Each one upserts the row of its
 // entity, ignoring events older than the stored state. Redeliveries are de-duplicated by the inbox of the

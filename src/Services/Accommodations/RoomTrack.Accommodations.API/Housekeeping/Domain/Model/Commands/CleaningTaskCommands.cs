@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.ValueObjects;
+using RoomTrack.Housekeeping.Domain.Model.ValueObjects;
+using RoomTrack.Incidents.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Housekeeping.Domain.Model.Commands;
+namespace RoomTrack.Housekeeping.Domain.Model.Commands;
 
 /// <summary>
 ///     The front desk creates the cleaning task of a room (US-05). Without <paramref name="AssigneeUserId"/> it is

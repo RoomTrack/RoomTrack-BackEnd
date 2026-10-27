@@ -1,18 +1,18 @@
-using BackendAwRoomTrack.API.Accommodations.Interfaces.ACL;
-using BackendAwRoomTrack.API.Bookings.Application.Internal.Configuration;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Bookings.Domain.Repositories;
-using BackendAwRoomTrack.API.Bookings.Domain.Services;
-using BackendAwRoomTrack.API.IAM.Interfaces.ACL;
-using BackendAwRoomTrack.API.Profiles.Interfaces.ACL;
-using BackendAwRoomTrack.API.Shared.Domain.Repositories;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Accommodations.Interfaces.ACL;
+using RoomTrack.Bookings.Application.Internal.Configuration;
+using RoomTrack.Bookings.Domain.Model.Aggregates;
+using RoomTrack.Bookings.Domain.Model.Commands;
+using RoomTrack.Bookings.Domain.Model.Exceptions;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Bookings.Domain.Repositories;
+using RoomTrack.Bookings.Domain.Services;
+using RoomTrack.IAM.Interfaces.ACL;
+using RoomTrack.Profiles.Interfaces.ACL;
+using RoomTrack.Shared.Domain.Repositories;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 using Microsoft.Extensions.Options;
 
-namespace BackendAwRoomTrack.API.Bookings.Application.Internal.CommandServices;
+namespace RoomTrack.Bookings.Application.Internal.CommandServices;
 
 /// <summary>
 /// Orchestrates booking commands: resolves data from other contexts through their ACL facades, delegates every

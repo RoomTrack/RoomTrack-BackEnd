@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace BackendAwRoomTrack.API.Controllers.Authorization;
+namespace RoomTrack.Controllers.Authorization;
 
 public static class IoTEmulatorServiceCollectionExtensions
 {

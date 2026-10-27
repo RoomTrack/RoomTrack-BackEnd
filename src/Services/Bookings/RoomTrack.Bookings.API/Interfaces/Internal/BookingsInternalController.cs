@@ -1,5 +1,5 @@
-using BackendAwRoomTrack.API.Bookings.Interfaces.ACL;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Internal;
+using RoomTrack.Bookings.Interfaces.ACL;
+using RoomTrack.Shared.Infrastructure.Internal;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,4 +22,12 @@ public class BookingsInternalController(IRoomReservationsFacade roomReservations
     [HttpGet("guests/{guestUserId:int}/current-stay")]
     public async Task<IActionResult> HasCurrentConfirmedStay(int guestUserId, [FromQuery] int roomId, [FromQuery] DateTime day) =>
         Ok(await roomReservationsFacade.HasCurrentConfirmedStayAsync(guestUserId, roomId, day));
+
+    [HttpGet("guests/{guestUserId:int}/stay")]
+    public async Task<IActionResult> GetCurrentStay(int guestUserId) =>
+        await roomReservationsFacade.FetchCurrentStayAsync(guestUserId) is { } stay ? Ok(stay) : NotFound();
+
+    [HttpGet("rooms/{roomId:int}/stay")]
+    public async Task<IActionResult> GetCurrentStayOfRoom(int roomId) =>
+        await roomReservationsFacade.FetchCurrentStayOfRoomAsync(roomId) is { } stay ? Ok(stay) : NotFound();
 }

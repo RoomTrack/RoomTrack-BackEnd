@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.IAM.Interfaces.ACL;
+namespace RoomTrack.IAM.Interfaces.ACL;
 
 /// <summary>How to reach a user, exposed to other bounded contexts.</summary>
 /// <param name="UserId">IAM user id.</param>

@@ -25,7 +25,7 @@ namespace RoomTrack.Profiles.API.Infrastructure.Persistence.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Marketing.Domain.Model.Aggregates.DemoRequest", b =>
+            modelBuilder.Entity("RoomTrack.Marketing.Domain.Model.Aggregates.DemoRequest", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -124,7 +124,7 @@ namespace RoomTrack.Profiles.API.Infrastructure.Persistence.Migrations
                     b.ToTable("demo_requests", (string)null);
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.API.Profiles.Infrastructure.Persistence.EFC.Entities.EmployeeCodeSequence", b =>
+            modelBuilder.Entity("RoomTrack.Profiles.Infrastructure.Persistence.EFC.Entities.EmployeeCodeSequence", b =>
                 {
                     b.Property<int>("Id")
                         .HasColumnType("int")
@@ -147,7 +147,7 @@ namespace RoomTrack.Profiles.API.Infrastructure.Persistence.Migrations
                         });
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.Domain.Profiles.Domain.Model.Aggregates.GuestProfile", b =>
+            modelBuilder.Entity("RoomTrack.Profiles.Domain.Model.Aggregates.GuestProfile", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("char(36)")
@@ -187,7 +187,7 @@ namespace RoomTrack.Profiles.API.Infrastructure.Persistence.Migrations
                     b.ToTable("guest_profiles", (string)null);
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.Domain.Profiles.Domain.Model.Aggregates.StaffProfile", b =>
+            modelBuilder.Entity("RoomTrack.Profiles.Domain.Model.Aggregates.StaffProfile", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("char(36)")
@@ -248,7 +248,7 @@ namespace RoomTrack.Profiles.API.Infrastructure.Persistence.Migrations
                     b.ToTable("staff_profiles", (string)null);
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.Domain.Profiles.Domain.Model.Entities.StaffAssignment", b =>
+            modelBuilder.Entity("RoomTrack.Profiles.Domain.Model.Entities.StaffAssignment", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("char(36)")
@@ -533,9 +533,9 @@ namespace RoomTrack.Profiles.API.Infrastructure.Persistence.Migrations
                     b.ToTable("data_protection_keys");
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.Domain.Profiles.Domain.Model.Aggregates.GuestProfile", b =>
+            modelBuilder.Entity("RoomTrack.Profiles.Domain.Model.Aggregates.GuestProfile", b =>
                 {
-                    b.OwnsOne("BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects.StreetAddress", "Address", b1 =>
+                    b.OwnsOne("RoomTrack.Profiles.Domain.Model.ValueObjects.StreetAddress", "Address", b1 =>
                         {
                             b1.Property<Guid>("GuestProfileId")
                                 .HasColumnType("char(36)");
@@ -578,7 +578,7 @@ namespace RoomTrack.Profiles.API.Infrastructure.Persistence.Migrations
                                 .HasForeignKey("GuestProfileId");
                         });
 
-                    b.OwnsOne("BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects.IdentificationDocument", "Document", b1 =>
+                    b.OwnsOne("RoomTrack.Profiles.Domain.Model.ValueObjects.IdentificationDocument", "Document", b1 =>
                         {
                             b1.Property<Guid>("GuestProfileId")
                                 .HasColumnType("char(36)");
@@ -606,7 +606,7 @@ namespace RoomTrack.Profiles.API.Infrastructure.Persistence.Migrations
                                 .HasForeignKey("GuestProfileId");
                         });
 
-                    b.OwnsOne("BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects.EmailAddress", "Email", b1 =>
+                    b.OwnsOne("RoomTrack.Profiles.Domain.Model.ValueObjects.EmailAddress", "Email", b1 =>
                         {
                             b1.Property<Guid>("GuestProfileId")
                                 .HasColumnType("char(36)");
@@ -628,7 +628,7 @@ namespace RoomTrack.Profiles.API.Infrastructure.Persistence.Migrations
                                 .HasForeignKey("GuestProfileId");
                         });
 
-                    b.OwnsOne("BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects.PersonName", "Name", b1 =>
+                    b.OwnsOne("RoomTrack.Profiles.Domain.Model.ValueObjects.PersonName", "Name", b1 =>
                         {
                             b1.Property<Guid>("GuestProfileId")
                                 .HasColumnType("char(36)");
@@ -663,9 +663,9 @@ namespace RoomTrack.Profiles.API.Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.Domain.Profiles.Domain.Model.Aggregates.StaffProfile", b =>
+            modelBuilder.Entity("RoomTrack.Profiles.Domain.Model.Aggregates.StaffProfile", b =>
                 {
-                    b.OwnsOne("BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects.StreetAddress", "Address", b1 =>
+                    b.OwnsOne("RoomTrack.Profiles.Domain.Model.ValueObjects.StreetAddress", "Address", b1 =>
                         {
                             b1.Property<Guid>("StaffProfileId")
                                 .HasColumnType("char(36)");
@@ -708,7 +708,7 @@ namespace RoomTrack.Profiles.API.Infrastructure.Persistence.Migrations
                                 .HasForeignKey("StaffProfileId");
                         });
 
-                    b.OwnsOne("BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects.IdentificationDocument", "Document", b1 =>
+                    b.OwnsOne("RoomTrack.Profiles.Domain.Model.ValueObjects.IdentificationDocument", "Document", b1 =>
                         {
                             b1.Property<Guid>("StaffProfileId")
                                 .HasColumnType("char(36)");
@@ -733,7 +733,7 @@ namespace RoomTrack.Profiles.API.Infrastructure.Persistence.Migrations
                                 .HasForeignKey("StaffProfileId");
                         });
 
-                    b.OwnsOne("BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects.EmailAddress", "Email", b1 =>
+                    b.OwnsOne("RoomTrack.Profiles.Domain.Model.ValueObjects.EmailAddress", "Email", b1 =>
                         {
                             b1.Property<Guid>("StaffProfileId")
                                 .HasColumnType("char(36)");
@@ -755,7 +755,7 @@ namespace RoomTrack.Profiles.API.Infrastructure.Persistence.Migrations
                                 .HasForeignKey("StaffProfileId");
                         });
 
-                    b.OwnsOne("BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects.PersonName", "Name", b1 =>
+                    b.OwnsOne("RoomTrack.Profiles.Domain.Model.ValueObjects.PersonName", "Name", b1 =>
                         {
                             b1.Property<Guid>("StaffProfileId")
                                 .HasColumnType("char(36)");
@@ -791,16 +791,16 @@ namespace RoomTrack.Profiles.API.Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.Domain.Profiles.Domain.Model.Entities.StaffAssignment", b =>
+            modelBuilder.Entity("RoomTrack.Profiles.Domain.Model.Entities.StaffAssignment", b =>
                 {
-                    b.HasOne("BackendAwRoomTrack.Domain.Profiles.Domain.Model.Aggregates.StaffProfile", null)
+                    b.HasOne("RoomTrack.Profiles.Domain.Model.Aggregates.StaffProfile", null)
                         .WithMany("Assignments")
                         .HasForeignKey("StaffProfileId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("f_k_staff_assignments_staff_profiles__staff_profile_id");
 
-                    b.OwnsOne("BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects.DateRange", "Period", b1 =>
+                    b.OwnsOne("RoomTrack.Profiles.Domain.Model.ValueObjects.DateRange", "Period", b1 =>
                         {
                             b1.Property<Guid>("StaffAssignmentId")
                                 .HasColumnType("char(36)");
@@ -839,7 +839,7 @@ namespace RoomTrack.Profiles.API.Infrastructure.Persistence.Migrations
                         .HasConstraintName("f_k_outbox_messages_inbox_states__inbox_message_id__inbox_consumer_id");
                 });
 
-            modelBuilder.Entity("BackendAwRoomTrack.Domain.Profiles.Domain.Model.Aggregates.StaffProfile", b =>
+            modelBuilder.Entity("RoomTrack.Profiles.Domain.Model.Aggregates.StaffProfile", b =>
                 {
                     b.Navigation("Assignments");
                 });

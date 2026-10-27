@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Entities;
-using BackendAwRoomTrack.API.Housekeeping.Interfaces.REST.Resources;
+using RoomTrack.Housekeeping.Domain.Model.Aggregates;
+using RoomTrack.Housekeeping.Domain.Model.Entities;
+using RoomTrack.Housekeeping.Interfaces.REST.Resources;
 
-namespace BackendAwRoomTrack.API.Housekeeping.Interfaces.REST.Transform;
+namespace RoomTrack.Housekeeping.Interfaces.REST.Transform;
 
 public static class CleaningTaskResourceAssembler
 {

@@ -1,9 +1,9 @@
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Exceptions;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Enums;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects;
+using RoomTrack.Profiles.Domain.Model.Exceptions;
+using RoomTrack.Shared.Domain.Model.Exceptions;
+using RoomTrack.Profiles.Domain.Model.Enums;
+using RoomTrack.Profiles.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.Domain.Profiles.Domain.Model.Entities;
+namespace RoomTrack.Profiles.Domain.Model.Entities;
 
 public class StaffAssignment
 {

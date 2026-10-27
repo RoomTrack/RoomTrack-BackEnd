@@ -1,9 +1,9 @@
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Incidents.Domain.Repositories;
-using BackendAwRoomTrack.API.Incidents.Domain.Services;
+using RoomTrack.Incidents.Domain.Model.Aggregates;
+using RoomTrack.Incidents.Domain.Model.Queries;
+using RoomTrack.Incidents.Domain.Repositories;
+using RoomTrack.Incidents.Domain.Services;
 
-namespace BackendAwRoomTrack.API.Incidents.Application.Internal.QueryServices;
+namespace RoomTrack.Incidents.Application.Internal.QueryServices;
 
 public class IncidentQueryService(IIncidentRepository incidentRepository) : IIncidentQueryService
 {

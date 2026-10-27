@@ -1,14 +1,14 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Accommodations.Domain.Services;
-using BackendAwRoomTrack.API.Accommodations.Interfaces.REST.Resources;
-using BackendAwRoomTrack.API.Accommodations.Interfaces.REST.Transform;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Constants;
-using BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
+using RoomTrack.Accommodations.Domain.Model.Queries;
+using RoomTrack.Accommodations.Domain.Services;
+using RoomTrack.Accommodations.Interfaces.REST.Resources;
+using RoomTrack.Accommodations.Interfaces.REST.Transform;
+using RoomTrack.IAM.Domain.Model.Constants;
+using RoomTrack.IAM.Interfaces.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace BackendAwRoomTrack.API.Accommodations.Interfaces.REST;
+namespace RoomTrack.Accommodations.Interfaces.REST;
 
 /// <summary>
 ///     RESTful API interface controller responsible for handling operational, guest, and administrative 

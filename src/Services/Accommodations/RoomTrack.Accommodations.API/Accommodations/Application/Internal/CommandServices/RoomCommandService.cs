@@ -1,18 +1,18 @@
-using BackendAwRoomTrack.API.Accommodations.Application.Internal.Configuration;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Bookings.Interfaces.ACL;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Accommodations.Application.Internal.Configuration;
+using RoomTrack.Accommodations.Domain.Model.Aggregates;
+using RoomTrack.Accommodations.Domain.Model.Exceptions;
+using RoomTrack.Accommodations.Domain.Model.ValueObjects;
+using RoomTrack.Bookings.Interfaces.ACL;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 using Microsoft.Extensions.Options;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Accommodations.Domain.Repositories;
-using BackendAwRoomTrack.API.Accommodations.Domain.Services;
-using BackendAwRoomTrack.API.Shared.Domain.Repositories;
+using RoomTrack.Accommodations.Domain.Model.Commands;
+using RoomTrack.Accommodations.Domain.Repositories;
+using RoomTrack.Accommodations.Domain.Services;
+using RoomTrack.Shared.Domain.Repositories;
 using MassTransit;
 using RoomTrack.Contracts.Messaging;
 
-namespace BackendAwRoomTrack.API.Accommodations.Application.Internal.CommandServices;
+namespace RoomTrack.Accommodations.Application.Internal.CommandServices;
 
 /// <summary>
 /// Service implementation for handling room commands.
@@ -75,14 +75,20 @@ public class RoomCommandService(
 
     public async Task<Room?> Handle(ChangeRoomStatusCommand command)
     {
-        var room = await roomRepository.FindByIdAsync(command.RoomId);
-        if (room is null) return null;
+        Room? room = null;
+        // Locked like every other status change: the Housekeeping handler of this change checks the open cleaning
+        // task of the room under the same lock as a task created by reception.
+        await unitOfWork.ExecuteInTransactionAsync(async () =>
+        {
+            room = await roomRepository.FindByIdForUpdateAsync(command.RoomId);
+            if (room is null) return;
 
-        // The history line is saved with the change itself (same unit of work).
-        var change = room.ChangeStatus(command.Status, RoomStatusChangeOrigin.Staff, command.ChangedByUserId,
-            command.ChangedByEmail, timeProvider.GetUtcNow());
-        if (change is not null) await roomStatusChangeRepository.AddAsync(change);
-        await unitOfWork.CompleteAsync();
+            // The history line is saved with the change itself (same unit of work).
+            var change = room.ChangeStatus(command.Status, RoomStatusChangeOrigin.Staff, command.ChangedByUserId,
+                command.ChangedByEmail, timeProvider.GetUtcNow());
+            if (change is not null) await roomStatusChangeRepository.AddAsync(change);
+            await unitOfWork.CompleteAsync();
+        });
         return room;
     }
 
@@ -93,6 +99,20 @@ public class RoomCommandService(
         await roomStatusChangeRepository.AddAsync(room.OccupyForCheckIn(command.GuestUserId, command.GuestEmail, timeProvider.GetUtcNow()));
         await unitOfWork.CompleteAsync();
         return room;
+    }
+
+    public async Task<Room> Handle(VacateRoomAfterCheckOutCommand command)
+    {
+        Room? room = null;
+        await unitOfWork.ExecuteInTransactionAsync(async () =>
+        {
+            room = await roomRepository.FindByIdForUpdateAsync(command.RoomId)
+                   ?? throw new EntityNotFoundException("Room", command.RoomId);
+            var change = room.VacateAfterCheckOut(command.CheckedOutByUserId, command.CheckedOutByEmail, timeProvider.GetUtcNow());
+            if (change is not null) await roomStatusChangeRepository.AddAsync(change);
+            await unitOfWork.CompleteAsync();
+        });
+        return room!;
     }
 
     public async Task<Room> Handle(HoldRoomForIncidentCommand command)

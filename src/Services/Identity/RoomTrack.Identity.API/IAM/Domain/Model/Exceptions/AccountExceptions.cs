@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.IAM.Domain.Model.Enums;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.IAM.Domain.Model.Enums;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.IAM.Domain.Model.Exceptions;
+namespace RoomTrack.IAM.Domain.Model.Exceptions;
 
 /// <summary>
 ///     The account is temporarily locked after too many consecutive failed sign-ins. The

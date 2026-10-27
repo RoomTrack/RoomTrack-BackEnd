@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Bookings.Interfaces.REST.Resources;
+namespace RoomTrack.Bookings.Interfaces.REST.Resources;
 
 /// <summary>A room free for the requested stay, with its price.</summary>
 /// <param name="Id">Room id (use it as <c>roomId</c> in <c>POST /bookings</c>).</param>

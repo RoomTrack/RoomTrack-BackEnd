@@ -1,9 +1,9 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Accommodations.Domain.Repositories;
-using BackendAwRoomTrack.API.Accommodations.Domain.Services;
+using RoomTrack.Accommodations.Domain.Model.Aggregates;
+using RoomTrack.Accommodations.Domain.Model.Queries;
+using RoomTrack.Accommodations.Domain.Repositories;
+using RoomTrack.Accommodations.Domain.Services;
 
-namespace BackendAwRoomTrack.API.Accommodations.Application.Internal.QueryServices;
+namespace RoomTrack.Accommodations.Application.Internal.QueryServices;
 /// <summary>
     /// Provides query handling services for retrieving hotel information, 
     /// including fetching a specific hotel by ID or listing all hotels.

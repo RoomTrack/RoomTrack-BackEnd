@@ -1,10 +1,11 @@
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration.Extensions;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration.Extensions;
+using RoomTrack.Shared.Domain.Model;
 using EntityFrameworkCore.CreatedUpdatedDate.Extensions;
 using MassTransit;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
+namespace RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration;
 
 /// <summary>
 ///     Base database context of every service. Each service owns its database and derives its own context from this
@@ -26,6 +27,28 @@ public abstract class AppDbContext(DbContextOptions options) : DbContext(options
     {
         builder.AddCreatedUpdatedInterceptor();
         base.OnConfiguring(builder);
+    }
+
+    public override int SaveChanges(bool acceptAllChangesOnSuccess)
+    {
+        IncrementConcurrencyVersions();
+        return base.SaveChanges(acceptAllChangesOnSuccess);
+    }
+
+    public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+    {
+        IncrementConcurrencyVersions();
+        return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+    }
+
+    /// <summary>
+    ///     The version is a concurrency token: the UPDATE only matches the row while it still has the version that was
+    ///     read (<see cref="DbUpdateConcurrencyException"/> otherwise), and it stores the next one.
+    /// </summary>
+    private void IncrementConcurrencyVersions()
+    {
+        foreach (var entry in ChangeTracker.Entries<IHasConcurrencyVersion>().Where(entry => entry.State == EntityState.Modified))
+            entry.Property(aggregate => aggregate.Version).CurrentValue = entry.Entity.Version + 1;
     }
 
     protected override void OnModelCreating(ModelBuilder builder)

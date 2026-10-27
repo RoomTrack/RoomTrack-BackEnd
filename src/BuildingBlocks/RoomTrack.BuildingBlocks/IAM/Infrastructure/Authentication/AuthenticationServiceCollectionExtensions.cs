@@ -1,11 +1,11 @@
-using BackendAwRoomTrack.API.IAM.Infrastructure.Tokens.JWT.Configuration;
-using BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
+using RoomTrack.IAM.Infrastructure.Tokens.JWT.Configuration;
+using RoomTrack.IAM.Interfaces.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
-namespace BackendAwRoomTrack.API.IAM.Infrastructure.Authentication;
+namespace RoomTrack.IAM.Infrastructure.Authentication;
 
 /// <summary>
 ///     Authentication and authorization shared by every service: each one validates the access tokens issued by the

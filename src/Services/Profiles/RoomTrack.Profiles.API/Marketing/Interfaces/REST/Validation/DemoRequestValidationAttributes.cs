@@ -1,10 +1,10 @@
-using BackendAwRoomTrack.API.Marketing.Domain.Model.Exceptions;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.Validation;
+using RoomTrack.Marketing.Domain.Model.Exceptions;
+using RoomTrack.Shared.Domain.Model.Exceptions;
+using RoomTrack.Shared.Infrastructure.Interfaces.ASP.Validation;
 using System.ComponentModel.DataAnnotations;
-using BackendAwRoomTrack.API.Marketing.Domain.Model.ValueObjects;
+using RoomTrack.Marketing.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Marketing.Interfaces.REST.Validation;
+namespace RoomTrack.Marketing.Interfaces.REST.Validation;
 
 /// <summary>Name rule of <see cref="ContactDetails"/> as a field error.</summary>
 [AttributeUsage(AttributeTargets.Property)]

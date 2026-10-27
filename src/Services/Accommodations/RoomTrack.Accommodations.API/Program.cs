@@ -1,19 +1,22 @@
-using BackendAwRoomTrack.API.Accommodations.Infrastructure.Interfaces.ASP.Configuration.Extensions;
-using BackendAwRoomTrack.API.Bookings.Interfaces.ACL;
-using BackendAwRoomTrack.API.Controllers.Authorization;
-using BackendAwRoomTrack.API.Housekeeping.Infrastructure.Interfaces.ASP.Configuration.Extensions;
-using BackendAwRoomTrack.API.IAM.Interfaces.ACL;
-using BackendAwRoomTrack.API.Incidents.Infrastructure.Interfaces.ASP.Configuration.Extensions;
-using BackendAwRoomTrack.API.Media.Infrastructure.Interfaces.ASP.Configuration.Extensions;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Hosting;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Internal;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Messaging;
-using BackendAwRoomTrack.API.shared.Infrastructure.Persistence.EFC.Configuration.Extensions;
+using RoomTrack.Messaging.Infrastructure.Interfaces.ASP.Configuration.Extensions;
+using RoomTrack.GuestRequests.Infrastructure.Interfaces.ASP.Configuration.Extensions;
+using RoomTrack.Accommodations.Infrastructure.Interfaces.ASP.Configuration.Extensions;
+using RoomTrack.Bookings.Interfaces.ACL;
+using RoomTrack.Controllers.Authorization;
+using RoomTrack.Housekeeping.Infrastructure.Interfaces.ASP.Configuration.Extensions;
+using RoomTrack.IAM.Interfaces.ACL;
+using RoomTrack.Incidents.Infrastructure.Interfaces.ASP.Configuration.Extensions;
+using RoomTrack.Media.Infrastructure.Interfaces.ASP.Configuration.Extensions;
+using RoomTrack.Shared.Infrastructure.Hosting;
+using RoomTrack.Shared.Infrastructure.Internal;
+using RoomTrack.Shared.Infrastructure.Messaging;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using RoomTrack.Accommodations.API.Infrastructure.Persistence;
 using RoomTrack.BuildingBlocks.Clients;
 
 // Accommodations service: hotels, rooms and room types (Accommodations), incidents of the rooms (Incidents), cleaning
-// tasks of the rooms (Housekeeping), hotel images (Media) and the IoT emulator of the rooms' devices.
+// tasks of the rooms (Housekeeping), requests of the guests (GuestRequests), conversations (Messaging), hotel images (Media) and the IoT emulator
+// of the rooms' devices.
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddRoomTrackServiceDefaults<AccommodationsDbContext, Program>("Accommodations");
@@ -21,6 +24,8 @@ builder.AddRoomTrackServiceDefaults<AccommodationsDbContext, Program>("Accommoda
 builder.AddAccommodationsContextServices();
 builder.AddIncidentsContextServices();
 builder.AddHousekeepingContextServices();
+builder.AddGuestRequestsContextServices();
+builder.AddMessagingContextServices();
 builder.AddMediaContextServices();
 builder.AddIoTEmulatorServices();
 

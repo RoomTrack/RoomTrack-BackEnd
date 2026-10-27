@@ -1,22 +1,22 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Accommodations.Domain.Services;
-using BackendAwRoomTrack.API.Accommodations.Interfaces.REST.Authorization;
-using BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Incidents.Domain.Services;
-using BackendAwRoomTrack.API.Incidents.Interfaces.REST.Authorization;
-using BackendAwRoomTrack.API.Incidents.Interfaces.REST.Resources;
-using BackendAwRoomTrack.API.Incidents.Interfaces.REST.Transform;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Accommodations.Domain.Model.Exceptions;
+using RoomTrack.Accommodations.Domain.Model.Queries;
+using RoomTrack.Accommodations.Domain.Services;
+using RoomTrack.Accommodations.Interfaces.REST.Authorization;
+using RoomTrack.IAM.Interfaces.Authorization;
+using RoomTrack.Incidents.Domain.Model.Aggregates;
+using RoomTrack.Incidents.Domain.Model.Commands;
+using RoomTrack.Incidents.Domain.Model.Queries;
+using RoomTrack.Incidents.Domain.Model.ValueObjects;
+using RoomTrack.Incidents.Domain.Services;
+using RoomTrack.Incidents.Interfaces.REST.Authorization;
+using RoomTrack.Incidents.Interfaces.REST.Resources;
+using RoomTrack.Incidents.Interfaces.REST.Transform;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace BackendAwRoomTrack.API.Incidents.Interfaces.REST;
+namespace RoomTrack.Incidents.Interfaces.REST;
 
 /// <summary>
 ///     Incidents of the rooms: the hotel staff report them (US-08) and maintenance follows them until they are

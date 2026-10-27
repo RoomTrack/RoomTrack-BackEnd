@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.IAM.Infrastructure.Seed;
+namespace RoomTrack.IAM.Infrastructure.Seed;
 
 /// <summary>
 ///     Credentials of the first chain administrator (<c>InitialChainAdmin__Email</c> /

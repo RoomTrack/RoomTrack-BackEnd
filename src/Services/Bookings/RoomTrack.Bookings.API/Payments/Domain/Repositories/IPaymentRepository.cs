@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Payments.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Shared.Domain.Repositories;
+using RoomTrack.Payments.Domain.Model.Aggregates;
+using RoomTrack.Shared.Domain.Repositories;
 
-namespace BackendAwRoomTrack.API.Payments.Domain.Repositories;
+namespace RoomTrack.Payments.Domain.Repositories;
 
 /// <summary>
 /// Interface for Payment repository operations.

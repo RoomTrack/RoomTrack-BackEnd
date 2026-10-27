@@ -1,12 +1,12 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Entities;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.ValueObjects;
+using RoomTrack.Accommodations.Domain.Model.Aggregates;
+using RoomTrack.Accommodations.Domain.Model.Entities;
+using RoomTrack.Accommodations.Domain.Model.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Text.Json;
 using System.Collections.Generic;
 
-namespace BackendAwRoomTrack.API.Accommodations.Infrastructure.Persistence.EFC.Configuration.Extensions;
+namespace RoomTrack.Accommodations.Infrastructure.Persistence.EFC.Configuration.Extensions;
 
 /// <summary>
 /// Extension methods for <see cref="ModelBuilder"/> to apply configuration for the Accommodations Bounded Context.

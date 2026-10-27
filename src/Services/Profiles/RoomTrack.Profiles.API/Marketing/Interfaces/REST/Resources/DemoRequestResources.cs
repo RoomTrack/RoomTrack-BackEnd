@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
-using BackendAwRoomTrack.API.Marketing.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Marketing.Interfaces.REST.Validation;
+using RoomTrack.Marketing.Domain.Model.Aggregates;
+using RoomTrack.Marketing.Interfaces.REST.Validation;
 
-namespace BackendAwRoomTrack.API.Marketing.Interfaces.REST.Resources;
+namespace RoomTrack.Marketing.Interfaces.REST.Resources;
 
 /// <summary>
 ///     The demo form of the landing. Mirrors its validation; every invalid field is reported in

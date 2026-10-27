@@ -16,7 +16,9 @@ builder.Services.AddCors(options => options.AddPolicy(corsPolicy, policy =>
 {
     // No origin configured: browsers from other origins are rejected.
     if (allowedOrigins.Length == 0) return;
-    policy.WithOrigins(allowedOrigins).AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+    policy.WithOrigins(allowedOrigins).AllowAnyHeader().AllowAnyMethod().AllowCredentials()
+        // Total of the paged lists (e.g. GET /api/v1/bookings?page=1), readable by the browser apps.
+        .WithExposedHeaders("X-Total-Count");
 }));
 
 builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));

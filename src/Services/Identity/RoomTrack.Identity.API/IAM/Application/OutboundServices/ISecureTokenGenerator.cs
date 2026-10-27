@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.IAM.Application.OutboundServices;
+namespace RoomTrack.IAM.Application.OutboundServices;
 
 /// <summary>An opaque random token: <see cref="Value"/> goes to the user, only <see cref="Hash"/> is stored.</summary>
 public sealed record SecureToken(string Value, string Hash);

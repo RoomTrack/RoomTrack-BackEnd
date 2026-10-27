@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Shared.Domain.Repositories;
+namespace RoomTrack.Shared.Domain.Repositories;
 
 /// <summary>
 /// Represents a unit of work for managing transactions across repositories.

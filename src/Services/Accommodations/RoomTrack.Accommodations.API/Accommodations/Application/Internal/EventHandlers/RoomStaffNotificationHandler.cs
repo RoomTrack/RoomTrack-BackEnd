@@ -1,12 +1,12 @@
-using BackendAwRoomTrack.API.Accommodations.Application.OutboundServices;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Events;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Accommodations.Domain.Repositories;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Constants;
-using BackendAwRoomTrack.API.IAM.Interfaces.ACL;
-using BackendAwRoomTrack.API.Shared.Application.Internal.EventHandlers;
+using RoomTrack.Accommodations.Application.OutboundServices;
+using RoomTrack.Accommodations.Domain.Model.Events;
+using RoomTrack.Accommodations.Domain.Model.ValueObjects;
+using RoomTrack.Accommodations.Domain.Repositories;
+using RoomTrack.IAM.Domain.Model.Constants;
+using RoomTrack.IAM.Interfaces.ACL;
+using RoomTrack.Shared.Application.Internal.EventHandlers;
 
-namespace BackendAwRoomTrack.API.Accommodations.Application.Internal.EventHandlers;
+namespace RoomTrack.Accommodations.Application.Internal.EventHandlers;
 
 /// <summary>
 ///     Notifies the hotel staff in charge of a room's new status and the hotel administrators of an

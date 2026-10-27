@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.Accommodations.Interfaces.ACL;
+using RoomTrack.Accommodations.Interfaces.ACL;
 
-namespace BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
+namespace RoomTrack.Bookings.Domain.Model.ValueObjects;
 
 /// <summary>A room free for a stay, with the price of that stay.</summary>
 /// <param name="Room">The room as offered by the Accommodations context.</param>

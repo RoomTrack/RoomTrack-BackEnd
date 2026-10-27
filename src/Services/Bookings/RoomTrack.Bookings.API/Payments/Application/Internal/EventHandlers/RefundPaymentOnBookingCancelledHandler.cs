@@ -1,9 +1,9 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Events;
-using BackendAwRoomTrack.API.Payments.Domain.Repositories;
-using BackendAwRoomTrack.API.Shared.Application.Internal.EventHandlers;
-using BackendAwRoomTrack.API.Shared.Domain.Repositories;
+using RoomTrack.Bookings.Domain.Model.Events;
+using RoomTrack.Payments.Domain.Repositories;
+using RoomTrack.Shared.Application.Internal.EventHandlers;
+using RoomTrack.Shared.Domain.Repositories;
 
-namespace BackendAwRoomTrack.API.Payments.Application.Internal.EventHandlers;
+namespace RoomTrack.Payments.Application.Internal.EventHandlers;
 
 /// <summary>
 ///     R2: when a paid booking is cancelled its payment is marked Refunded (the money goes back outside the system)

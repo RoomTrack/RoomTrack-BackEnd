@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.IAM.Interfaces.REST.Resources;
+using RoomTrack.IAM.Domain.Model.Aggregates;
+using RoomTrack.IAM.Interfaces.REST.Resources;
 
-namespace BackendAwRoomTrack.API.IAM.Interfaces.REST.Transform;
+namespace RoomTrack.IAM.Interfaces.REST.Transform;
 
 /// <summary>
 /// Assembler to create a UserResource from a User entity.

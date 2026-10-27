@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Bookings.Domain.Model.Commands;
+namespace RoomTrack.Bookings.Domain.Model.Commands;
 
 /// <summary>
 ///     Confirms a booking because its payment was registered (D1). Only the Payments context issues it, through the

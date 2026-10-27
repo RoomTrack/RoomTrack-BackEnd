@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Security;
+namespace RoomTrack.Shared.Infrastructure.Security;
 
 /// <summary>
 ///     ASP.NET Core Data Protection (section <c>DataProtection</c>, env vars <c>DataProtection__*</c>).

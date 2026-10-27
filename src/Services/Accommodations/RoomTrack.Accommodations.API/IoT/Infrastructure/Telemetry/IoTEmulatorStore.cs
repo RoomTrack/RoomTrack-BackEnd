@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
-using BackendAwRoomTrack.API.Models.IoT;
+using RoomTrack.Models.IoT;
 
-namespace BackendAwRoomTrack.API.Infrastructure.Telemetry;
+namespace RoomTrack.Infrastructure.Telemetry;
 
 public static class IoTEmulatorStore
 {

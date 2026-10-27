@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.IAM.Interfaces.REST.Resources;
+namespace RoomTrack.IAM.Interfaces.REST.Resources;
 
 /// <summary>
 /// A user account as seen by the administration.
@@ -16,6 +16,8 @@ namespace BackendAwRoomTrack.API.IAM.Interfaces.REST.Resources;
 /// <param name="LastName">Last name (null for accounts created before names were required).</param>
 /// <param name="EmailVerified">Whether the e-mail was verified.</param>
 /// <param name="LockedUntil">End of the temporary lock after failed sign-ins, if one is in effect or recent.</param>
+/// <param name="MfaEnabled">Whether the account has an authenticator enrolled.</param>
+/// <param name="MfaEnrollmentRequired">A staff account without an authenticator: it must enroll one before it gets access.</param>
 public record UserResource(
     int Id,
     string Username,

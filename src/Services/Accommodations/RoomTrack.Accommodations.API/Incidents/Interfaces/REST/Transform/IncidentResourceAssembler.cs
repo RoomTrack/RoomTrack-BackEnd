@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Entities;
-using BackendAwRoomTrack.API.Incidents.Interfaces.REST.Resources;
+using RoomTrack.Incidents.Domain.Model.Aggregates;
+using RoomTrack.Incidents.Domain.Model.Entities;
+using RoomTrack.Incidents.Interfaces.REST.Resources;
 
-namespace BackendAwRoomTrack.API.Incidents.Interfaces.REST.Transform;
+namespace RoomTrack.Incidents.Interfaces.REST.Transform;
 
 public static class IncidentResourceAssembler
 {

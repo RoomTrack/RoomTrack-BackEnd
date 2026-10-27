@@ -1,6 +1,6 @@
 using System.Globalization;
-using BackendAwRoomTrack.API.Bookings.Interfaces.ACL;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Internal;
+using RoomTrack.Bookings.Interfaces.ACL;
+using RoomTrack.Shared.Infrastructure.Internal;
 
 namespace RoomTrack.BuildingBlocks.Clients;
 
@@ -18,4 +18,10 @@ public class HttpRoomReservationsFacade(HttpClient httpClient)
     public Task<bool> HasCurrentConfirmedStayAsync(int guestUserId, int roomId, DateTime day) =>
         GetAsync<bool>($"internal/v1/guests/{guestUserId}/current-stay?roomId={roomId}" +
                        $"&day={day.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}");
+
+    public Task<GuestStay?> FetchCurrentStayAsync(int guestUserId) =>
+        GetOrDefaultAsync<GuestStay>($"internal/v1/guests/{guestUserId}/stay");
+
+    public Task<GuestStay?> FetchCurrentStayOfRoomAsync(int roomId) =>
+        GetOrDefaultAsync<GuestStay>($"internal/v1/rooms/{roomId}/stay");
 }

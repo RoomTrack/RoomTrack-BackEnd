@@ -1,11 +1,11 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Bookings.Domain.Services;
-using BackendAwRoomTrack.API.Bookings.Interfaces.ACL;
+using RoomTrack.Bookings.Domain.Model.Aggregates;
+using RoomTrack.Bookings.Domain.Model.Commands;
+using RoomTrack.Bookings.Domain.Model.Queries;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Bookings.Domain.Services;
+using RoomTrack.Bookings.Interfaces.ACL;
 
-namespace BackendAwRoomTrack.API.Bookings.Application.ACL;
+namespace RoomTrack.Bookings.Application.ACL;
 
 public class BookingsContextFacade(
     IBookingQueryService bookingQueryService,

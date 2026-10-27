@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.IAM.Domain.Model.Exceptions;
+using RoomTrack.IAM.Domain.Model.Exceptions;
 using System.Text.RegularExpressions;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.IAM.Domain.Model.ValueObjects;
+namespace RoomTrack.IAM.Domain.Model.ValueObjects;
 
 /// <summary>
 ///     First and last name of the person who owns an account (required registration data). Letters of any

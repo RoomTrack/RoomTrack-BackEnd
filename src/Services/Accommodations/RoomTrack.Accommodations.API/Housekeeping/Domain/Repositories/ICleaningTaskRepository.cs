@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Queries;
+using RoomTrack.Housekeeping.Domain.Model.Aggregates;
+using RoomTrack.Housekeeping.Domain.Model.Queries;
 
-namespace BackendAwRoomTrack.API.Housekeeping.Domain.Repositories;
+namespace RoomTrack.Housekeeping.Domain.Repositories;
 
 public interface ICleaningTaskRepository
 {

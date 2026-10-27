@@ -1,12 +1,12 @@
-using BackendAwRoomTrack.API.IAM.Application.Internal.Configuration;
-using BackendAwRoomTrack.API.IAM.Application.OutboundServices;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.IAM.Domain.Repositories;
-using BackendAwRoomTrack.API.IAM.Domain.Services;
-using BackendAwRoomTrack.API.Shared.Domain.Repositories;
+using RoomTrack.IAM.Application.Internal.Configuration;
+using RoomTrack.IAM.Application.OutboundServices;
+using RoomTrack.IAM.Domain.Model.Aggregates;
+using RoomTrack.IAM.Domain.Repositories;
+using RoomTrack.IAM.Domain.Services;
+using RoomTrack.Shared.Domain.Repositories;
 using Microsoft.Extensions.Options;
 
-namespace BackendAwRoomTrack.API.IAM.Application.Internal.CommandServices;
+namespace RoomTrack.IAM.Application.Internal.CommandServices;
 
 /// <summary>
 ///     Grants access once every factor is proven: records the successful sign-in, starts a remembered session when

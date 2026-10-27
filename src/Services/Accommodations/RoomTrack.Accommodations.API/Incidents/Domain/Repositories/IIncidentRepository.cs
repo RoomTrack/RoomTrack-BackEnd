@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Queries;
+using RoomTrack.Incidents.Domain.Model.Aggregates;
+using RoomTrack.Incidents.Domain.Model.Queries;
 
-namespace BackendAwRoomTrack.API.Incidents.Domain.Repositories;
+namespace RoomTrack.Incidents.Domain.Repositories;
 
 public interface IIncidentRepository
 {

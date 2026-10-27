@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.IAM.Infrastructure.Seed;
+using RoomTrack.IAM.Infrastructure.Seed;
 
-namespace BackendAwRoomTrack.API.IAM.Infrastructure.Extensions;
+namespace RoomTrack.IAM.Infrastructure.Extensions;
 
 public static class WebApplicationIamExtensions
 {

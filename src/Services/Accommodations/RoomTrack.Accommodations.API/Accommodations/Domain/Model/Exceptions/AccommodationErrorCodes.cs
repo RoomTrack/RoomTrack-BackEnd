@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Accommodations.Domain.Model.Exceptions;
+namespace RoomTrack.Accommodations.Domain.Model.Exceptions;
 
 /// <summary>Stable error codes of the Accommodations context (hotels, rooms, room types, catalogs).</summary>
 public static class AccommodationErrorCodes

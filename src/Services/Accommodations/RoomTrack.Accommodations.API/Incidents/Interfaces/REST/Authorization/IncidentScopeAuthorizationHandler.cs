@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Aggregates;
+using RoomTrack.IAM.Interfaces.Authorization;
+using RoomTrack.Incidents.Domain.Model.Aggregates;
 using Microsoft.AspNetCore.Authorization;
 
-namespace BackendAwRoomTrack.API.Incidents.Interfaces.REST.Authorization;
+namespace RoomTrack.Incidents.Interfaces.REST.Authorization;
 
 /// <summary>Requirement "the requester works at the hotel of this incident".</summary>
 public sealed class IncidentScopeRequirement : IAuthorizationRequirement

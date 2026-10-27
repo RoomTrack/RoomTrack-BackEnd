@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Bookings.Domain.Model.Aggregates;
+using RoomTrack.Bookings.Domain.Model.Queries;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Bookings.Domain.Services;
+namespace RoomTrack.Bookings.Domain.Services;
 
 /// <summary>
 /// Defines the contract for services that handle booking queries.
@@ -14,6 +14,9 @@ public interface IBookingQueryService
 
     /// <summary>The bookings visible to the requester, newest first.</summary>
     Task<IEnumerable<Booking>> Handle(GetBookingsQuery query);
+
+    /// <summary>One page of the bookings visible to the requester, with the total of the list.</summary>
+    Task<BookingPage> Handle(GetBookingsPageQuery query);
 
     /// <summary>The bookings of a room visible to the requester.</summary>
     Task<IEnumerable<Booking>> Handle(GetBookingsByRoomIdQuery query);

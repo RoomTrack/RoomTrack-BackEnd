@@ -1,13 +1,13 @@
 using System.Globalization;
-using BackendAwRoomTrack.API.Accommodations.Application.OutboundServices;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.IAM.Interfaces.ACL;
-using BackendAwRoomTrack.API.Shared.Application.OutboundServices;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Configuration;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Email.Templates;
+using RoomTrack.Accommodations.Application.OutboundServices;
+using RoomTrack.Accommodations.Domain.Model.ValueObjects;
+using RoomTrack.IAM.Interfaces.ACL;
+using RoomTrack.Shared.Application.OutboundServices;
+using RoomTrack.Shared.Infrastructure.Configuration;
+using RoomTrack.Shared.Infrastructure.Email.Templates;
 using Microsoft.Extensions.Options;
 
-namespace BackendAwRoomTrack.API.Accommodations.Infrastructure.Notifications;
+namespace RoomTrack.Accommodations.Infrastructure.Notifications;
 
 /// <summary>Room e-mails to the hotel staff (neutral Spanish) with a link to the room map of the web app.</summary>
 public class RoomEmailNotificationService(

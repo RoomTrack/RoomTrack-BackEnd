@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
+namespace RoomTrack.Bookings.Domain.Model.ValueObjects;
 
 /// <summary>
 ///     Who asks for a booking operation, as seen by the Bookings context: a guest acting for themselves or hotel

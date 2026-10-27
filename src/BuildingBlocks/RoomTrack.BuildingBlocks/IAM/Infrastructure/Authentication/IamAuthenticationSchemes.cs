@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-namespace BackendAwRoomTrack.API.IAM.Infrastructure.Authentication;
+namespace RoomTrack.IAM.Infrastructure.Authentication;
 
 /// <summary>Authentication schemes of the IAM context.</summary>
 public static class IamAuthenticationSchemes

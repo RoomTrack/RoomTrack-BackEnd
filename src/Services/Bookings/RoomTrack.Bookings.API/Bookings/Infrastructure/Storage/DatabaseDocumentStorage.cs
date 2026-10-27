@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Bookings.Application.OutboundServices;
-using BackendAwRoomTrack.API.Shared.Application.OutboundServices;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
+using RoomTrack.Bookings.Application.OutboundServices;
+using RoomTrack.Shared.Application.OutboundServices;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration;
 
-namespace BackendAwRoomTrack.API.Bookings.Infrastructure.Storage;
+namespace RoomTrack.Bookings.Infrastructure.Storage;
 
 /// <summary>
 ///     Document storage in the application database (table <c>stored_documents</c>), encrypted with Data Protection.

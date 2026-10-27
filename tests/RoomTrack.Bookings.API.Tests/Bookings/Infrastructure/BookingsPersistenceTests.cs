@@ -1,14 +1,17 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Bookings.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.Bookings.Domain.Model.Aggregates;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Bookings.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using RoomTrack.Bookings.API.Infrastructure.Persistence;
 using Xunit;
-using static BackendAwRoomTrack.API.Tests.Bookings.BookingTestData;
+using static RoomTrack.Tests.Bookings.BookingTestData;
 
-namespace BackendAwRoomTrack.API.Tests.Bookings.Infrastructure;
+namespace RoomTrack.Tests.Bookings.Infrastructure;
 
 public class BookingsPersistenceTests
 {
@@ -123,4 +126,41 @@ public class BookingsPersistenceTests
             loadedBooking!.Status.Should().Be(BookingStatus.Confirmed);
         }
     }
+
+    [Fact]
+    public async Task ListPage_ShouldReturnThatPageNewestFirst_AndTheTotalOfTheList()
+    {
+        var options = CreateNewContextOptions();
+        using (var context = new BookingsDbContext(options))
+        {
+            for (var roomId = 101; roomId <= 105; roomId++)
+                await context.AddAsync(PlaceByStaff(guestProfileId: null, roomId: roomId));
+            await context.SaveChangesAsync();
+        }
+
+        using (var context = new BookingsDbContext(options))
+        {
+            var repo = new BookingRepository(context);
+
+            var second = await repo.ListPageNewestFirstAsync(HotelId, new PageRequest(2, 2));
+            var otherHotel = await repo.ListPageNewestFirstAsync(HotelId + 1, new PageRequest(1, 2));
+
+            second.TotalCount.Should().Be(5);
+            second.Items.Select(b => b.RoomId).Should().Equal(103, 102);
+            otherHotel.TotalCount.Should().Be(0);
+            otherHotel.Items.Should().BeEmpty();
+        }
+    }
+
+    [Theory]
+    [InlineData(0, 10)]
+    [InlineData(1, 0)]
+    [InlineData(1, PageRequest.MaxPageSize + 1)]
+    public void PageRequest_OutOfRange_ShouldBeRejected(int page, int pageSize)
+    {
+        var act = () => new PageRequest(page, pageSize);
+
+        act.Should().Throw<InvalidFieldException>();
+    }
 }
+

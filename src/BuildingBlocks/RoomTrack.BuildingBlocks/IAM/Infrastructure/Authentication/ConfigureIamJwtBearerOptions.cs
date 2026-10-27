@@ -1,10 +1,10 @@
-using BackendAwRoomTrack.API.IAM.Infrastructure.Tokens.JWT.Configuration;
-using BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
+using RoomTrack.IAM.Infrastructure.Tokens.JWT.Configuration;
+using RoomTrack.IAM.Interfaces.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace BackendAwRoomTrack.API.IAM.Infrastructure.Authentication;
+namespace RoomTrack.IAM.Infrastructure.Authentication;
 
 /// <summary>
 ///     Configures the native JWT bearer handler from the validated <see cref="TokenSettings"/>

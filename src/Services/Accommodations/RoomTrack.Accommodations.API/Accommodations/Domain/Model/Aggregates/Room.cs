@@ -1,12 +1,12 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Events;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Events;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Entities;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.ValueObjects;
+using RoomTrack.Accommodations.Domain.Model.Events;
+using RoomTrack.Shared.Domain.Model.Events;
+using RoomTrack.Shared.Domain.Model.Exceptions;
+using RoomTrack.Accommodations.Domain.Model.Commands;
+using RoomTrack.Accommodations.Domain.Model.Entities;
+using RoomTrack.Accommodations.Domain.Model.Exceptions;
+using RoomTrack.Accommodations.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates;
+namespace RoomTrack.Accommodations.Domain.Model.Aggregates;
 
 /// <summary>
 /// Represents a room aggregate in the accommodations domain: its price and its operational status.
@@ -117,6 +117,16 @@ public partial class Room : IHasDomainEvents
             throw new RoomNotReadyForCheckInException(Id, Status);
         return ChangeStatus(RoomStatus.Occupied, RoomStatusChangeOrigin.CheckIn, guestUserId, guestEmail, now)!;
     }
+
+    /// <summary>
+    ///     The guest checked out: an Occupied room goes to Cleaning ("pendiente de limpieza"), which gives it its
+    ///     cleaning task. Returns the history line, or null when the room was no longer Occupied (e.g. a blocking
+    ///     incident took it to Maintenance during the stay: it is cleaned when the incident is resolved).
+    /// </summary>
+    public RoomStatusChange? VacateAfterCheckOut(int? userId, string? email, DateTimeOffset now) =>
+        Status == RoomStatus.Occupied
+            ? ChangeStatus(RoomStatus.Cleaning, RoomStatusChangeOrigin.CheckOut, userId, email, now)
+            : null;
 
     /// <summary>
     ///     A blocking incident was reported: the room is taken out of service (Maintenance) until it is released.

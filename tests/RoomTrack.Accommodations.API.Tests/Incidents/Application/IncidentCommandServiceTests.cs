@@ -3,36 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BackendAwRoomTrack.API.Accommodations.Application.Internal.CommandServices;
-using BackendAwRoomTrack.API.Accommodations.Application.Internal.Configuration;
-using BackendAwRoomTrack.API.Accommodations.Application.Internal.QueryServices;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Entities;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Accommodations.Infrastructure.Persistence.EFC.Repositories;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Constants;
-using BackendAwRoomTrack.API.IAM.Interfaces.ACL;
-using BackendAwRoomTrack.API.Incidents.Application.Internal.CommandServices;
-using BackendAwRoomTrack.API.Incidents.Application.Internal.Configuration;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Events;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Incidents.Infrastructure.Persistence.EFC.Repositories;
-using BackendAwRoomTrack.API.Shared.Application.OutboundServices;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Repositories;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Events;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Accommodations.Application.Internal.CommandServices;
+using RoomTrack.Accommodations.Application.Internal.Configuration;
+using RoomTrack.Accommodations.Application.Internal.QueryServices;
+using RoomTrack.Accommodations.Domain.Model.Aggregates;
+using RoomTrack.Accommodations.Domain.Model.Commands;
+using RoomTrack.Accommodations.Domain.Model.Entities;
+using RoomTrack.Accommodations.Domain.Model.Exceptions;
+using RoomTrack.Accommodations.Domain.Model.ValueObjects;
+using RoomTrack.Accommodations.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.IAM.Domain.Model.Constants;
+using RoomTrack.IAM.Interfaces.ACL;
+using RoomTrack.Incidents.Application.Internal.CommandServices;
+using RoomTrack.Incidents.Application.Internal.Configuration;
+using RoomTrack.Incidents.Domain.Model.Aggregates;
+using RoomTrack.Incidents.Domain.Model.Commands;
+using RoomTrack.Incidents.Domain.Model.Events;
+using RoomTrack.Incidents.Domain.Model.Exceptions;
+using RoomTrack.Incidents.Domain.Model.ValueObjects;
+using RoomTrack.Incidents.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.Shared.Application.OutboundServices;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.Shared.Domain.Model.Events;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using RoomTrack.Accommodations.API.Infrastructure.Persistence;
 using Xunit;
 
-namespace BackendAwRoomTrack.API.Tests.Incidents.Application;
+namespace RoomTrack.Tests.Incidents.Application;
 
 /// <summary>
 ///     Incident use cases against the real Rooms context and an in-memory database: a blocking incident and the
@@ -44,8 +44,8 @@ public class IncidentCommandServiceTests : IDisposable
     private static readonly IncidentActor Maintenance = new(20, "mantenimiento@roomtrack.pe", IsAdministrator: false);
     private static readonly IncidentActor Admin = new(1, "admin@roomtrack.pe", IsAdministrator: true);
 
-    private readonly AccommodationsDbContext _context = new(new DbContextOptionsBuilder<AccommodationsDbContext>()
-        .UseInMemoryDatabase(Guid.NewGuid().ToString()).Options);
+    private readonly string _databaseName = Guid.NewGuid().ToString();
+    private readonly AccommodationsDbContext _context;
     private readonly RecordingDispatcher _dispatcher = new();
     private readonly FakeIam _iam = new();
     private readonly IncidentCommandService _service;
@@ -55,6 +55,7 @@ public class IncidentCommandServiceTests : IDisposable
 
     public IncidentCommandServiceTests()
     {
+        _context = NewContext();
         var unitOfWork = new UnitOfWork(_context, _dispatcher);
         var roomRepository = new RoomRepository(_context);
         var statusChanges = new RoomStatusChangeRepository(_context);
@@ -67,6 +68,10 @@ public class IncidentCommandServiceTests : IDisposable
     }
 
     public void Dispose() => _context.Dispose();
+
+    /// <summary>Another request (its own context) on the same database.</summary>
+    private AccommodationsDbContext NewContext() => new(new DbContextOptionsBuilder<AccommodationsDbContext>()
+        .UseInMemoryDatabase(_databaseName).Options);
 
     private void SeedRoom()
     {
@@ -91,6 +96,23 @@ public class IncidentCommandServiceTests : IDisposable
         await _service.Handle(new AssignIncidentCommand(incident.Id, Maintenance.UserId, Maintenance));
         await _service.Handle(new StartIncidentCommand(incident.Id, Maintenance));
         return (await _service.Handle(new ResolveIncidentCommand(incident.Id, "Fixed.", Maintenance)))!;
+    }
+
+    [Fact]
+    public async Task TwoChangesOfTheSameIncidentAtOnce_ShouldRefuseTheSecondOne()
+    {
+        var incident = await ReportAsync(blocksRoom: false);
+        await using var otherRequest = NewContext();
+        var readByTheOtherRequest = await otherRequest.Set<Incident>().SingleAsync(i => i.Id == incident.Id);
+
+        // Maintenance resolves it while another request, which read it before, re-prioritizes it.
+        await ResolveAsync(incident);
+        readByTheOtherRequest.ChangePriority(IncidentPriority.Critical, Admin, DateTimeOffset.UtcNow);
+        var act = () => otherRequest.SaveChangesAsync();
+
+        await act.Should().ThrowAsync<DbUpdateConcurrencyException>();
+        await using var stored = NewContext();
+        (await stored.Set<Incident>().SingleAsync(i => i.Id == incident.Id)).Status.Should().Be(IncidentStatus.Resolved);
     }
 
     [Fact]

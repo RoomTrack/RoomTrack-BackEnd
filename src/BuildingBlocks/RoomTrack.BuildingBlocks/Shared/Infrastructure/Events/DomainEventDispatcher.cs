@@ -1,10 +1,10 @@
 using System.Collections.Concurrent;
 using System.Reflection;
-using BackendAwRoomTrack.API.Shared.Application.Internal.EventHandlers;
-using BackendAwRoomTrack.API.Shared.Application.OutboundServices;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Events;
+using RoomTrack.Shared.Application.Internal.EventHandlers;
+using RoomTrack.Shared.Application.OutboundServices;
+using RoomTrack.Shared.Domain.Model.Events;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Events;
+namespace RoomTrack.Shared.Infrastructure.Events;
 
 /// <summary>
 ///     In-process dispatcher: resolves every <see cref="IDomainEventHandler{TEvent}"/> registered for the concrete

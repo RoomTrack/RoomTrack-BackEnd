@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Analytics.Domain.Model.ReadModels;
+namespace RoomTrack.Analytics.Domain.Model.ReadModels;
 
 /// <summary>
 ///     Base of the read model rows: a local copy of another service's state, kept up to date by its integration

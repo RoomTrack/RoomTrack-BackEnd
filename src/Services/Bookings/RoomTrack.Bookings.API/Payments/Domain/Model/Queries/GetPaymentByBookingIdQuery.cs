@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Payments.Domain.Model.Queries;
+namespace RoomTrack.Payments.Domain.Model.Queries;
 
 /// <summary>The payment of a booking.</summary>
 /// <param name="BookingId">The booking.</param>

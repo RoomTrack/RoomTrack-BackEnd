@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Accommodations.Interfaces.ACL;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.IAM.Interfaces.ACL;
+using RoomTrack.Accommodations.Interfaces.ACL;
+using RoomTrack.Bookings.Domain.Model.Aggregates;
+using RoomTrack.IAM.Interfaces.ACL;
 
-namespace BackendAwRoomTrack.API.Bookings.Application.OutboundServices;
+namespace RoomTrack.Bookings.Application.OutboundServices;
 
 /// <summary>E-mails to the hotel staff about digital check-ins. Enlisted in the outbox inside the transaction of the check-in.</summary>
 public interface ICheckInNotificationService

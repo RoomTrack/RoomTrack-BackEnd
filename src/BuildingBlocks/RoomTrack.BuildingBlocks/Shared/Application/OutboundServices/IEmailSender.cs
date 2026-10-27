@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Shared.Application.OutboundServices;
+namespace RoomTrack.Shared.Application.OutboundServices;
 
 /// <summary>
 ///     An e-mail ready to be delivered: a subject plus an HTML body and its plain-text alternative.

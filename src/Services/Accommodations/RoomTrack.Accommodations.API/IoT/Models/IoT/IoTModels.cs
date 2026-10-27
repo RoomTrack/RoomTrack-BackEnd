@@ -1,4 +1,4 @@
-﻿namespace BackendAwRoomTrack.API.Models.IoT;
+﻿namespace RoomTrack.Models.IoT;
 
 // DTO para inyección de telemetría (Simulación de entrada de sensor)
 public record InjectTelemetryRequest(

@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.IAM.Domain.Model.Constants;
+using RoomTrack.IAM.Domain.Model.Constants;
 using Microsoft.AspNetCore.Authorization;
 
-namespace BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
+namespace RoomTrack.IAM.Interfaces.Authorization;
 
 /// <summary>
 ///     Capability-named authorization policies and the ONLY place where capabilities are mapped to roles.
@@ -58,6 +58,19 @@ public static class Policies
     public const string HandleCleaningTasks = nameof(HandleCleaningTasks);
 
     // ── Bookings ─────────────────────────────────────────────────────
+    /// <summary>See guest requests: a guest their own, hotel staff those of their hotel (scope enforced by the controller).</summary>
+    public const string ViewGuestRequests = nameof(ViewGuestRequests);
+    /// <summary>A guest sends a request during their stay (US-19).</summary>
+    public const string SendGuestRequests = nameof(SendGuestRequests);
+    /// <summary>The front desk registers requests for the guests and routes them to an area (US-11).</summary>
+    public const string RegisterGuestRequests = nameof(RegisterGuestRequests);
+    /// <summary>Attend the requests of an area (the area rule is enforced by the GuestRequest aggregate).</summary>
+    public const string HandleGuestRequests = nameof(HandleGuestRequests);
+    /// <summary>
+    ///     Conversations: a guest with the front desk (US-20), the staff in area channels and on tasks (US-12). Who may
+    ///     read or write each conversation is enforced by the Conversation aggregate.
+    /// </summary>
+    public const string UseConversations = nameof(UseConversations);
     /// <summary>List/read bookings (guests only see their own).</summary>
     public const string ReadBookings = nameof(ReadBookings);
     /// <summary>Read the bookings of a room (hotel operations).</summary>
@@ -71,8 +84,13 @@ public static class Policies
     /// <summary>Cancel a booking (guests only their own: enforced by the Booking aggregate).</summary>
     public const string CancelBookings = nameof(CancelBookings);
 
-    /// <summary>Complete the digital check-in of an own booking and ask for help with it.</summary>
+    /// <summary>
+    ///     Complete the check-in of a booking: the guest from the app, or the front desk for a guest at the desk
+    ///     (US-27). Ownership and hotel scope enforced by the check-in service.
+    /// </summary>
     public const string CompleteCheckIn = nameof(CompleteCheckIn);
+    /// <summary>Check a guest out: the guest themselves or the front desk of the hotel (US-14, US-27).</summary>
+    public const string CheckOut = nameof(CheckOut);
 
     // ── Payments ─────────────────────────────────────────────────────
     /// <summary>Read the payment of a booking (guests only of their own bookings).</summary>
@@ -170,11 +188,17 @@ public static class Policies
         [AssignCleaningTasks] = HousekeepingAndFrontDesk,
         [HandleCleaningTasks] = CleaningTaskHandlers,
 
+        [ViewGuestRequests] = AllRoles,
+        [SendGuestRequests] = [UserRoles.Guest],
+        [RegisterGuestRequests] = FrontDesk,
+        [HandleGuestRequests] = HotelStaff,
+        [UseConversations] = AllRoles,
         [ReadBookings] = AllRoles,
         [ReadRoomBookings] = HotelStaff,
         [PlaceBookings] = GuestOrFrontDesk,
         [ManageBookings] = FrontDesk,
-        [CompleteCheckIn] = [UserRoles.Guest],
+        [CompleteCheckIn] = GuestOrFrontDesk,
+        [CheckOut] = GuestOrFrontDesk,
         [CancelBookings] = GuestOrFrontDesk,
 
         [ReadPayments] = GuestOrFrontDesk,

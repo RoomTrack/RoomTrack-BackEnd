@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Media.Application.Exceptions;
-using BackendAwRoomTrack.API.Media.Application.OutboundServices;
+using RoomTrack.Media.Application.Exceptions;
+using RoomTrack.Media.Application.OutboundServices;
 
-namespace BackendAwRoomTrack.API.Media.Application.Internal.CommandServices;
+namespace RoomTrack.Media.Application.Internal.CommandServices;
 
 /// <summary>Authorizes one upload of a hotel image to the media library (the browser sends the file itself).</summary>
 public class HotelImageUploadCommandService(IUploadSignatureService uploadSignatureService)

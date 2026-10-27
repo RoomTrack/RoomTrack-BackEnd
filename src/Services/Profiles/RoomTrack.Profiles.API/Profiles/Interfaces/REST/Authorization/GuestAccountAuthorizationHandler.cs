@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
+using RoomTrack.IAM.Interfaces.Authorization;
 using Microsoft.AspNetCore.Authorization;
 
-namespace BackendAwRoomTrack.API.Profiles.Interfaces.REST.Authorization;
+namespace RoomTrack.Profiles.Interfaces.REST.Authorization;
 
 /// <summary>The user account a guest profile belongs to (or is about to be linked to); null when unlinked.</summary>
 public sealed record GuestAccount(int? UserId);

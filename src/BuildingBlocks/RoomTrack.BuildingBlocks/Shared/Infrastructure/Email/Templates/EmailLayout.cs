@@ -1,8 +1,8 @@
 using System.Net;
 using System.Text;
-using BackendAwRoomTrack.API.Shared.Application.OutboundServices;
+using RoomTrack.Shared.Application.OutboundServices;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Email.Templates;
+namespace RoomTrack.Shared.Infrastructure.Email.Templates;
 
 /// <summary>
 ///     Builds the simple RoomTrack e-mail (HTML + plain text) from paragraphs and an optional call-to-action link.

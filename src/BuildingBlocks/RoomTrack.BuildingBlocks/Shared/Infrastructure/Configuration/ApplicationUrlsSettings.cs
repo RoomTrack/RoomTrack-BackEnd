@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Configuration;
+namespace RoomTrack.Shared.Infrastructure.Configuration;
 
 /// <summary>
 ///     Public URLs of the clients (section <c>App</c>, env vars <c>App__WebBaseUrl</c> and <c>App__LandingBaseUrl</c>).

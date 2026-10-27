@@ -1,9 +1,9 @@
-using BackendAwRoomTrack.API.IAM.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Configuration;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.ExceptionHandling;
+using RoomTrack.IAM.Domain.Model.Exceptions;
+using RoomTrack.Shared.Infrastructure.Configuration;
+using RoomTrack.Shared.Infrastructure.Interfaces.ASP.ExceptionHandling;
 using Microsoft.Extensions.Options;
 
-namespace BackendAwRoomTrack.API.IAM.Interfaces.REST.ExceptionHandling;
+namespace RoomTrack.IAM.Interfaces.REST.ExceptionHandling;
 
 /// <summary>
 ///     Extra members of the IAM problem responses:

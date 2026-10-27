@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.Configuration.Extensions;
+namespace RoomTrack.Shared.Infrastructure.Interfaces.ASP.Configuration.Extensions;
 
 /// <summary>
 /// Provides extension methods for string manipulation.

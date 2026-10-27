@@ -1,9 +1,9 @@
 using System.Security.Cryptography.X509Certificates;
-using BackendAwRoomTrack.API.Shared.Application.OutboundServices;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
+using RoomTrack.Shared.Application.OutboundServices;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration;
 using Microsoft.AspNetCore.DataProtection;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Security;
+namespace RoomTrack.Shared.Infrastructure.Security;
 
 public static class DataProtectionServiceCollectionExtensions
 {

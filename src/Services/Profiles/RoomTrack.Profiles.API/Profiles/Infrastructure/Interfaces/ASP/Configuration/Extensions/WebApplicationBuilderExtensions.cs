@@ -1,13 +1,13 @@
-using BackendAwRoomTrack.API.Profiles.Application.ACL;
-using BackendAwRoomTrack.API.Profiles.Application.Internal.CommandServices;
-using BackendAwRoomTrack.API.Profiles.Application.Internal.OutboundServices;
-using BackendAwRoomTrack.API.Profiles.Application.Internal.QueryServices;
-using BackendAwRoomTrack.API.Profiles.Infrastructure.Persistence.EFC.Repositories;
-using BackendAwRoomTrack.API.Profiles.Interfaces.ACL;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Repositories;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Services;
+using RoomTrack.Profiles.Application.ACL;
+using RoomTrack.Profiles.Application.Internal.CommandServices;
+using RoomTrack.Profiles.Application.Internal.OutboundServices;
+using RoomTrack.Profiles.Application.Internal.QueryServices;
+using RoomTrack.Profiles.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.Profiles.Interfaces.ACL;
+using RoomTrack.Profiles.Domain.Repositories;
+using RoomTrack.Profiles.Domain.Services;
 
-namespace BackendAwRoomTrack.API.Profiles.Infrastructure.Interfaces.ASP.Configuration.Extensions;
+namespace RoomTrack.Profiles.Infrastructure.Interfaces.ASP.Configuration.Extensions;
 
 /// <summary>
 /// Provides extension methods for configuring Profile context services in the application.
@@ -41,6 +41,6 @@ public static class WebApplicationBuilderExtensions
 
         // Resource-based authorization (a guest acts only on their own profile)
         builder.Services.AddSingleton<Microsoft.AspNetCore.Authorization.IAuthorizationHandler,
-            BackendAwRoomTrack.API.Profiles.Interfaces.REST.Authorization.GuestAccountAuthorizationHandler>();
+            RoomTrack.Profiles.Interfaces.REST.Authorization.GuestAccountAuthorizationHandler>();
     }
 }

@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.IAM.Interfaces.REST.Resources;
+namespace RoomTrack.IAM.Interfaces.REST.Resources;
 
 /// <summary>
 ///     A signed-in user and their tokens (sign-in, refresh and second-factor responses). When a second factor is

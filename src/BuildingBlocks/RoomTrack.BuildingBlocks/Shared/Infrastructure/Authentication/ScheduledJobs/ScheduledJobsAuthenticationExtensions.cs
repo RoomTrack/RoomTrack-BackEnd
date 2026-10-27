@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Authentication.ScheduledJobs;
+namespace RoomTrack.Shared.Infrastructure.Authentication.ScheduledJobs;
 
 public static class ScheduledJobsAuthenticationExtensions
 {

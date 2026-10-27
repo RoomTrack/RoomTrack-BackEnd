@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.Marketing.Domain.Model.ValueObjects;
+using RoomTrack.Marketing.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Marketing.Domain.Model.Commands;
+namespace RoomTrack.Marketing.Domain.Model.Commands;
 
 /// <summary>A visitor submits the demo form of the landing.</summary>
 public record SubmitDemoRequestCommand(

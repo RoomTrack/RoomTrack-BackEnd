@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using BackendAwRoomTrack.API.IAM.Interfaces.REST.Validation;
+using RoomTrack.IAM.Interfaces.REST.Validation;
 
-namespace BackendAwRoomTrack.API.IAM.Interfaces.REST.Resources;
+namespace RoomTrack.IAM.Interfaces.REST.Resources;
 
 /// <summary>A refresh token presented to renew or end a remembered session.</summary>
 public record RefreshTokenResource

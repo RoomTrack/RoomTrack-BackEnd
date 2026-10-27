@@ -2,20 +2,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BackendAwRoomTrack.API.Profiles.Application.Internal.Commands;
-using BackendAwRoomTrack.API.Profiles.Application.Internal.CommandServices;
-using BackendAwRoomTrack.API.Profiles.Application.Internal.Queries;
-using BackendAwRoomTrack.API.Profiles.Application.Internal.QueryServices;
-using BackendAwRoomTrack.API.Profiles.Interfaces.REST;
-using BackendAwRoomTrack.API.Profiles.Interfaces.REST.Resources;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Aggregates;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Enums;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects;
+using RoomTrack.Profiles.Application.Internal.Commands;
+using RoomTrack.Profiles.Application.Internal.CommandServices;
+using RoomTrack.Profiles.Application.Internal.Queries;
+using RoomTrack.Profiles.Application.Internal.QueryServices;
+using RoomTrack.Profiles.Interfaces.REST;
+using RoomTrack.Profiles.Interfaces.REST.Resources;
+using RoomTrack.Profiles.Domain.Model.Aggregates;
+using RoomTrack.Profiles.Domain.Model.Enums;
+using RoomTrack.Profiles.Domain.Model.ValueObjects;
+using System.Security.Claims;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Xunit;
 
-namespace BackendAwRoomTrack.API.Tests.Profiles.Interfaces.REST;
+namespace RoomTrack.Tests.Profiles.Interfaces.REST;
 
 public class GuestsControllerTests
 {
@@ -71,6 +74,27 @@ public class GuestsControllerTests
             GetAllHandler != null ? GetAllHandler(query) : Task.FromResult<IEnumerable<GuestProfile>>(new List<GuestProfile>());
     }
 
+    /// <summary>Answers every resource-based check (the guest account rule) with <see cref="Allow"/>.</summary>
+    private class FakeAuthorizationService : IAuthorizationService
+    {
+        public bool Allow { get; init; } = true;
+
+        public Task<AuthorizationResult> AuthorizeAsync(ClaimsPrincipal user, object? resource,
+            IEnumerable<IAuthorizationRequirement> requirements) =>
+            Task.FromResult(Allow ? AuthorizationResult.Success() : AuthorizationResult.Failed());
+
+        public Task<AuthorizationResult> AuthorizeAsync(ClaimsPrincipal user, object? resource, string policyName) =>
+            Task.FromResult(Allow ? AuthorizationResult.Success() : AuthorizationResult.Failed());
+    }
+
+    /// <summary>The controller as a staff member authorized on the guest account calls it.</summary>
+    private static GuestsController NewController(IGuestProfileCommandService commandService,
+        IGuestProfileQueryService queryService, bool allowed = true) =>
+        new(commandService, queryService, new FakeAuthorizationService { Allow = allowed })
+        {
+            ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal(new ClaimsIdentity()) } }
+        };
+
     private static GuestProfile CreateSampleGuest(GuestProfileId? id = null)
     {
         return new GuestProfile(
@@ -91,7 +115,7 @@ public class GuestsControllerTests
             CreateHandler = _ => Task.FromResult<GuestProfile?>(guest)
         };
         var queryService = new FakeGuestQueryService();
-        var controller = new GuestsController(commandService, queryService);
+        var controller = NewController(commandService, queryService);
 
         var request = new CreateGuestProfileResource(
             "John", "Doe", "+1234567890", "john.doe@example.com",
@@ -115,7 +139,7 @@ public class GuestsControllerTests
             CreateHandler = _ => Task.FromResult<GuestProfile?>(null)
         };
         var queryService = new FakeGuestQueryService();
-        var controller = new GuestsController(commandService, queryService);
+        var controller = NewController(commandService, queryService);
 
         var request = new CreateGuestProfileResource(
             "John", "Doe", "+1234567890", null, null, null, null, null, null, null, null, null);
@@ -134,7 +158,7 @@ public class GuestsControllerTests
         {
             GetByIdHandler = q => Task.FromResult<GuestProfile?>(q.ProfileId == guestId ? guest : null)
         };
-        var controller = new GuestsController(new FakeGuestCommandService(), queryService);
+        var controller = NewController(new FakeGuestCommandService(), queryService);
 
         var result = await controller.GetById(guestId.Value);
 
@@ -145,13 +169,44 @@ public class GuestsControllerTests
     }
 
     [Fact]
+    public async Task GetById_OfAnotherAccount_ShouldReturnNotFound_WithoutDisclosingTheProfile()
+    {
+        var guest = CreateSampleGuest();
+        var queryService = new FakeGuestQueryService { GetByIdHandler = _ => Task.FromResult<GuestProfile?>(guest) };
+        var controller = NewController(new FakeGuestCommandService(), queryService, allowed: false);
+
+        var result = await controller.GetById(guest.Id.Value);
+
+        result.Should().BeOfType<NotFoundResult>();
+    }
+
+    [Fact]
+    public async Task Create_ForAnotherAccount_ShouldReturnForbid_AndNotCreate()
+    {
+        var created = false;
+        var commandService = new FakeGuestCommandService
+        {
+            CreateHandler = _ => { created = true; return Task.FromResult<GuestProfile?>(CreateSampleGuest()); }
+        };
+        var controller = NewController(commandService, new FakeGuestQueryService(), allowed: false);
+        var request = new CreateGuestProfileResource(
+            "John", "Doe", "+1234567890", "john.doe@example.com",
+            DocumentType.Dni, "12345678", "Main St", "100", "City", "12345", "Country", 2);
+
+        var result = await controller.Create(request);
+
+        result.Should().BeOfType<ForbidResult>();
+        created.Should().BeFalse();
+    }
+
+    [Fact]
     public async Task GetById_NonExistingId_ShouldReturnNotFound()
     {
         var queryService = new FakeGuestQueryService
         {
             GetByIdHandler = _ => Task.FromResult<GuestProfile?>(null)
         };
-        var controller = new GuestsController(new FakeGuestCommandService(), queryService);
+        var controller = NewController(new FakeGuestCommandService(), queryService);
 
         var result = await controller.GetById(Guid.NewGuid());
 
@@ -166,7 +221,7 @@ public class GuestsControllerTests
         {
             GetByEmailHandler = _ => Task.FromResult<GuestProfile?>(guest)
         };
-        var controller = new GuestsController(new FakeGuestCommandService(), queryService);
+        var controller = NewController(new FakeGuestCommandService(), queryService);
 
         var result = await controller.GetByEmail("john.doe@example.com");
 
@@ -183,7 +238,7 @@ public class GuestsControllerTests
         {
             GetByUserIdHandler = _ => Task.FromResult<GuestProfile?>(guest)
         };
-        var controller = new GuestsController(new FakeGuestCommandService(), queryService);
+        var controller = NewController(new FakeGuestCommandService(), queryService);
 
         var result = await controller.GetByUserId(1);
 
@@ -200,7 +255,7 @@ public class GuestsControllerTests
         {
             GetAllHandler = _ => Task.FromResult<IEnumerable<GuestProfile>>(new[] { guest1, guest2 })
         };
-        var controller = new GuestsController(new FakeGuestCommandService(), queryService);
+        var controller = NewController(new FakeGuestCommandService(), queryService);
 
         var result = await controller.GetAll();
 
@@ -217,7 +272,7 @@ public class GuestsControllerTests
         {
             LinkUserHandler = _ => Task.FromResult<GuestProfile?>(guest)
         };
-        var controller = new GuestsController(commandService, new FakeGuestQueryService());
+        var controller = NewController(commandService, new FakeGuestQueryService());
 
         var result = await controller.LinkToUser(guest.Id.Value, new LinkGuestToUserResource(1, "verified@example.com"));
 
@@ -233,7 +288,9 @@ public class GuestsControllerTests
         {
             UpdateContactHandler = _ => Task.FromResult<GuestProfile?>(guest)
         };
-        var controller = new GuestsController(commandService, new FakeGuestQueryService());
+        // The controller reads the profile first to check the guest account it belongs to.
+        var queryService = new FakeGuestQueryService { GetByIdHandler = _ => Task.FromResult<GuestProfile?>(guest) };
+        var controller = NewController(commandService, queryService);
 
         var result = await controller.UpdateContactInfo(guest.Id.Value, new UpdateGuestContactInformationResource("+1999888777", "New St", "1", "City", "1000", "Country"));
 
@@ -249,7 +306,7 @@ public class GuestsControllerTests
         {
             DeactivateHandler = _ => Task.FromResult<GuestProfile?>(guest)
         };
-        var controller = new GuestsController(commandService, new FakeGuestQueryService());
+        var controller = NewController(commandService, new FakeGuestQueryService());
 
         var result = await controller.Deactivate(guest.Id.Value);
 
@@ -265,7 +322,7 @@ public class GuestsControllerTests
         {
             ActivateHandler = _ => Task.FromResult<GuestProfile?>(guest)
         };
-        var controller = new GuestsController(commandService, new FakeGuestQueryService());
+        var controller = NewController(commandService, new FakeGuestQueryService());
 
         var result = await controller.Activate(guest.Id.Value);
 

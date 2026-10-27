@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.IAM.Application.OutboundServices;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Commands;
+using RoomTrack.IAM.Domain.Model.Aggregates;
+using RoomTrack.IAM.Application.OutboundServices;
+using RoomTrack.IAM.Domain.Model.Commands;
 
-namespace BackendAwRoomTrack.API.IAM.Domain.Services;
+namespace RoomTrack.IAM.Domain.Services;
 
 /// <summary>An issued refresh token: <see cref="Value"/> is returned once to the client.</summary>
 public sealed record IssuedRefreshToken(string Value, DateTimeOffset ExpiresAt);

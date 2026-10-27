@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Media.Infrastructure.Cloudinary;
+namespace RoomTrack.Media.Infrastructure.Cloudinary;
 
 /// <summary>
 ///     Cloudinary account of the project (section <c>Cloudinary</c>, env vars <c>Cloudinary__*</c>). The API secret

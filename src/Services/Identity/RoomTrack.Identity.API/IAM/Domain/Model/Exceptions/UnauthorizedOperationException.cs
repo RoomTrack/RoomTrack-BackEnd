@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.IAM.Domain.Model.Exceptions;
+namespace RoomTrack.IAM.Domain.Model.Exceptions;
 
 /// <summary>
 ///     Exception thrown when a user attempts an operation that the IAM rules (role hierarchy, scope) do not allow.

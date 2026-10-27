@@ -1,13 +1,13 @@
-using BackendAwRoomTrack.API.Audit.Application.OutboundServices;
-using BackendAwRoomTrack.API.Audit.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Audit.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Audit.Domain.Repositories;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Events;
-using BackendAwRoomTrack.API.IAM.Interfaces.ACL;
-using BackendAwRoomTrack.API.Shared.Application.Internal.EventHandlers;
-using BackendAwRoomTrack.API.Shared.Domain.Repositories;
+using RoomTrack.Audit.Application.OutboundServices;
+using RoomTrack.Audit.Domain.Model.Aggregates;
+using RoomTrack.Audit.Domain.Model.ValueObjects;
+using RoomTrack.Audit.Domain.Repositories;
+using RoomTrack.IAM.Domain.Model.Events;
+using RoomTrack.IAM.Interfaces.ACL;
+using RoomTrack.Shared.Application.Internal.EventHandlers;
+using RoomTrack.Shared.Domain.Repositories;
 
-namespace BackendAwRoomTrack.API.Audit.Application.Internal.EventHandlers;
+namespace RoomTrack.Audit.Application.Internal.EventHandlers;
 
 /// <summary>
 ///     Subscribes the Audit context to the access events published by IAM and records one audit entry per event.

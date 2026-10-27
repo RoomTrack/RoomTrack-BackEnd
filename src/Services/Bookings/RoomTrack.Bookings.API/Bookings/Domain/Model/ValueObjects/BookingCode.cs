@@ -1,9 +1,9 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Exceptions;
+using RoomTrack.Bookings.Domain.Model.Exceptions;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
+namespace RoomTrack.Bookings.Domain.Model.ValueObjects;
 
 /// <summary>
 ///     Human-readable unique code of a booking, e.g. <c>SS-7KQ4M2XP</c>: what the guest quotes at

@@ -1,8 +1,9 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Shared.Domain.Repositories;
+using RoomTrack.Bookings.Domain.Model.Aggregates;
+using RoomTrack.Bookings.Domain.Model.Queries;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Domain.Repositories;
 
-namespace BackendAwRoomTrack.API.Bookings.Domain.Repositories;
+namespace RoomTrack.Bookings.Domain.Repositories;
 
 /// <summary>
 /// Repository interface for managing Booking aggregates.
@@ -14,6 +15,12 @@ public interface IBookingRepository : IBaseRepository<Booking>
 
     /// <summary>Every booking of a hotel (or of every hotel when null), newest first.</summary>
     Task<IEnumerable<Booking>> ListNewestFirstAsync(int? hotelId);
+
+    /// <summary>One page of <see cref="FindByOwnerAsync"/>, newest first.</summary>
+    Task<BookingPage> FindPageByOwnerAsync(int userId, Guid? guestProfileId, PageRequest page);
+
+    /// <summary>One page of <see cref="ListNewestFirstAsync"/>.</summary>
+    Task<BookingPage> ListPageNewestFirstAsync(int? hotelId, PageRequest page);
 
     /// <summary>Bookings of a given room.</summary>
     Task<IEnumerable<Booking>> FindByRoomIdAsync(int roomId);

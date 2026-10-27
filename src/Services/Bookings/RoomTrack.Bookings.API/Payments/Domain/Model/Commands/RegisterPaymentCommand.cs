@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.Payments.Domain.Model.ValueObjects;
+using RoomTrack.Payments.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Payments.Domain.Model.Commands;
+namespace RoomTrack.Payments.Domain.Model.Commands;
 
 /// <summary>
 ///     Hotel staff register the payment of a booking. The amount is not part of the command: it is

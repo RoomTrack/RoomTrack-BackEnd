@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace BackendAwRoomTrack.API.Bookings.Application.Internal.Configuration;
+namespace RoomTrack.Bookings.Application.Internal.Configuration;
 
 /// <summary>Booking rules that depend on the operation (section <c>Bookings</c>, env vars <c>Bookings__*</c>).</summary>
 public class BookingPolicySettings : IValidatableObject

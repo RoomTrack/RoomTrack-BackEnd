@@ -2,21 +2,23 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using BackendAwRoomTrack.API.Accommodations.Interfaces.ACL;
-using BackendAwRoomTrack.API.Profiles.Application.Internal.Commands;
-using BackendAwRoomTrack.API.Profiles.Application.Internal.CommandServices;
-using BackendAwRoomTrack.API.Profiles.Application.Internal.OutboundServices;
-using BackendAwRoomTrack.API.Shared.Domain.Repositories;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Aggregates;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Enums;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Repositories;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Services;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Events;
+using RoomTrack.Accommodations.Interfaces.ACL;
+using RoomTrack.Profiles.Application.Internal.Commands;
+using RoomTrack.Profiles.Application.Internal.CommandServices;
+using RoomTrack.Profiles.Application.Internal.OutboundServices;
+using RoomTrack.Shared.Domain.Repositories;
+using RoomTrack.Profiles.Domain.Model.Aggregates;
+using RoomTrack.Profiles.Domain.Model.Enums;
+using RoomTrack.Profiles.Domain.Model.Exceptions;
+using RoomTrack.Profiles.Domain.Model.ValueObjects;
+using RoomTrack.Profiles.Domain.Repositories;
+using RoomTrack.Profiles.Domain.Services;
+using RoomTrack.Shared.Domain.Model.Events;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 using FluentAssertions;
 using Xunit;
 
-namespace BackendAwRoomTrack.API.Tests.Profiles.Application;
+namespace RoomTrack.Tests.Profiles.Application;
 
 public class StaffProfileCommandServiceAclIntegrationTests
 {
@@ -41,6 +43,7 @@ public class StaffProfileCommandServiceAclIntegrationTests
     {
         public bool CompleteCalled { get; private set; }
         public Task CompleteAsync() { CompleteCalled = true; return Task.CompletedTask; }
+        public Task ExecuteInTransactionAsync(Func<Task> work) => work();
     }
 
     private class FakeEmployeeCodeGenerator : IEmployeeCodeGenerator
@@ -65,6 +68,19 @@ public class StaffProfileCommandServiceAclIntegrationTests
             LastCheckedHotelId = hotelId;
             return HotelExistsHandler != null ? HotelExistsHandler(hotelId) : Task.FromResult(false);
         }
+
+        // Not used by the staff assignments.
+        public Task<IReadOnlyDictionary<int, string>> FetchRoomNumbersAsync(IReadOnlyCollection<int> roomIds) => throw new NotSupportedException();
+        public Task<RoomOffer?> FetchRoomAsync(int roomId) => throw new NotSupportedException();
+        public Task<HotelSummary?> FetchHotelAsync(int hotelId) => throw new NotSupportedException();
+        public Task<HotelPaymentInstructions?> FetchPaymentInstructionsAsync(int hotelId) => throw new NotSupportedException();
+        public Task<bool> RoomExistsAsync(int roomId) => throw new NotSupportedException();
+        public Task<decimal?> FetchRoomPricePerNightAsync(int roomId) => throw new NotSupportedException();
+        public Task<int?> FetchHotelIdOfRoomAsync(int roomId) => throw new NotSupportedException();
+        public Task<RoomOffer?> LockRoomForBookingAsync(int roomId) => throw new NotSupportedException();
+        public Task OccupyRoomForCheckInAsync(int roomId, int? guestUserId, string? guestEmail) => throw new NotSupportedException();
+        public Task VacateRoomAfterCheckOutAsync(int roomId, int? checkedOutByUserId, string? checkedOutByEmail) => throw new NotSupportedException();
+        public Task<IReadOnlyList<RoomOffer>> FetchRoomsOfferedForBookingAsync(int? hotelId) => throw new NotSupportedException();
     }
 
     private static StaffProfile CreateSampleStaff()
@@ -117,7 +133,7 @@ public class StaffProfileCommandServiceAclIntegrationTests
     }
 
     [Fact]
-    public async Task AddAssignment_ScopeLevelHotel_NonExistentHotel_ShouldThrowArgumentException_AndNotPersist()
+    public async Task AddAssignment_ScopeLevelHotel_NonExistentHotel_ShouldFailValidation_AndNotPersist()
     {
         // Arrange
         const int nonExistentHotelId = 999;
@@ -145,8 +161,9 @@ public class StaffProfileCommandServiceAclIntegrationTests
         Func<Task> action = async () => await service.Handle(command);
 
         // Assert
-        await action.Should().ThrowAsync<ArgumentException>()
-            .WithMessage($"*Hotel with ID {nonExistentHotelId} does not exist in Accommodations*");
+        (await action.Should().ThrowAsync<DomainValidationException>()
+            .WithMessage($"*Hotel with ID {nonExistentHotelId} does not exist in Accommodations*"))
+            .Which.Code.Should().Be(ProfileErrorCodes.HotelNotFound);
 
         facade.WasCalled.Should().BeTrue();
         facade.LastCheckedHotelId.Should().Be(nonExistentHotelId);

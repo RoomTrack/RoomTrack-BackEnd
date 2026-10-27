@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Events;
+using RoomTrack.Shared.Domain.Model.Events;
 using Cortex.Mediator.Notifications;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Mediator;
+namespace RoomTrack.Shared.Infrastructure.Mediator;
 
 /// <summary>
 /// Infrastructure adapter that wraps a pure domain event as a Cortex INotification

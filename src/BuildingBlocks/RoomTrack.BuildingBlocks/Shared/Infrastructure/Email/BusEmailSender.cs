@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Shared.Application.OutboundServices;
+using RoomTrack.Shared.Application.OutboundServices;
 using MassTransit;
 using RoomTrack.Contracts.Messaging;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Email;
+namespace RoomTrack.Shared.Infrastructure.Email;
 
 /// <summary>
 ///     <see cref="IEmailSender"/> adapter of the services: the message is published as a <see cref="SendEmail"/>

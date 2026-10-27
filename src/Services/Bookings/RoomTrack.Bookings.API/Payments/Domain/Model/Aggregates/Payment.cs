@@ -1,10 +1,10 @@
-using BackendAwRoomTrack.API.Payments.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Payments.Domain.Model.Events;
-using BackendAwRoomTrack.API.Payments.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Events;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Payments.Domain.Model.Exceptions;
+using RoomTrack.Payments.Domain.Model.Events;
+using RoomTrack.Payments.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Domain.Model.Events;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.Payments.Domain.Model.Aggregates;
+namespace RoomTrack.Payments.Domain.Model.Aggregates;
 
 /// <summary>
 ///     The payment of a booking (D1: paying confirms the booking). The amount is always the booking's total, computed

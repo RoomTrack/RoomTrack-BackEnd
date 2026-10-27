@@ -1,12 +1,12 @@
-using BackendAwRoomTrack.API.IAM.Application.OutboundServices;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Constants;
-using BackendAwRoomTrack.API.IAM.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.IAM.Domain.Repositories;
-using BackendAwRoomTrack.API.Shared.Domain.Repositories;
+using RoomTrack.IAM.Application.OutboundServices;
+using RoomTrack.IAM.Domain.Model.Aggregates;
+using RoomTrack.IAM.Domain.Model.Constants;
+using RoomTrack.IAM.Domain.Model.ValueObjects;
+using RoomTrack.IAM.Domain.Repositories;
+using RoomTrack.Shared.Domain.Repositories;
 using Microsoft.Extensions.Options;
 
-namespace BackendAwRoomTrack.API.IAM.Infrastructure.Seed;
+namespace RoomTrack.IAM.Infrastructure.Seed;
 
 /// <summary>Creates the initial chain administrator when <see cref="InitialChainAdminSettings"/> are provided.</summary>
 public static class IamSeeder

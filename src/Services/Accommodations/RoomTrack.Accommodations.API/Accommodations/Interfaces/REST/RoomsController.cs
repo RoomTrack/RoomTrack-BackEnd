@@ -1,20 +1,20 @@
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Accommodations.Domain.Services;
-using BackendAwRoomTrack.API.Accommodations.Interfaces.REST.Authorization;
-using BackendAwRoomTrack.API.Accommodations.Interfaces.REST.Resources;
-using BackendAwRoomTrack.API.Accommodations.Interfaces.REST.Transform;
-using BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
-using BackendAwRoomTrack.API.Accommodations.Application.Internal.Configuration;
+using RoomTrack.Shared.Domain.Model.Exceptions;
+using RoomTrack.Accommodations.Domain.Model.Exceptions;
+using RoomTrack.Accommodations.Domain.Model.Aggregates;
+using RoomTrack.Accommodations.Domain.Model.Commands;
+using RoomTrack.Accommodations.Domain.Model.Queries;
+using RoomTrack.Accommodations.Domain.Services;
+using RoomTrack.Accommodations.Interfaces.REST.Authorization;
+using RoomTrack.Accommodations.Interfaces.REST.Resources;
+using RoomTrack.Accommodations.Interfaces.REST.Transform;
+using RoomTrack.IAM.Interfaces.Authorization;
+using RoomTrack.Accommodations.Application.Internal.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace BackendAwRoomTrack.API.Accommodations.Interfaces.REST;
+namespace RoomTrack.Accommodations.Interfaces.REST;
 
 /// <summary>
 ///     RESTful API interface controller responsible for handling operational, guest, and administrative 

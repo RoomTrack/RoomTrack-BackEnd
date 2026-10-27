@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Audit.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Audit.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Audit.Domain.Model.Exceptions;
+using RoomTrack.Audit.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.Audit.Domain.Model.Queries;
+namespace RoomTrack.Audit.Domain.Model.Queries;
 
 /// <summary>
 ///     A page of the audit log visible in the reader's scope, newest first, optionally filtered by user

@@ -1,14 +1,14 @@
-using BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Commands;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Constants;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Enums;
-using BackendAwRoomTrack.API.IAM.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.IAM.Domain.Repositories;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Queries;
-using BackendAwRoomTrack.API.IAM.Domain.Services;
-using BackendAwRoomTrack.API.IAM.Interfaces.ACL;
+using RoomTrack.IAM.Domain.Model.Aggregates;
+using RoomTrack.IAM.Domain.Model.Commands;
+using RoomTrack.IAM.Domain.Model.Constants;
+using RoomTrack.IAM.Domain.Model.Enums;
+using RoomTrack.IAM.Domain.Model.ValueObjects;
+using RoomTrack.IAM.Domain.Repositories;
+using RoomTrack.IAM.Domain.Model.Queries;
+using RoomTrack.IAM.Domain.Services;
+using RoomTrack.IAM.Interfaces.ACL;
 
-namespace BackendAwRoomTrack.API.IAM.Application.ACL.Services;
+namespace RoomTrack.IAM.Application.ACL.Services;
 
 /// <summary>
 /// Represents the Anti-Corruption Layer (ACL) facade for the Identity and Access Management (IAM) bounded context.

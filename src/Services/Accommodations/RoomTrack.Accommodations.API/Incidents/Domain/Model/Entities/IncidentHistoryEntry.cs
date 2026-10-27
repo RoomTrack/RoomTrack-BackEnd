@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.Incidents.Domain.Model.ValueObjects;
+using RoomTrack.Incidents.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Incidents.Domain.Model.Entities;
+namespace RoomTrack.Incidents.Domain.Model.Entities;
 
 /// <summary>
 ///     One line of the history of an incident (what happened, who and when). Recorded by the <c>Incident</c>

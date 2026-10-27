@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Http;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.ExceptionHandling;
+namespace RoomTrack.Shared.Infrastructure.Interfaces.ASP.ExceptionHandling;
 
 /// <summary>
 ///     Lets a bounded context add extension members to the ProblemDetails written for one of its exceptions

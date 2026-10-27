@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Entities;
-using BackendAwRoomTrack.API.Accommodations.Domain.Repositories;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.Accommodations.Domain.Model.Entities;
+using RoomTrack.Accommodations.Domain.Repositories;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Repositories;
 
-namespace BackendAwRoomTrack.API.Accommodations.Infrastructure.Persistence.EFC.Repositories;
+namespace RoomTrack.Accommodations.Infrastructure.Persistence.EFC.Repositories;
 
 public class RoomTypeRepository(AppDbContext context) : BaseRepository<RoomType>(context), IRoomTypeRepository;

@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Bookings.Infrastructure.Storage;
+namespace RoomTrack.Bookings.Infrastructure.Storage;
 
 /// <summary>A document stored by <see cref="DatabaseDocumentStorage"/> (encrypted content).</summary>
 public class StoredDocument

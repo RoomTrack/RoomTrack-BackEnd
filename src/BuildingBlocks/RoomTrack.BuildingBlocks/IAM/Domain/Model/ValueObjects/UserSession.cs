@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.IAM.Domain.Model.Enums;
+using RoomTrack.IAM.Domain.Model.Enums;
 
-namespace BackendAwRoomTrack.API.IAM.Domain.Model.ValueObjects;
+namespace RoomTrack.IAM.Domain.Model.ValueObjects;
 
 /// <summary>
 ///     Whether an access token presented by a user still represents a valid session. The token's claims (role,

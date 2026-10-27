@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Payments.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Payments.Domain.Model.Commands;
+using RoomTrack.Payments.Domain.Model.Aggregates;
+using RoomTrack.Payments.Domain.Model.Commands;
 
-namespace BackendAwRoomTrack.API.Payments.Domain.Services;
+namespace RoomTrack.Payments.Domain.Services;
 
 /// <summary>Payment use cases.</summary>
 public interface IPaymentCommandService

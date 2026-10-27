@@ -1,9 +1,9 @@
 using System;
-using BackendAwRoomTrack.API.Accommodations.Interfaces.ACL;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Accommodations.Interfaces.ACL;
+using RoomTrack.Bookings.Domain.Model.Aggregates;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Tests.Bookings;
+namespace RoomTrack.Tests.Bookings;
 
 /// <summary>Rooms, stays and bookings shared by the Bookings tests, on a fixed hotel day.</summary>
 internal static class BookingTestData

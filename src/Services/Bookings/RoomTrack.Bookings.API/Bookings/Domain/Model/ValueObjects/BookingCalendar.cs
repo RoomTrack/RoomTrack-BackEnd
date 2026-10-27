@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Aggregates;
+using RoomTrack.Bookings.Domain.Model.Aggregates;
 
-namespace BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
+namespace RoomTrack.Bookings.Domain.Model.ValueObjects;
 
 /// <summary>One date of the booking calendar.</summary>
 /// <param name="Date">The date.</param>

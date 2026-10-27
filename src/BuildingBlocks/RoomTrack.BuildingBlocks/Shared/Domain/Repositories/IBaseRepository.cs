@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Shared.Domain.Repositories;
+namespace RoomTrack.Shared.Domain.Repositories;
 
 /// <summary>
 /// Provides basic repository operations for domain entities.

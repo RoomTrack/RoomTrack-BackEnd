@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Bookings.Domain.Model.Queries;
+namespace RoomTrack.Bookings.Domain.Model.Queries;
 
 /// <summary>
 /// Query to retrieve the bookings of a room visible to the requester (staff of its hotel).

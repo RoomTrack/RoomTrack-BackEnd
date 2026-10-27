@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Housekeeping.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.Housekeeping.Domain.Model.Exceptions;
+namespace RoomTrack.Housekeeping.Domain.Model.Exceptions;
 
 /// <summary>Stable error codes of the Housekeeping context.</summary>
 public static class CleaningTaskErrorCodes
@@ -49,6 +49,8 @@ public class RoomAlreadyHasOpenCleaningTaskException(int roomId, int openTaskId)
         $"Room {roomId} already has the open cleaning task {openTaskId}. Assign or reprioritize that one instead.");
 
 /// <summary>An automatic assignment found no active housekeeping staff member in the hotel.</summary>
-public class NoHousekeeperAvailableException(int hotelId)
+public class NoHousekeeperAvailableException(int hotelId, int? currentAssigneeUserId = null)
     : BusinessRuleViolationException(CleaningTaskErrorCodes.NoHousekeeperAvailable,
-        $"Hotel {hotelId} has no active housekeeping staff member to assign the task to.");
+        currentAssigneeUserId is { } current
+            ? $"Hotel {hotelId} has no other active housekeeping staff member than user {current} to reassign the task to."
+            : $"Hotel {hotelId} has no active housekeeping staff member to assign the task to.");

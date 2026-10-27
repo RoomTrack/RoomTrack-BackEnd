@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Analytics.Application.Internal.Consumers;
-using BackendAwRoomTrack.API.Analytics.Infrastructure.Interfaces.ASP.Configuration.Extensions;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Hosting;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Messaging;
-using BackendAwRoomTrack.API.shared.Infrastructure.Persistence.EFC.Configuration.Extensions;
+using RoomTrack.Analytics.Application.Internal.Consumers;
+using RoomTrack.Analytics.Infrastructure.Interfaces.ASP.Configuration.Extensions;
+using RoomTrack.Shared.Infrastructure.Hosting;
+using RoomTrack.Shared.Infrastructure.Messaging;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using RoomTrack.Analytics.API.Infrastructure.Persistence;
 
 // Analytics service: the performance metrics of the hotels, computed on its own read model, which the integration

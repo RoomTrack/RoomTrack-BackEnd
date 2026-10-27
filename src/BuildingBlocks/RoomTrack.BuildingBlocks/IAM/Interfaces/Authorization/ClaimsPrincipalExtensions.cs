@@ -1,8 +1,8 @@
 using System.Globalization;
 using System.Security.Claims;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Constants;
+using RoomTrack.IAM.Domain.Model.Constants;
 
-namespace BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
+namespace RoomTrack.IAM.Interfaces.Authorization;
 
 /// <summary>
 ///     Reads the authenticated requester from the <see cref="ClaimsPrincipal"/> built by the JWT bearer handler.

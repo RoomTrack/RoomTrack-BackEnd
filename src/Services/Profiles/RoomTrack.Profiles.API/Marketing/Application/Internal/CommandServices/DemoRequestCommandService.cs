@@ -1,14 +1,14 @@
-using BackendAwRoomTrack.API.Marketing.Application.Internal.Configuration;
-using BackendAwRoomTrack.API.Marketing.Application.OutboundServices;
-using BackendAwRoomTrack.API.Marketing.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Marketing.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Marketing.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Marketing.Domain.Repositories;
-using BackendAwRoomTrack.API.Marketing.Domain.Services;
-using BackendAwRoomTrack.API.Shared.Domain.Repositories;
+using RoomTrack.Marketing.Application.Internal.Configuration;
+using RoomTrack.Marketing.Application.OutboundServices;
+using RoomTrack.Marketing.Domain.Model.Aggregates;
+using RoomTrack.Marketing.Domain.Model.Commands;
+using RoomTrack.Marketing.Domain.Model.ValueObjects;
+using RoomTrack.Marketing.Domain.Repositories;
+using RoomTrack.Marketing.Domain.Services;
+using RoomTrack.Shared.Domain.Repositories;
 using Microsoft.Extensions.Options;
 
-namespace BackendAwRoomTrack.API.Marketing.Application.Internal.CommandServices;
+namespace RoomTrack.Marketing.Application.Internal.CommandServices;
 
 public class DemoRequestCommandService(
     IDemoRequestRepository demoRequestRepository,

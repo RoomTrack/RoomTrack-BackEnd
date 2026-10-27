@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.IAM.Domain.Model.Commands;
+namespace RoomTrack.IAM.Domain.Model.Commands;
 
 /// <summary>Start enrolling an authenticator app (returns the secret for the QR code).</summary>
 /// <param name="UserId">The user of the challenge token.</param>

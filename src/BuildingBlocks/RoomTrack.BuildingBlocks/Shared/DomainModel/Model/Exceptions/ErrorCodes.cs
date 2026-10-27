@@ -1,7 +1,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+namespace RoomTrack.Shared.Domain.Model.Exceptions;
 
 /// <summary>
 ///     Shared error codes and the format every code follows: <c>context.reason</c> in lower snake case

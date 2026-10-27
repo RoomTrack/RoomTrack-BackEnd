@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.IAM.Application.OutboundServices;
-using BackendAwRoomTrack.API.IAM.Domain.Services;
+using RoomTrack.IAM.Application.OutboundServices;
+using RoomTrack.IAM.Domain.Services;
 using BCryptNet = BCrypt.Net.BCrypt;
 
-namespace BackendAwRoomTrack.API.IAM.Infrastructure.Hashing.BCrypt.Services;
+namespace RoomTrack.IAM.Infrastructure.Hashing.BCrypt.Services;
 
 /**
  * <summary>

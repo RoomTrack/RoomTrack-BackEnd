@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Bookings.Domain.Repositories;
+using RoomTrack.Bookings.Domain.Model.Exceptions;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Bookings.Domain.Repositories;
 
-namespace BackendAwRoomTrack.API.Bookings.Domain.Services;
+namespace RoomTrack.Bookings.Domain.Services;
 
 /// <summary>
 ///     Domain service for R1 ("avoid overbooking", canvas "Bookings", glossary "Overbooking"): a room cannot

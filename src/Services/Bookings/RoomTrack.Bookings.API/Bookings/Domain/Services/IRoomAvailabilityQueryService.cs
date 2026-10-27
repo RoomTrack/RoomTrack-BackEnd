@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Bookings.Domain.Model.Queries;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Bookings.Domain.Services;
+namespace RoomTrack.Bookings.Domain.Services;
 
 public interface IRoomAvailabilityQueryService
 {

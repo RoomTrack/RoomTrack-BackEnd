@@ -1,15 +1,15 @@
-using BackendAwRoomTrack.API.IAM.Domain.Model.Commands;
-using BackendAwRoomTrack.API.IAM.Domain.Services;
-using BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
-using BackendAwRoomTrack.API.IAM.Interfaces.REST.Resources;
-using BackendAwRoomTrack.API.IAM.Interfaces.REST.Transform;
+using RoomTrack.IAM.Domain.Model.Commands;
+using RoomTrack.IAM.Domain.Services;
+using RoomTrack.IAM.Interfaces.Authorization;
+using RoomTrack.IAM.Interfaces.REST.Resources;
+using RoomTrack.IAM.Interfaces.REST.Transform;
 using Microsoft.AspNetCore.Authorization;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.RateLimiting;
+using RoomTrack.Shared.Infrastructure.Interfaces.ASP.RateLimiting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace BackendAwRoomTrack.API.IAM.Interfaces.REST;
+namespace RoomTrack.IAM.Interfaces.REST;
 
 /// <summary>
 ///     Account and session endpoints (EP-01): registration and e-mail verification, sign-in with temporary

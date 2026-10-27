@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.IAM.Domain.Model.Enums;
+namespace RoomTrack.IAM.Domain.Model.Enums;
 
 /// <summary>
 ///     Outcome of checking whether an access token issued to a user still represents a valid session.

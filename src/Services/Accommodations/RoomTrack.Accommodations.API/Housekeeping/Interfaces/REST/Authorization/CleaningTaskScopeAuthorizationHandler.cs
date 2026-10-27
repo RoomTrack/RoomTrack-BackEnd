@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
+using RoomTrack.Housekeeping.Domain.Model.Aggregates;
+using RoomTrack.IAM.Interfaces.Authorization;
 using Microsoft.AspNetCore.Authorization;
 
-namespace BackendAwRoomTrack.API.Housekeeping.Interfaces.REST.Authorization;
+namespace RoomTrack.Housekeeping.Interfaces.REST.Authorization;
 
 /// <summary>Requirement "the requester works at the hotel of this cleaning task".</summary>
 public sealed class CleaningTaskScopeRequirement : IAuthorizationRequirement

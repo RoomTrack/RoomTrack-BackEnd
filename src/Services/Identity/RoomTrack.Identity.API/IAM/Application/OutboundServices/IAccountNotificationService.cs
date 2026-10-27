@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.IAM.Domain.Model.Aggregates;
+using RoomTrack.IAM.Domain.Model.Aggregates;
 
-namespace BackendAwRoomTrack.API.IAM.Application.OutboundServices;
+namespace RoomTrack.IAM.Application.OutboundServices;
 
 /// <summary>
 ///     E-mails about the account. The application services call it before the unit of work commits the change the

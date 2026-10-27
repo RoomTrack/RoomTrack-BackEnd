@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Audit.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Audit.Domain.Model.Queries;
+using RoomTrack.Audit.Domain.Model.Aggregates;
+using RoomTrack.Audit.Domain.Model.Queries;
 
-namespace BackendAwRoomTrack.API.Audit.Domain.Repositories;
+namespace RoomTrack.Audit.Domain.Repositories;
 
 /// <summary>Append-only store of the audit log.</summary>
 public interface IAuditEntryRepository

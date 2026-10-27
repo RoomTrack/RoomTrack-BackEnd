@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Events;
-using BackendAwRoomTrack.API.Bookings.Domain.Repositories;
-using BackendAwRoomTrack.API.Payments.Domain.Model.Events;
-using BackendAwRoomTrack.API.Payments.Domain.Repositories;
-using BackendAwRoomTrack.API.Shared.Application.Internal.EventHandlers;
+using RoomTrack.Bookings.Domain.Model.Events;
+using RoomTrack.Bookings.Domain.Repositories;
+using RoomTrack.Payments.Domain.Model.Events;
+using RoomTrack.Payments.Domain.Repositories;
+using RoomTrack.Shared.Application.Internal.EventHandlers;
 using MassTransit;
 using RoomTrack.Contracts.Messaging;
 
@@ -26,6 +26,7 @@ public class BookingsIntegrationEventPublisher(
         IDomainEventHandler<BookingCancelledEvent>,
         IDomainEventHandler<BookingRescheduledEvent>,
         IDomainEventHandler<GuestCheckedInEvent>,
+        IDomainEventHandler<GuestCheckedOutEvent>,
         IDomainEventHandler<PaymentCompletedEvent>,
         IDomainEventHandler<PaymentRefundedEvent>
 {
@@ -42,6 +43,9 @@ public class BookingsIntegrationEventPublisher(
         PublishBookingStateAsync(e.BookingId, e.OccurredOn, cancellationToken);
 
     public Task HandleAsync(GuestCheckedInEvent e, CancellationToken cancellationToken) =>
+        PublishBookingStateAsync(e.BookingId, e.OccurredOn, cancellationToken);
+
+    public Task HandleAsync(GuestCheckedOutEvent e, CancellationToken cancellationToken) =>
         PublishBookingStateAsync(e.BookingId, e.OccurredOn, cancellationToken);
 
     public Task HandleAsync(PaymentCompletedEvent e, CancellationToken cancellationToken) =>

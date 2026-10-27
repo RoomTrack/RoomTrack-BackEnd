@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Aggregates;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects;
+using RoomTrack.Profiles.Domain.Model.Aggregates;
+using RoomTrack.Profiles.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.Domain.Profiles.Domain.Repositories;
+namespace RoomTrack.Profiles.Domain.Repositories;
 
 public interface IStaffProfileRepository
 {

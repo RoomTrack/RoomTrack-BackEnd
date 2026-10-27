@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Payments.Interfaces.REST.Resources;
+namespace RoomTrack.Payments.Interfaces.REST.Resources;
 
 /// <summary>The payment of a booking.</summary>
 /// <param name="Id">Payment id.</param>

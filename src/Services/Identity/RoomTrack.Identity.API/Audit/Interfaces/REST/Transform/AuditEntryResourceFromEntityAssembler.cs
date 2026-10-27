@@ -1,9 +1,9 @@
-using BackendAwRoomTrack.API.Audit.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Audit.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Audit.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Audit.Interfaces.REST.Resources;
+using RoomTrack.Audit.Domain.Model.ValueObjects;
+using RoomTrack.Audit.Domain.Model.Aggregates;
+using RoomTrack.Audit.Domain.Model.Queries;
+using RoomTrack.Audit.Interfaces.REST.Resources;
 
-namespace BackendAwRoomTrack.API.Audit.Interfaces.REST.Transform;
+namespace RoomTrack.Audit.Interfaces.REST.Transform;
 
 public static class AuditEntryResourceFromEntityAssembler
 {

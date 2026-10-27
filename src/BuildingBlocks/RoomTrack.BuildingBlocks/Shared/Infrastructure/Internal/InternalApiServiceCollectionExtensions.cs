@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Http.Resilience;
 using Microsoft.Extensions.Options;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Internal;
+namespace RoomTrack.Shared.Infrastructure.Internal;
 
 public static class InternalApiServiceCollectionExtensions
 {

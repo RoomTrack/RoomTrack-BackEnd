@@ -1,17 +1,17 @@
-using BackendAwRoomTrack.API.Analytics.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Analytics.Domain.Services;
-using BackendAwRoomTrack.API.Analytics.Interfaces.REST.Resources;
-using BackendAwRoomTrack.API.Analytics.Interfaces.REST.Transform;
-using BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
+using RoomTrack.Analytics.Domain.Model.Queries;
+using RoomTrack.Analytics.Domain.Services;
+using RoomTrack.Analytics.Interfaces.REST.Resources;
+using RoomTrack.Analytics.Interfaces.REST.Transform;
+using RoomTrack.IAM.Interfaces.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StackExchange.Redis;
 using Swashbuckle.AspNetCore.Annotations;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Resilience;
+using RoomTrack.Shared.Infrastructure.Resilience;
 using Polly.CircuitBreaker;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Messaging;
+using RoomTrack.Shared.Infrastructure.Messaging;
 
-namespace BackendAwRoomTrack.API.Analytics.Interfaces.REST;
+namespace RoomTrack.Analytics.Interfaces.REST;
 
 /// <summary>
 ///     REST controller for analytics operations.

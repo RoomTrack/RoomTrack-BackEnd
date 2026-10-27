@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration;
 using MassTransit;
 
-namespace BackendAwRoomTrack.API.Shared.Infrastructure.Messaging;
+namespace RoomTrack.Shared.Infrastructure.Messaging;
 
 /// <summary>
 ///     RabbitMQ through MassTransit, with the Entity Framework transactional outbox of the service's database.

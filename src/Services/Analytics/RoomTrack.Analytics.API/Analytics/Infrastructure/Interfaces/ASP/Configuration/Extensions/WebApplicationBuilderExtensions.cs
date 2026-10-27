@@ -1,11 +1,11 @@
-using BackendAwRoomTrack.API.Analytics.Application.Internal.QueryServices;
-using BackendAwRoomTrack.API.Analytics.Domain.Repositories;
-using BackendAwRoomTrack.API.Analytics.Domain.Services;
-using BackendAwRoomTrack.API.Analytics.Infrastructure.Persistence.EFC.Repositories;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Messaging;
+using RoomTrack.Analytics.Application.Internal.QueryServices;
+using RoomTrack.Analytics.Domain.Repositories;
+using RoomTrack.Analytics.Domain.Services;
+using RoomTrack.Analytics.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.Shared.Infrastructure.Messaging;
 using StackExchange.Redis;
 
-namespace BackendAwRoomTrack.API.Analytics.Infrastructure.Interfaces.ASP.Configuration.Extensions;
+namespace RoomTrack.Analytics.Infrastructure.Interfaces.ASP.Configuration.Extensions;
 
 public static class WebApplicationBuilderExtensions
 {

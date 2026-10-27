@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Media.Application.OutboundServices;
+using RoomTrack.Media.Application.OutboundServices;
 using Microsoft.Extensions.Options;
 
-namespace BackendAwRoomTrack.API.Media.Infrastructure.Cloudinary;
+namespace RoomTrack.Media.Infrastructure.Cloudinary;
 
 /// <summary>
 ///     Cloudinary adapter of <see cref="IUploadSignatureService"/>: signs uploads to the signed preset of the hotel

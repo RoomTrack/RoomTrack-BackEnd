@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.Bookings.Domain.Model.Exceptions;
+namespace RoomTrack.Bookings.Domain.Model.Exceptions;
 
 /// <summary>
 ///     The booking does not exist, or it is not visible to the requester: a guest never learns about bookings
@@ -33,7 +33,7 @@ public class HotelNotAcceptingBookingsException : BusinessRuleViolationException
 
 /// <summary>The staff member works for another hotel (R4).</summary>
 public class BookingOutsideHotelScopeException()
-    : BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions.OperationNotAllowedException(BookingErrorCodes.OutsideHotelScope, "You can only manage the bookings of your hotel.");
+    : RoomTrack.Shared.Domain.Model.Exceptions.OperationNotAllowedException(BookingErrorCodes.OutsideHotelScope, "You can only manage the bookings of your hotel.");
 
 /// <summary>The booking's current status does not allow the requested transition.</summary>
 public class InvalidBookingTransitionException(string code, string message) : BusinessRuleViolationException(code, message);

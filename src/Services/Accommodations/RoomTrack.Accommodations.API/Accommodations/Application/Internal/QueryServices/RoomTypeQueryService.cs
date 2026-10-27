@@ -1,9 +1,9 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Entities;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Accommodations.Domain.Repositories;
-using BackendAwRoomTrack.API.Accommodations.Domain.Services;
+using RoomTrack.Accommodations.Domain.Model.Entities;
+using RoomTrack.Accommodations.Domain.Model.Queries;
+using RoomTrack.Accommodations.Domain.Repositories;
+using RoomTrack.Accommodations.Domain.Services;
 
-namespace BackendAwRoomTrack.API.Accommodations.Application.Internal.QueryServices;
+namespace RoomTrack.Accommodations.Application.Internal.QueryServices;
 
 // Service responsible for handling room type queries
 public class RoomTypeQueryService(IRoomTypeRepository roomTypeRepository)

@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Bookings.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Events;
+using RoomTrack.Bookings.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Domain.Model.Events;
 
-namespace BackendAwRoomTrack.API.Bookings.Domain.Model.Events;
+namespace RoomTrack.Bookings.Domain.Model.Events;
 
 // Published language of the Bookings context. Handlers run after the unit of work commits.
 
@@ -24,6 +24,13 @@ public sealed record BookingRescheduledEvent(int BookingId, string Code, int Hot
 /// <summary>The guest completed the digital check-in: the stay started in <paramref name="RoomId"/>.</summary>
 public sealed record GuestCheckedInEvent(int BookingId, string Code, int HotelId, int RoomId, DateTimeOffset OccurredOn)
     : DomainEvent(OccurredOn);
+
+/// <summary>
+///     The guest checked out (US-14, US-27): the stay ended and the room goes to cleaning. <paramref name="Assisted"/>:
+///     the front desk did it; <paramref name="Early"/>: before the check-out date (its remaining nights are free again).
+/// </summary>
+public sealed record GuestCheckedOutEvent(int BookingId, string Code, int HotelId, int RoomId, bool Assisted, bool Early,
+    DateTimeOffset OccurredOn) : DomainEvent(OccurredOn);
 
 /// <summary>The guest asked the front desk for help with the check-in.</summary>
 public sealed record CheckInAssistanceRequestedEvent(int BookingId, string Code, int HotelId, int RoomId, string? Message, DateTimeOffset OccurredOn)

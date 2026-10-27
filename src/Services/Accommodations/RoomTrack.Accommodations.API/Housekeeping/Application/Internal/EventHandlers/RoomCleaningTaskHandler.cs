@@ -1,11 +1,11 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Events;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Repositories;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Services;
-using BackendAwRoomTrack.API.Shared.Application.Internal.EventHandlers;
+using RoomTrack.Accommodations.Domain.Model.Events;
+using RoomTrack.Accommodations.Domain.Model.ValueObjects;
+using RoomTrack.Housekeeping.Domain.Model.Aggregates;
+using RoomTrack.Housekeeping.Domain.Repositories;
+using RoomTrack.Housekeeping.Domain.Services;
+using RoomTrack.Shared.Application.Internal.EventHandlers;
 
-namespace BackendAwRoomTrack.API.Housekeeping.Application.Internal.EventHandlers;
+namespace RoomTrack.Housekeeping.Application.Internal.EventHandlers;
 
 /// <summary>
 ///     Keeps the cleaning tasks in step with the rooms changed outside Housekeeping (runs inside the transaction of

@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.Accommodations.Domain.Model.Exceptions;
+namespace RoomTrack.Accommodations.Domain.Model.Exceptions;
 
 /// <summary>Room numbers are unique within a hotel.</summary>
 public class DuplicateRoomNumberException : BusinessRuleViolationException

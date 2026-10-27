@@ -1,15 +1,17 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Accommodations.Domain.Repositories;
-using BackendAwRoomTrack.API.Accommodations.Domain.Services;
+using RoomTrack.Accommodations.Domain.Model.Aggregates;
+using RoomTrack.Accommodations.Domain.Model.Queries;
+using RoomTrack.Accommodations.Domain.Repositories;
+using RoomTrack.Accommodations.Domain.Services;
 
-namespace BackendAwRoomTrack.API.Accommodations.Application.Internal.QueryServices;
+namespace RoomTrack.Accommodations.Application.Internal.QueryServices;
 
 
 public class RoomQueryService(IRoomRepository roomRepository, IRoomStatusChangeRepository roomStatusChangeRepository)
     : IRoomQueryService
 {
     public Task<IReadOnlyList<Room>> Handle(GetRoomMapQuery query) => roomRepository.ListByHotelAsync(query.HotelId);
+
+    public Task<Room?> Handle(GetRoomByIdForUpdateQuery query) => roomRepository.FindByIdForUpdateAsync(query.RoomId);
 
     public Task<IReadOnlyList<Domain.Model.Entities.RoomStatusChange>> Handle(GetRoomStatusHistoryQuery query) =>
         roomStatusChangeRepository.ListByRoomAsync(query.RoomId, Math.Clamp(query.Limit, 1, 500));

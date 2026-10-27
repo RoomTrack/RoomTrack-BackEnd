@@ -1,9 +1,9 @@
 using System.Security.Cryptography;
 using System.Text;
-using BackendAwRoomTrack.API.IAM.Application.OutboundServices;
+using RoomTrack.IAM.Application.OutboundServices;
 using Microsoft.Extensions.Options;
 
-namespace BackendAwRoomTrack.API.IAM.Infrastructure.Passwords;
+namespace RoomTrack.IAM.Infrastructure.Passwords;
 
 /// <summary>
 ///     Have I Been Pwned "Pwned Passwords" range API with k-anonymity: only the first 5 hexadecimal characters of the

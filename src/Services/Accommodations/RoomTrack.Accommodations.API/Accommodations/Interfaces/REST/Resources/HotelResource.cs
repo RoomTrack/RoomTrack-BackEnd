@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Accommodations.Interfaces.REST.Resources;
+namespace RoomTrack.Accommodations.Interfaces.REST.Resources;
 
 /// <summary>
 /// Represents a hotel resource for API responses, containing essential information about a hotel accommodation.

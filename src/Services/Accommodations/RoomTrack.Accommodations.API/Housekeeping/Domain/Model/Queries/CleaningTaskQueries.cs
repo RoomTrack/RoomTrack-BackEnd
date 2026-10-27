@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.ValueObjects;
+using RoomTrack.Housekeeping.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Housekeeping.Domain.Model.Queries;
+namespace RoomTrack.Housekeeping.Domain.Model.Queries;
 
 /// <summary>A cleaning task with its history.</summary>
 public record GetCleaningTaskByIdQuery(int CleaningTaskId);

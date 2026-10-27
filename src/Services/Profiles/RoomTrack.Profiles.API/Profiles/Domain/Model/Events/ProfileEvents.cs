@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.Enums;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Events;
+using RoomTrack.Profiles.Domain.Model.Enums;
+using RoomTrack.Profiles.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Domain.Model.Events;
 
-namespace BackendAwRoomTrack.Domain.Profiles.Domain.Model.Events;
+namespace RoomTrack.Profiles.Domain.Model.Events;
 
 public record GuestProfileCreatedEvent(GuestProfileId ProfileId, string FullName, string? Email, string Phone, DateTimeOffset OccurredOn = default) : IEvent
 {

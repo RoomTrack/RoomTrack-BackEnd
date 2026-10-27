@@ -1,29 +1,29 @@
-using BackendAwRoomTrack.API.IAM.Application.ACL.Services;
-using BackendAwRoomTrack.API.IAM.Application.Internal.Configuration;
-using BackendAwRoomTrack.API.IAM.Infrastructure.Notifications;
-using BackendAwRoomTrack.API.IAM.Infrastructure.Passwords;
-using BackendAwRoomTrack.API.IAM.Interfaces.REST.ExceptionHandling;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.ExceptionHandling;
-using BackendAwRoomTrack.API.IAM.Infrastructure.Tokens.Opaque;
-using BackendAwRoomTrack.API.IAM.Application.Internal.CommandServices;
-using BackendAwRoomTrack.API.IAM.Application.Internal.QueryServices;
-using BackendAwRoomTrack.API.IAM.Application.OutboundServices;
-using BackendAwRoomTrack.API.IAM.Domain.Repositories;
-using BackendAwRoomTrack.API.IAM.Domain.Services;
-using BackendAwRoomTrack.API.IAM.Infrastructure.Authentication;
-using BackendAwRoomTrack.API.IAM.Infrastructure.Hashing.BCrypt.Services;
-using BackendAwRoomTrack.API.IAM.Infrastructure.Persistence.EFC.Repositories;
-using BackendAwRoomTrack.API.IAM.Infrastructure.Seed;
-using BackendAwRoomTrack.API.IAM.Infrastructure.Tokens.JWT.Configuration;
-using BackendAwRoomTrack.API.IAM.Infrastructure.Tokens.JWT.Services;
-using BackendAwRoomTrack.API.IAM.Interfaces.ACL;
-using BackendAwRoomTrack.API.IAM.Interfaces.Authorization;
+using RoomTrack.IAM.Application.ACL.Services;
+using RoomTrack.IAM.Application.Internal.Configuration;
+using RoomTrack.IAM.Infrastructure.Notifications;
+using RoomTrack.IAM.Infrastructure.Passwords;
+using RoomTrack.IAM.Interfaces.REST.ExceptionHandling;
+using RoomTrack.Shared.Infrastructure.Interfaces.ASP.ExceptionHandling;
+using RoomTrack.IAM.Infrastructure.Tokens.Opaque;
+using RoomTrack.IAM.Application.Internal.CommandServices;
+using RoomTrack.IAM.Application.Internal.QueryServices;
+using RoomTrack.IAM.Application.OutboundServices;
+using RoomTrack.IAM.Domain.Repositories;
+using RoomTrack.IAM.Domain.Services;
+using RoomTrack.IAM.Infrastructure.Authentication;
+using RoomTrack.IAM.Infrastructure.Hashing.BCrypt.Services;
+using RoomTrack.IAM.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.IAM.Infrastructure.Seed;
+using RoomTrack.IAM.Infrastructure.Tokens.JWT.Configuration;
+using RoomTrack.IAM.Infrastructure.Tokens.JWT.Services;
+using RoomTrack.IAM.Interfaces.ACL;
+using RoomTrack.IAM.Interfaces.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
-namespace BackendAwRoomTrack.API.IAM.Infrastructure.Interfaces.ASP.Configuration.Extensions;
+namespace RoomTrack.IAM.Infrastructure.Interfaces.ASP.Configuration.Extensions;
 
 public static class WebApplicationBuilderExtensions
 {

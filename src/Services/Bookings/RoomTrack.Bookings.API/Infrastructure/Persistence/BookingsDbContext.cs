@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.Bookings.Infrastructure.Persistence.EFC.Configuration.Extensions;
-using BackendAwRoomTrack.API.Payments.Infrastructure.Persistence.EFC.Configuration.Extensions;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
+using RoomTrack.Bookings.Infrastructure.Persistence.EFC.Configuration.Extensions;
+using RoomTrack.Payments.Infrastructure.Persistence.EFC.Configuration.Extensions;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration;
 using Microsoft.EntityFrameworkCore;
 using RoomTrack.Bookings.API.Infrastructure.Concurrency;
 

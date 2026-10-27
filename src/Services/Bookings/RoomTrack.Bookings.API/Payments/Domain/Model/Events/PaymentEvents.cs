@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Payments.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Events;
+using RoomTrack.Payments.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Domain.Model.Events;
 
-namespace BackendAwRoomTrack.API.Payments.Domain.Model.Events;
+namespace RoomTrack.Payments.Domain.Model.Events;
 
 /// <summary>The payment of a booking was registered and approved.</summary>
 public sealed record PaymentCompletedEvent(int PaymentId, int BookingId, decimal Amount, PaymentMethod Method, DateTimeOffset OccurredOn)

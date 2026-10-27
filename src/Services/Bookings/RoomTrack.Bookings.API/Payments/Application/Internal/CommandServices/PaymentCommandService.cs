@@ -1,14 +1,14 @@
-using BackendAwRoomTrack.API.Payments.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Bookings.Interfaces.ACL;
-using BackendAwRoomTrack.API.Payments.Application.OutboundServices;
-using BackendAwRoomTrack.API.Payments.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Payments.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Payments.Domain.Repositories;
-using BackendAwRoomTrack.API.Payments.Domain.Services;
-using BackendAwRoomTrack.API.Shared.Domain.Repositories;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Payments.Domain.Model.Exceptions;
+using RoomTrack.Bookings.Interfaces.ACL;
+using RoomTrack.Payments.Application.OutboundServices;
+using RoomTrack.Payments.Domain.Model.Aggregates;
+using RoomTrack.Payments.Domain.Model.Commands;
+using RoomTrack.Payments.Domain.Repositories;
+using RoomTrack.Payments.Domain.Services;
+using RoomTrack.Shared.Domain.Repositories;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.Payments.Application.Internal.CommandServices;
+namespace RoomTrack.Payments.Application.Internal.CommandServices;
 
 /// <summary>
 ///     Registers booking payments through the <see cref="IPaymentGateway"/> port and confirms the booking (D1).

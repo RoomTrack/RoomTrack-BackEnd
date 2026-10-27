@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.IAM.Interfaces.ACL;
+using RoomTrack.Accommodations.Domain.Model.ValueObjects;
+using RoomTrack.IAM.Interfaces.ACL;
 
-namespace BackendAwRoomTrack.API.Accommodations.Application.OutboundServices;
+namespace RoomTrack.Accommodations.Application.OutboundServices;
 
 /// <summary>The room and hotel an e-mail is about.</summary>
 public sealed record RoomNotice(int RoomId, string RoomNumber, int HotelId, string HotelName);

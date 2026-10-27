@@ -1,14 +1,14 @@
 using System.Globalization;
-using BackendAwRoomTrack.API.Accommodations.Interfaces.ACL;
-using BackendAwRoomTrack.API.Bookings.Application.OutboundServices;
-using BackendAwRoomTrack.API.Bookings.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.IAM.Interfaces.ACL;
-using BackendAwRoomTrack.API.Shared.Application.OutboundServices;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Configuration;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Email.Templates;
+using RoomTrack.Accommodations.Interfaces.ACL;
+using RoomTrack.Bookings.Application.OutboundServices;
+using RoomTrack.Bookings.Domain.Model.Aggregates;
+using RoomTrack.IAM.Interfaces.ACL;
+using RoomTrack.Shared.Application.OutboundServices;
+using RoomTrack.Shared.Infrastructure.Configuration;
+using RoomTrack.Shared.Infrastructure.Email.Templates;
 using Microsoft.Extensions.Options;
 
-namespace BackendAwRoomTrack.API.Bookings.Infrastructure.Notifications;
+namespace RoomTrack.Bookings.Infrastructure.Notifications;
 
 /// <summary>Check-in e-mails to the hotel staff (neutral Spanish).</summary>
 public class CheckInEmailNotificationService(IEmailSender emailSender, IOptions<ApplicationUrlsSettings> urls)

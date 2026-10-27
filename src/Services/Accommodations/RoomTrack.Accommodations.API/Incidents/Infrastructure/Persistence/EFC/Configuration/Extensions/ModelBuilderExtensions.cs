@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Entities;
+using RoomTrack.Incidents.Domain.Model.Aggregates;
+using RoomTrack.Incidents.Domain.Model.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackendAwRoomTrack.API.Incidents.Infrastructure.Persistence.EFC.Configuration.Extensions;
+namespace RoomTrack.Incidents.Infrastructure.Persistence.EFC.Configuration.Extensions;
 
 public static class ModelBuilderExtensions
 {
@@ -21,6 +21,7 @@ public static class ModelBuilderExtensions
         builder.Entity<Incident>().Property(i => i.Status).HasConversion<string>().HasMaxLength(20).IsRequired();
         builder.Entity<Incident>().Property(i => i.ReportedByEmail).HasMaxLength(Incident.MaxEmailLength);
         builder.Entity<Incident>().Property(i => i.ResolutionNotes).HasMaxLength(Incident.ResolutionNotesMaxLength);
+        builder.Entity<Incident>().Property(i => i.Version).IsConcurrencyToken();
         builder.Entity<Incident>().Ignore(i => i.IsOpen);
         builder.Entity<Incident>().Ignore(i => i.DomainEvents);
         builder.Entity<Incident>().HasIndex(i => new { i.HotelId, i.Status });

@@ -1,7 +1,7 @@
-using BackendAwRoomTrack.API.IAM.Interfaces.ACL;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.ValueObjects;
+using RoomTrack.IAM.Interfaces.ACL;
+using RoomTrack.Incidents.Domain.Model.ValueObjects;
 
-namespace BackendAwRoomTrack.API.Incidents.Application.OutboundServices;
+namespace RoomTrack.Incidents.Application.OutboundServices;
 
 /// <summary>The incident (and its room) an e-mail is about.</summary>
 public sealed record IncidentNotice(int IncidentId, string Title, IncidentPriority Priority, IncidentStatus Status,

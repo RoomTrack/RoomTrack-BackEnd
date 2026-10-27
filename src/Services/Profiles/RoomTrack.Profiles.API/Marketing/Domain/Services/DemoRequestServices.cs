@@ -1,8 +1,8 @@
-using BackendAwRoomTrack.API.Marketing.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Marketing.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Marketing.Domain.Model.Queries;
+using RoomTrack.Marketing.Domain.Model.Aggregates;
+using RoomTrack.Marketing.Domain.Model.Commands;
+using RoomTrack.Marketing.Domain.Model.Queries;
 
-namespace BackendAwRoomTrack.API.Marketing.Domain.Services;
+namespace RoomTrack.Marketing.Domain.Services;
 
 public interface IDemoRequestCommandService
 {

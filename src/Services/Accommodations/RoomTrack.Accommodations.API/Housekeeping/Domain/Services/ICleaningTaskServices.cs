@@ -1,12 +1,12 @@
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.Queries;
+using RoomTrack.Housekeeping.Domain.Model.Aggregates;
+using RoomTrack.Housekeeping.Domain.Model.Commands;
+using RoomTrack.Housekeeping.Domain.Model.Queries;
 
-namespace BackendAwRoomTrack.API.Housekeeping.Domain.Services;
+namespace RoomTrack.Housekeeping.Domain.Services;
 
 public interface ICleaningTaskCommandService
 {
-    /// <exception cref="BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions.EntityNotFoundException">The room does not exist.</exception>
+    /// <exception cref="RoomTrack.Shared.Domain.Model.Exceptions.EntityNotFoundException">The room does not exist.</exception>
     Task<CleaningTask> Handle(CreateCleaningTaskCommand command);
 
     /// <returns>The task, or null when it does not exist.</returns>

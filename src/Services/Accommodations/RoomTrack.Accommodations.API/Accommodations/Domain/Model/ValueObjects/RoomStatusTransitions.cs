@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Accommodations.Domain.Model.ValueObjects;
+namespace RoomTrack.Accommodations.Domain.Model.ValueObjects;
 
 /// <summary>
 ///     Valid room status transitions:

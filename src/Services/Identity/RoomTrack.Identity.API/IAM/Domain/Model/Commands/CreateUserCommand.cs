@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.IAM.Domain.Model.Commands;
+namespace RoomTrack.IAM.Domain.Model.Commands;
 
 /// <summary>
 ///     Command to create a user from the administration (staff users with a role).

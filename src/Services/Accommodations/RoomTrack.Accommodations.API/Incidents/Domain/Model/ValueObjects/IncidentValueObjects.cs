@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Incidents.Domain.Model.ValueObjects;
+namespace RoomTrack.Incidents.Domain.Model.ValueObjects;
 
 /// <summary>How urgent an incident is. The maintenance list is ordered by it (Critical first).</summary>
 public enum IncidentPriority

@@ -2,16 +2,16 @@ using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using BackendAwRoomTrack.API.Profiles.Application.Internal.OutboundServices;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Persistence.EFC.Configuration;
-using BackendAwRoomTrack.Domain.Profiles.Domain.Model.ValueObjects;
+using RoomTrack.Profiles.Application.Internal.OutboundServices;
+using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration;
+using RoomTrack.Profiles.Domain.Model.ValueObjects;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using MySqlConnector;
 using Xunit;
 using RoomTrack.Profiles.API.Infrastructure.Persistence;
 
-namespace BackendAwRoomTrack.API.Tests.Profiles.Infrastructure.Persistence;
+namespace RoomTrack.Tests.Profiles.Infrastructure.Persistence;
 
 /// <summary>
 /// Real integration tests for concurrent EmployeeCode generation against a live MySQL/MariaDB database.

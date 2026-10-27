@@ -1,10 +1,10 @@
 using System.ComponentModel.DataAnnotations;
-using BackendAwRoomTrack.API.Housekeeping.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.ValueObjects;
-using BackendAwRoomTrack.API.Shared.Infrastructure.Interfaces.ASP.Validation;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Housekeeping.Domain.Model.ValueObjects;
+using RoomTrack.Incidents.Domain.Model.ValueObjects;
+using RoomTrack.Shared.Infrastructure.Interfaces.ASP.Validation;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 
-namespace BackendAwRoomTrack.API.Housekeeping.Interfaces.REST.Resources;
+namespace RoomTrack.Housekeeping.Interfaces.REST.Resources;
 
 /// <summary>A new cleaning task of a room.</summary>
 public record CreateCleaningTaskResource : IValidatableObject

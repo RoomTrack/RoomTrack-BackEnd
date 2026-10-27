@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.Profiles.Interfaces.ACL;
+namespace RoomTrack.Profiles.Interfaces.ACL;
 
 public interface IGuestProfilesContextFacade
 {

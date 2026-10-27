@@ -1,19 +1,19 @@
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Accommodations.Domain.Model.Queries;
-using BackendAwRoomTrack.API.Accommodations.Domain.Services;
-using BackendAwRoomTrack.API.IAM.Domain.Model.Constants;
-using BackendAwRoomTrack.API.IAM.Interfaces.ACL;
-using BackendAwRoomTrack.API.Incidents.Application.Internal.Configuration;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Aggregates;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Commands;
-using BackendAwRoomTrack.API.Incidents.Domain.Model.Exceptions;
-using BackendAwRoomTrack.API.Incidents.Domain.Repositories;
-using BackendAwRoomTrack.API.Incidents.Domain.Services;
-using BackendAwRoomTrack.API.Shared.Domain.Repositories;
-using BackendAwRoomTrack.Domain.Shared.Domain.Model.Exceptions;
+using RoomTrack.Accommodations.Domain.Model.Commands;
+using RoomTrack.Accommodations.Domain.Model.Queries;
+using RoomTrack.Accommodations.Domain.Services;
+using RoomTrack.IAM.Domain.Model.Constants;
+using RoomTrack.IAM.Interfaces.ACL;
+using RoomTrack.Incidents.Application.Internal.Configuration;
+using RoomTrack.Incidents.Domain.Model.Aggregates;
+using RoomTrack.Incidents.Domain.Model.Commands;
+using RoomTrack.Incidents.Domain.Model.Exceptions;
+using RoomTrack.Incidents.Domain.Repositories;
+using RoomTrack.Incidents.Domain.Services;
+using RoomTrack.Shared.Domain.Repositories;
+using RoomTrack.Shared.Domain.Model.Exceptions;
 using Microsoft.Extensions.Options;
 
-namespace BackendAwRoomTrack.API.Incidents.Application.Internal.CommandServices;
+namespace RoomTrack.Incidents.Application.Internal.CommandServices;
 
 /// <summary>
 ///     Use cases of the incidents. The room of a blocking incident is held and released through the Rooms context

@@ -1,4 +1,4 @@
-namespace BackendAwRoomTrack.API.IAM.Domain.Model.Exceptions;
+namespace RoomTrack.IAM.Domain.Model.Exceptions;
 
 /// <summary>
 ///     Stable codes of the 401/403 answers written by the JWT bearer events of every service (the rest of the IAM codes

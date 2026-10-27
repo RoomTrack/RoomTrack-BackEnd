@@ -1,6 +1,6 @@
-using BackendAwRoomTrack.API.Shared.Application.Exceptions;
+using RoomTrack.Shared.Application.Exceptions;
 
-namespace BackendAwRoomTrack.API.Media.Application.Exceptions;
+namespace RoomTrack.Media.Application.Exceptions;
 
 /// <summary>Stable error codes of the Media context (uploads of hotel images).</summary>
 public static class MediaErrorCodes
