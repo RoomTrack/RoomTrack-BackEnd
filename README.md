@@ -19,29 +19,43 @@ la primera carga tarda ~30–60 s).
         ┌──────────────┬────────────┼─────────────┬───────────────┐
         ▼              ▼            ▼             ▼               ▼
    identity      accommodations  bookings      profiles       analytics
-   IAM + Audit   hoteles, hab.,  reservas,     huéspedes,     métricas
-                 media, IoT      check-in,     staff, demo    (read model)
-                                 pagos         requests
+   IAM, Audit,   hoteles, hab.,  reservas,     huéspedes,     métricas
+   disp. push    media, IoT,     check-in/out, staff, demo    (read model)
+                 limpieza,       pagos         requests
+                 incidencias,
+                 solicitudes,
+                 mensajería
         │              │            │             │               ▲
         └──── HTTP interno (/internal/v1, X-Internal-Key) ────────┘│
         │              │            │             │               │
         └──────────────┴──── RabbitMQ (MassTransit) ───────────────┘
-                 eventos de integración + SendEmail
+            eventos de integración, SendEmail, notificaciones push
                                     │
                          ┌──────────▼───────────┐
-                         │ notifications-worker │ → Brevo / SMTP / log
-                         └──────────────────────┘
+                         │ notifications-worker │ → correo: Brevo / SMTP / log
+                         └──────────────────────┘ → push: Firebase Cloud Messaging / log
 ```
 
 | Servicio | Bounded contexts | Base de datos | Rutas públicas (`/api/v1/...`) |
 |---|---|---|---|
-| `identity-service` | IAM, Audit | `roomtrack_identity` | `authentication`, `users`, `audit-logs` |
-| `accommodations-service` | Accommodations, Media, emulador IoT | `roomtrack_accommodations` | `hotels`, `rooms`, `room-types`, `accommodations/options`, `media`, `io-t-emulator` |
-| `bookings-service` | Bookings, Payments | `roomtrack_bookings` | `bookings`, `payments`, `rooms/available` |
+| `identity-service` | IAM, Audit, Notifications (dispositivos y preferencias de push) | `roomtrack_identity` | `authentication`, `users` (incluye `users/me/push-devices` y `users/me/notification-preferences`), `audit-logs` |
+| `accommodations-service` | Accommodations, Media, emulador IoT, Housekeeping, Incidents, GuestRequests, Messaging | `roomtrack_accommodations` | `hotels`, `rooms`, `room-types`, `accommodations/options`, `media`, `io-t-emulator`, `cleaning-tasks`, `incidents`, `guest-requests`, `conversations` |
+| `bookings-service` | Bookings (con check-in y check-out), Payments | `roomtrack_bookings` | `bookings`, `payments`, `rooms/available` |
 | `profiles-service` | Profiles, Marketing | `roomtrack_profiles` | `guests`, `staff`, `demo-requests` |
 | `analytics-service` | Analytics | `roomtrack_analytics` | `analytics` |
-| `notifications-worker` | entrega de correos | — (solo RabbitMQ) | — |
+| `notifications-worker` | entrega de correos y notificaciones push | — (solo RabbitMQ) | — |
 | `gateway` | — | — | todas las anteriores + `/docs` y `/health` |
+
+Lo que cubre cada contexto nuevo de `accommodations-service` (las historias de usuario se citan en el código):
+
+| Contexto | Historias | Qué hace |
+|---|---|---|
+| Housekeeping | US-05, US-06 | Tareas de limpieza: se crean al pasar una habitación a `Cleaning`, se asignan (a mano o al personal con menos carga) y se siguen hasta terminar. |
+| Incidents | US-08, US-09 | Incidencias de mantenimiento: pueden bloquear la habitación hasta resolverse; las críticas no atendidas a tiempo se escalan. |
+| GuestRequests | US-11, US-19 | Solicitudes del huésped durante su estadía: recepción las deriva al área que las atiende y el huésped ve el estado y el tiempo estimado. |
+| Messaging | US-12, US-20 | Conversaciones dentro de la plataforma: huésped con recepción, canal de cada área y comentarios sobre una tarea. |
+
+Las notificaciones push (US-22) avisan de estos cambios a quien corresponde: el personal asignado, el área o el huésped.
 
 ### Estructura del repositorio
 
@@ -62,6 +76,10 @@ Dentro de cada servicio el código mantiene las capas de DDD del monolito (`Doma
 `Infrastructure`, `Interfaces`) en el namespace de su bounded context (`RoomTrack.<Contexto>...`, p. ej.
 `RoomTrack.Housekeeping.Domain.Model.Aggregates`). Lo propio de cada servicio está en el namespace
 `RoomTrack.<Servicio>.API` (su `DbContext`, su API interna y su `Program.cs`).
+
+Las tareas de limpieza, las incidencias y las solicitudes de huéspedes llevan una **versión de concurrencia**
+(`IHasConcurrencyVersion`): si dos personas cambian la misma a la vez, la segunda recibe **409** en lugar de pisar
+el cambio de la primera, y el cliente debe volver a cargarla.
 
 ### Cómo se comunican los servicios
 
@@ -95,6 +113,17 @@ los duplicados.
 | `RoomRegisteredIntegrationEvent`, `RoomRemovedIntegrationEvent` | accommodations | analytics | contar habitaciones por hotel |
 | `BookingStateChangedIntegrationEvent` | bookings | analytics | reservas y cancelaciones del mes, ocupación |
 | `PaymentStateChangedIntegrationEvent` | bookings | analytics | ingresos del mes |
+| `SendPushNotification` | accommodations (cualquier servicio puede, con `IPushSender`) | identity | notificar a unos usuarios |
+| `DeliverPushNotification` | identity | notifications-worker | entregar a los dispositivos (FCM/log) |
+| `PushDeviceTokensRejected` | notifications-worker | identity | olvidar los dispositivos que FCM rechazó |
+
+**Notificaciones push (US-22).** Un servicio solo sabe a qué *usuarios* avisar; los dispositivos viven en Identity.
+Por eso la entrega tiene tres pasos: el servicio publica `SendPushNotification` con los ids de usuario y una
+categoría (`PushCategories`: tarea asignada, cambio de prioridad, incidencia, escalamiento, solicitud de huésped,
+mensaje); Identity descarta a quienes desactivaron esa categoría, busca sus dispositivos y publica
+`DeliverPushNotification` con los tokens; el worker los entrega y, si FCM dice que un token ya no sirve (app
+desinstalada o token vencido), publica `PushDeviceTokensRejected` para que Identity lo olvide. La app registra su
+token en cada inicio de sesión con `POST /api/v1/users/me/push-devices`.
 
 Los eventos de integración llevan el **estado actual** de la entidad (*event-carried state transfer*). Así
 Analytics mantiene su propio *read model* (`room_facts`, `booking_facts`, `payment_facts`) sin consultar las tablas
@@ -171,8 +200,12 @@ dotnet ef migrations add <Nombre> --project src/Services/Bookings/RoomTrack.Book
 dotnet test RoomTrack.sln
 ```
 
-Hay un proyecto de tests por servicio. Los tests que **ya no compilaban en `main`** antes de la migración se
-conservan, pero están excluidos con `<Compile Remove>` en su `.csproj`, con un comentario que lo explica.
+Hay un proyecto de tests por servicio y otro para el worker de notificaciones. La mayoría corre contra una base de
+datos en memoria. Los tests de integración que necesitan bloqueos de fila y conexiones concurrentes usan un MySQL
+real, que se indica en `TEST_MYSQL_CONNECTION`; si no hay uno disponible, esos tests se omiten.
+
+**CI** (`.github/workflows/ci.yml`): en cada push y pull request a `develop` y `main` compila la solución y corre
+todos los tests, con un MySQL 8 como servicio del job. Los resultados quedan como artefacto `test-results` del run.
 
 ## Configuración y secretos
 
@@ -200,6 +233,18 @@ Valores compartidos por todos los servicios (deben ser iguales en todos):
 Los rechazos permanentes (destinatario o remitente inválido) no se reintentan. En el log queda una línea por correo
 con el destinatario enmascarado; nunca la API key ni el cuerpo.
 
+**Notificaciones push** (solo en `notifications-worker`). `Push__Transport` elige el transporte:
+
+- `Fcm` (producción): Firebase Cloud Messaging HTTP v1. Requiere `Push__Fcm__ServiceAccountJson` (secreto): la clave
+  JSON de una cuenta de servicio del proyecto de Firebase con el rol *Firebase Cloud Messaging API Admin*, completa y
+  en una sola línea. `Push__Fcm__ProjectId` es opcional (por defecto, el `project_id` de la clave). Si la clave no
+  es válida, el worker no arranca.
+- `Log` (por defecto): la notificación se escribe en el log. Es lo que usa Render mientras no haya un proyecto de
+  Firebase configurado.
+
+Los errores temporales de FCM (429, 5xx, timeouts) se reintentan; si FCM rechaza las credenciales (401/403), el
+mensaje falla y el error queda en el log.
+
 **Imágenes de hoteles** (`accommodations-service`). Se suben directo del navegador a Cloudinary con una firma de
 corta vida (`POST /api/v1/media/hotel-images/signature`, solo administradores). Define `Cloudinary__CloudName`,
 `Cloudinary__ApiKey` y `Cloudinary__ApiSecret` (obligatorias en producción).
@@ -207,8 +252,8 @@ corta vida (`POST /api/v1/media/hotel-images/signature`, solo administradores). 
 **Medios de pago** de las reservas (Yape, Plin, cuenta bancaria): no son variables de entorno; cada administrador
 los registra para su hotel desde la aplicación (`PUT /api/v1/hotels/{id}/payment-settings`).
 
-**Tareas programadas.** `POST /api/v1/bookings/expire-pending`, `/rooms/maintenance-alerts` y
-`/demo-requests/follow-ups` se invocan a través del gateway con la cabecera `X-Cron-Key`
+**Tareas programadas.** `POST /api/v1/bookings/expire-pending`, `/rooms/maintenance-alerts`,
+`/incidents/escalations` y `/demo-requests/follow-ups` se invocan a través del gateway con la cabecera `X-Cron-Key`
 (`.github/workflows/scheduler.yml`).
 
 **IP del cliente** (rate limiting y auditoría). El gateway agrega `X-Forwarded-For` y cada servicio lo procesa
