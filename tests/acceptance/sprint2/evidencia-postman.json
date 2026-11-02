@@ -1,0 +1,308 @@
+{
+  "date_lima": "2026-11-01",
+  "execution": "Solicitudes individuales enviadas desde Postman Desktop de Windows, inspección visual de cada respuesta y badge Test Results; no runner cloud ni mocks.",
+  "backend_sha": "db77552b664a47634ccbc89dc54fb5617694c466",
+  "target": "http://localhost:18080",
+  "requests": 16,
+  "assertions_passed": 23,
+  "assertions_failed": 0,
+  "final_execution_order": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    10,
+    11,
+    9,
+    12,
+    13,
+    14,
+    15,
+    16
+  ],
+  "notes": [
+    "Las primeras capturas vacías de 09/12 se sustituyeron tras ejecutar sus solicitudes; no se presentan como evidencia.",
+    "La consulta 09 se ejecutó después del checkout y muestra bookingStatus Completed; el check-in original quedó registrado previamente en 08.",
+    "La captura 14 se repitió mostrando el formulario y la respuesta 201 ya obtenida, sin repetir el check-in.",
+    "Datos ficticios; reservas nuevas 3/4 preparadas por API fuera de Postman; ambas terminaron Completed.",
+    "Aprobaciones explícitas separadas para colección y tokens de prueba. Tokens fuera de capturas y paquete."
+  ],
+  "results": [
+    {
+      "id": 1,
+      "name": "01 Precondicion - reserva pendiente",
+      "method": "GET",
+      "url": "http://localhost:18080/api/v1/bookings/3",
+      "expected_http": 200,
+      "observed_http": 200,
+      "assertions_passed": 2,
+      "assertions_failed": 0,
+      "screenshot": "capturas/01-reserva-pendiente.png",
+      "sha256": "13242c486c669c2a1b2b288f203cbc157b70a64749fca4e94f33284b71667b6a",
+      "dimensions": [
+        1938,
+        1098
+      ],
+      "captured_at_lima": "2026-11-01T21:21:26.032730-05:00"
+    },
+    {
+      "id": 2,
+      "name": "02 US14 - rechazar check-out sin check-in",
+      "method": "POST",
+      "url": "http://localhost:18080/api/v1/bookings/3/check-out",
+      "expected_http": 409,
+      "observed_http": 409,
+      "assertions_passed": 1,
+      "assertions_failed": 0,
+      "screenshot": "capturas/02-checkout-sin-checkin.png",
+      "sha256": "61f0452fe981792731b0fe4814e30055787853b0ed825642bbcc7f412d56f06b",
+      "dimensions": [
+        1938,
+        1098
+      ],
+      "captured_at_lima": "2026-11-01T21:21:52.229907-05:00"
+    },
+    {
+      "id": 3,
+      "name": "03 US15 - registrar pago manual Yape",
+      "method": "POST",
+      "url": "http://localhost:18080/api/v1/bookings/3/payments",
+      "expected_http": 201,
+      "observed_http": 201,
+      "assertions_passed": 2,
+      "assertions_failed": 0,
+      "screenshot": "capturas/03-pago-manual.png",
+      "sha256": "89a3e9dc681f8dd4aae1de2dfea2363118ebefc0f286dac157177c0d23dce75a",
+      "dimensions": [
+        1938,
+        1098
+      ],
+      "captured_at_lima": "2026-11-01T21:23:26.984179-05:00"
+    },
+    {
+      "id": 4,
+      "name": "04 US15 - rechazar segundo pago",
+      "method": "POST",
+      "url": "http://localhost:18080/api/v1/bookings/3/payments",
+      "expected_http": 409,
+      "observed_http": 409,
+      "assertions_passed": 1,
+      "assertions_failed": 0,
+      "screenshot": "capturas/04-pago-duplicado.png",
+      "sha256": "01cf1925d46cd00474e3864ddd595aa897b398a638f2cb159159d36988710285",
+      "dimensions": [
+        1938,
+        1098
+      ],
+      "captured_at_lima": "2026-11-01T21:23:48.200819-05:00"
+    },
+    {
+      "id": 5,
+      "name": "05 US15 US17 - consultar registro de pago, no factura fiscal",
+      "method": "GET",
+      "url": "http://localhost:18080/api/v1/payments/booking/3",
+      "expected_http": 200,
+      "observed_http": 200,
+      "assertions_passed": 2,
+      "assertions_failed": 0,
+      "screenshot": "capturas/05-consulta-pago.png",
+      "sha256": "68b8860b1159b43792d75b4a5d0bf83babf7d417990d8c685084c685111bf2a0",
+      "dimensions": [
+        1938,
+        1098
+      ],
+      "captured_at_lima": "2026-11-01T21:23:51.241109-05:00"
+    },
+    {
+      "id": 6,
+      "name": "06 US15 - verificar reserva Confirmed",
+      "method": "GET",
+      "url": "http://localhost:18080/api/v1/bookings/3",
+      "expected_http": 200,
+      "observed_http": 200,
+      "assertions_passed": 2,
+      "assertions_failed": 0,
+      "screenshot": "capturas/06-reserva-confirmada.png",
+      "sha256": "a703fe17e63ae5ce665566574a15b7bc876ca6dca7041e4bf91942755416377e",
+      "dimensions": [
+        1938,
+        1098
+      ],
+      "captured_at_lima": "2026-11-01T21:23:54.269397-05:00"
+    },
+    {
+      "id": 7,
+      "name": "07 US13 - solicitar asistencia",
+      "method": "POST",
+      "url": "http://localhost:18080/api/v1/bookings/3/check-in/assistance",
+      "expected_http": 202,
+      "observed_http": 202,
+      "assertions_passed": 1,
+      "assertions_failed": 0,
+      "screenshot": "capturas/07-asistencia-checkin.png",
+      "sha256": "60c4d4ae3fa74d3cdb1e1a5bd9e3be7f4902d7f286b55a08f6a30fb6f12f5919",
+      "dimensions": [
+        1938,
+        1098
+      ],
+      "captured_at_lima": "2026-11-01T21:23:57.277682-05:00"
+    },
+    {
+      "id": 8,
+      "name": "08 US13 - check-in digital con documento ficticio",
+      "method": "POST",
+      "url": "http://localhost:18080/api/v1/bookings/3/check-in",
+      "expected_http": 201,
+      "observed_http": 201,
+      "assertions_passed": 1,
+      "assertions_failed": 0,
+      "screenshot": "capturas/08-checkin-digital.png",
+      "sha256": "d072339e8dde26f058f940857040594aefbc7e147e015fe484ee33923a19ea2e",
+      "dimensions": [
+        1938,
+        1098
+      ],
+      "captured_at_lima": "2026-11-01T21:24:18.658643-05:00"
+    },
+    {
+      "id": 9,
+      "name": "09 US13 - consultar check-in registrado",
+      "method": "GET",
+      "url": "http://localhost:18080/api/v1/bookings/3/check-in",
+      "expected_http": 200,
+      "observed_http": 200,
+      "assertions_passed": 1,
+      "assertions_failed": 0,
+      "screenshot": "capturas/09-consulta-checkin.png",
+      "sha256": "c1855d1e091d7b3d6293b61befe97c199c22bcb18019f70dfb2984b9140d9596",
+      "dimensions": [
+        1938,
+        1098
+      ],
+      "captured_at_lima": "2026-11-01T21:25:19.107809-05:00"
+    },
+    {
+      "id": 10,
+      "name": "10 US14 US16 - check-out del huesped",
+      "method": "POST",
+      "url": "http://localhost:18080/api/v1/bookings/3/check-out",
+      "expected_http": 200,
+      "observed_http": 200,
+      "assertions_passed": 2,
+      "assertions_failed": 0,
+      "screenshot": "capturas/10-checkout-huesped.png",
+      "sha256": "e6bdc8b780ce55fc193aa9aa98edcc8ce8cd2e0e702d40a75a547f37b12f4745",
+      "dimensions": [
+        1938,
+        1098
+      ],
+      "captured_at_lima": "2026-11-01T21:24:41.782463-05:00"
+    },
+    {
+      "id": 11,
+      "name": "11 US14 - verificar habitacion Cleaning",
+      "method": "GET",
+      "url": "http://localhost:18080/api/v1/rooms/1",
+      "expected_http": 200,
+      "observed_http": 200,
+      "assertions_passed": 2,
+      "assertions_failed": 0,
+      "screenshot": "capturas/11-habitacion-cleaning.png",
+      "sha256": "a267c48ea31cf4666f3a6f68c26e6c078dae992b6813532ea3e08649102fd8ee",
+      "dimensions": [
+        1938,
+        1098
+      ],
+      "captured_at_lima": "2026-11-01T21:24:44.346728-05:00"
+    },
+    {
+      "id": 12,
+      "name": "12 US14 - rechazar check-out repetido",
+      "method": "POST",
+      "url": "http://localhost:18080/api/v1/bookings/3/check-out",
+      "expected_http": 409,
+      "observed_http": 409,
+      "assertions_passed": 1,
+      "assertions_failed": 0,
+      "screenshot": "capturas/12-checkout-repetido.png",
+      "sha256": "7f8f7b9f47f4782f2e066b29897558f9e97a1bf3f73c34dc4e53073d0c6a6a06",
+      "dimensions": [
+        1938,
+        1098
+      ],
+      "captured_at_lima": "2026-11-01T21:25:23.416221-05:00"
+    },
+    {
+      "id": 13,
+      "name": "13 US27 - precondicion pago segunda reserva",
+      "method": "POST",
+      "url": "http://localhost:18080/api/v1/bookings/4/payments",
+      "expected_http": 201,
+      "observed_http": 201,
+      "assertions_passed": 1,
+      "assertions_failed": 0,
+      "screenshot": "capturas/13-pago-reserva-asistida.png",
+      "sha256": "8889996add00da1b8e4d3bb437907707a0df94c10a7874734221f6ef97f2a894",
+      "dimensions": [
+        1938,
+        1098
+      ],
+      "captured_at_lima": "2026-11-01T21:25:27.760638-05:00"
+    },
+    {
+      "id": 14,
+      "name": "14 US27 - check-in asistido por recepcion",
+      "method": "POST",
+      "url": "http://localhost:18080/api/v1/bookings/4/check-in",
+      "expected_http": 201,
+      "observed_http": 201,
+      "assertions_passed": 1,
+      "assertions_failed": 0,
+      "screenshot": "capturas/14-checkin-asistido.png",
+      "sha256": "1cf47ae68de12990ab7e1a041bb837110b1246f2ec1748e4e787336d5a340d57",
+      "dimensions": [
+        1938,
+        1098
+      ],
+      "captured_at_lima": "2026-11-01T21:26:46.132676-05:00"
+    },
+    {
+      "id": 15,
+      "name": "15 US27 - consultar check-in asistido",
+      "method": "GET",
+      "url": "http://localhost:18080/api/v1/bookings/4/check-in",
+      "expected_http": 200,
+      "observed_http": 200,
+      "assertions_passed": 1,
+      "assertions_failed": 0,
+      "screenshot": "capturas/15-consulta-checkin-asistido.png",
+      "sha256": "de53f194dc33885b35d1bc63a2b286f150ef76c508e3106c08b56581a441ecb2",
+      "dimensions": [
+        1938,
+        1098
+      ],
+      "captured_at_lima": "2026-11-01T21:26:06.244005-05:00"
+    },
+    {
+      "id": 16,
+      "name": "16 US27 - check-out asistido por recepcion",
+      "method": "POST",
+      "url": "http://localhost:18080/api/v1/bookings/4/check-out",
+      "expected_http": 200,
+      "observed_http": 200,
+      "assertions_passed": 2,
+      "assertions_failed": 0,
+      "screenshot": "capturas/16-checkout-asistido.png",
+      "sha256": "046de56c478f991bf8dcb3972a34fc73fc7f03238fb370a844468b91777d7901",
+      "dimensions": [
+        1938,
+        1098
+      ],
+      "captured_at_lima": "2026-11-01T21:26:10.516385-05:00"
+    }
+  ]
+}
