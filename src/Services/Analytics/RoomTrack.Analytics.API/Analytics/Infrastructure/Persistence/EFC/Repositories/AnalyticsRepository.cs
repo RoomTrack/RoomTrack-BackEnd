@@ -22,18 +22,19 @@ public class AnalyticsRepository(AppDbContext context) : IAnalyticsRepository
     {
         var now = DateTime.UtcNow;
         var startOfMonth = new DateTime(now.Year, now.Month, 1);
-        var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+        // Exclusive upper bound: the whole last day of the month counts (a payment at 18:00 on the 31st included).
+        var startOfNextMonth = startOfMonth.AddMonths(1);
 
         // 1. Revenue: completed payments of the month
         var payments = context.Set<PaymentFact>().AsNoTracking();
         if (hotelId is not null) payments = payments.Where(p => p.HotelId == hotelId);
         var totalRevenue = await payments
-            .Where(p => p.PaymentDate >= startOfMonth && p.PaymentDate <= endOfMonth && p.Status == Completed)
+            .Where(p => p.PaymentDate >= startOfMonth && p.PaymentDate < startOfNextMonth && p.Status == Completed)
             .SumAsync(p => p.Amount);
 
         // 2. Booking Stats
         var bookingsQuery = context.Set<BookingFact>().AsNoTracking()
-            .Where(b => b.CheckInDate >= startOfMonth && b.CheckInDate <= endOfMonth);
+            .Where(b => b.CheckInDate >= startOfMonth && b.CheckInDate < startOfNextMonth);
         if (hotelId is not null) bookingsQuery = bookingsQuery.Where(b => b.HotelId == hotelId);
 
         var totalBookings = await bookingsQuery.CountAsync();

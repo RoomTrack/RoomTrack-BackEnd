@@ -204,6 +204,20 @@ Hay un proyecto de tests por servicio y otro para el worker de notificaciones. L
 datos en memoria. Los tests de integración que necesitan bloqueos de fila y conexiones concurrentes usan un MySQL
 real, que se indica en `TEST_MYSQL_CONNECTION`; si no hay uno disponible, esos tests se omiten.
 
+**Pruebas de aceptación (BDD).** Los criterios de aceptación de las historias están escritos en Gherkin (español) en
+`tests/RoomTrack.<Servicio>.API.Tests/Features/**/*.feature` y se ejecutan con [Reqnroll](https://reqnroll.net) como
+tests de xUnit, dentro del mismo `dotnet test`:
+
+| Sprint | Historias | Proyecto |
+|---|---|---|
+| 1 | US-05, US-06 (limpieza), US-08, US-09 (incidencias) | `RoomTrack.Accommodations.API.Tests` |
+| 1 | Autenticación (bloqueo, segundo factor, contraseñas, sesiones) | `RoomTrack.Identity.API.Tests` |
+| 2 | US-13, US-14, US-15, US-16, US-17, US-27 (estancia, pagos, comprobantes) | `RoomTrack.Bookings.API.Tests` |
+
+Los escenarios cuya funcionalidad aún no existe en la API llevan `@ignore` y salen como *omitidos*, nunca como
+aprobados (detalle en `tests/RoomTrack.Bookings.API.Tests/Features/Sprint2/README.md`). Para correr solo los de una
+historia: `dotnet test --filter "Category=US05"`.
+
 **CI** (`.github/workflows/ci.yml`): en cada push y pull request a `develop` y `main` compila la solución y corre
 todos los tests, con un MySQL 8 como servicio del job. Los resultados quedan como artefacto `test-results` del run.
 

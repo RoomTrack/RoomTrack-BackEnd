@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Services\Analytics\RoomTrack.Analytics.API\RoomTrack.Analytics.API.csproj" />
+    </ItemGroup>
+
+</Project>
