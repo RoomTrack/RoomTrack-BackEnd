@@ -4,4 +4,9 @@
         <ProjectReference Include="..\..\src\Services\Accommodations\RoomTrack.Accommodations.API\RoomTrack.Accommodations.API.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <!-- Acceptance scenarios (Features/**/*.feature), executed by Reqnroll as xUnit tests -->
+        <PackageReference Include="Reqnroll.xUnit" />
+    </ItemGroup>
+
 </Project>
