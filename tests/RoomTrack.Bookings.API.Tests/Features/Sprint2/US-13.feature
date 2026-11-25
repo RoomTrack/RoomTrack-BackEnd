@@ -1,7 +1,7 @@
 # language: es
 @Sprint2 @US13
 Característica: US-13 — Check-in digital del huésped
-  Criterios de aceptación del informe (Avance 3, corte 01/11/2026).
+  Criterios de aceptación del informe (TF1, corte 25/11/2026).
   Los escenarios con @ignore aún no tienen implementación en la API (ver README.md): Reqnroll los reporta como
   omitidos, no como aprobados.
 

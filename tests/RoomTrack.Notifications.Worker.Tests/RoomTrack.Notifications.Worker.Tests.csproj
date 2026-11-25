@@ -4,4 +4,9 @@
         <ProjectReference Include="..\..\src\Services\Notifications\RoomTrack.Notifications.Worker\RoomTrack.Notifications.Worker.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <!-- Acceptance scenarios (Features/**/*.feature), executed by Reqnroll as xUnit tests -->
+        <PackageReference Include="Reqnroll.xUnit" />
+    </ItemGroup>
+
 </Project>

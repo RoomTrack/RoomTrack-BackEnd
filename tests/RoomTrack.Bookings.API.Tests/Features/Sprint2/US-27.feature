@@ -1,7 +1,7 @@
 # language: es
 @Sprint2 @US27
 Característica: US-27 — Check-in y check-out asistidos por recepción
-  Criterios de aceptación del informe (Avance 3, corte 01/11/2026).
+  Criterios de aceptación del informe (TF1, corte 25/11/2026).
   Los escenarios con @ignore aún no tienen implementación en la API (ver README.md): Reqnroll los reporta como
   omitidos, no como aprobados.
 
@@ -11,9 +11,8 @@ Característica: US-27 — Check-in y check-out asistidos por recepción
     Cuando registro sus datos y confirmo la reserva
     Entonces la habitación pasa a estado "ocupada"
 
-  @US27_E02 @pendiente_implementacion @ignore
+  @US27_E02
   Escenario: Check-out presencial con cobro
-    # Requiere el folio de cargos adicionales (US-16).
     Dado que un huésped hace check-out en recepción con cargos pendientes
     Cuando proceso su pago desde el mismo módulo
     Entonces su folio queda saldado y la habitación pasa a "pendiente de limpieza"
