@@ -21,6 +21,7 @@ public static class WebApplicationBuilderExtensions
     {
         builder.Services.AddScoped<ICleaningTaskRepository, CleaningTaskRepository>();
         builder.Services.AddScoped<IHotelHousekeepingSettingsRepository, HotelHousekeepingSettingsRepository>();
+        builder.Services.AddScoped<ICleaningChecklistTemplateRepository, CleaningChecklistTemplateRepository>();
         builder.Services.AddScoped<ICleaningTaskAssignmentStrategy, LeastWorkloadAssignmentStrategy>();
         builder.Services.AddScoped<ICleaningTaskCommandService, CleaningTaskCommandService>();
         builder.Services.AddScoped<ICleaningTaskQueryService, CleaningTaskQueryService>();

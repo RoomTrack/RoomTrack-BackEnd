@@ -17,6 +17,11 @@ public static class CleaningTaskErrorCodes
     public const string RoomAlreadyHasOpenTask = "cleaning_task.room_already_has_open_task";
     public const string NotesLength = "cleaning_task.notes_length";
     public const string CancellationReasonLength = "cleaning_task.cancellation_reason_length";
+    public const string ChecklistIncomplete = "cleaning_task.checklist_incomplete";
+    public const string ChecklistItemNotFound = "cleaning_task.checklist_item_not_found";
+    public const string ChecklistItemsCount = "cleaning_checklist.items_count";
+    public const string ChecklistItemLabel = "cleaning_checklist.item_label";
+    public const string ChecklistItemDuplicated = "cleaning_checklist.item_duplicated";
 }
 
 /// <summary>The task is not in a status that allows the operation.</summary>
@@ -54,3 +59,25 @@ public class NoHousekeeperAvailableException(int hotelId, int? currentAssigneeUs
         currentAssigneeUserId is { } current
             ? $"Hotel {hotelId} has no other active housekeeping staff member than user {current} to reassign the task to."
             : $"Hotel {hotelId} has no active housekeeping staff member to assign the task to.");
+
+/// <summary>
+///     US-07: a room is not marked ready while required steps of its checklist are pending. The pending steps are
+///     listed in <c>pendingItems</c>.
+/// </summary>
+public class CleaningChecklistIncompleteException : BusinessRuleViolationException
+{
+    public CleaningChecklistIncompleteException(int taskId, IReadOnlyList<string> pendingItems)
+        : base(CleaningTaskErrorCodes.ChecklistIncomplete,
+            $"Cleaning task {taskId} still has required checklist items pending: {string.Join("; ", pendingItems)}.")
+    {
+        PendingItems = pendingItems;
+        Parameters = new Dictionary<string, object?> { ["pendingItems"] = pendingItems };
+    }
+
+    public IReadOnlyList<string> PendingItems { get; }
+}
+
+/// <summary>The checklist of the task has no such item.</summary>
+public class CleaningChecklistItemNotFoundException(int taskId, long itemId)
+    : EntityNotFoundException(CleaningTaskErrorCodes.ChecklistItemNotFound,
+        $"Cleaning task {taskId} has no checklist item {itemId}.");

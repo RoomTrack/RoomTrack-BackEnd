@@ -1,3 +1,6 @@
+using RoomTrack.Housekeeping.Domain.Model.ValueObjects;
+using RoomTrack.Accommodations.Domain.Services;
+using RoomTrack.Accommodations.Domain.Model.Queries;
 using RoomTrack.Accommodations.Domain.Model.Events;
 using RoomTrack.Accommodations.Domain.Model.ValueObjects;
 using RoomTrack.Housekeeping.Domain.Model.Aggregates;
@@ -20,6 +23,8 @@ namespace RoomTrack.Housekeeping.Application.Internal.EventHandlers;
 public class RoomCleaningTaskHandler(
     ICleaningTaskRepository cleaningTaskRepository,
     IHotelHousekeepingSettingsRepository settingsRepository,
+    ICleaningChecklistTemplateRepository checklistTemplateRepository,
+    IRoomQueryService roomQueryService,
     ICleaningTaskAssignmentStrategy assignmentStrategy,
     TimeProvider timeProvider) : IDomainEventHandler<RoomStatusChangedEvent>
 {
@@ -44,7 +49,11 @@ public class RoomCleaningTaskHandler(
         if (await cleaningTaskRepository.FindOpenByRoomAsync(e.RoomId) is not null) return;
 
         var now = timeProvider.GetUtcNow();
-        var task = CleaningTask.CreateForRoomToClean(e.HotelId, e.RoomId, now);
+        var room = await roomQueryService.Handle(new GetRoomByIdQuery(e.RoomId));
+        IReadOnlyList<ChecklistItemDefinition> checklist = room is null
+            ? []
+            : await checklistTemplateRepository.ResolveForRoomTypeAsync(e.HotelId, room.RoomTypeId);
+        var task = CleaningTask.CreateForRoomToClean(e.HotelId, e.RoomId, now, checklist);
         if ((await settingsRepository.FindByHotelIdAsync(e.HotelId))?.AutoAssign == true
             && await assignmentStrategy.SelectAssigneeAsync(e.HotelId) is { } assigneeUserId)
             task.AssignAutomatically(assigneeUserId, null, now);

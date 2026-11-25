@@ -154,10 +154,76 @@ public record CleaningTaskHistoryEntryResource(string Action, string Status, str
 /// <param name="CancellationReason">Why.</param>
 /// <param name="ImpedimentIncidentIds">Incidents reported for maintenance while cleaning.</param>
 /// <param name="History">What happened to it, oldest first (only when a single task is read).</param>
+/// <param name="ChecklistProgress">Done steps of the checklist over all its steps, 0-100 (US-07).</param>
+/// <param name="Checklist">The steps of the cleaning protocol of the room type (only when a single task is read).</param>
 public record CleaningTaskResource(int Id, int HotelId, int RoomId, string Priority, string Status, string? Notes,
     int? CreatedByUserId, DateTimeOffset CreatedAt, int? AssigneeUserId, DateTimeOffset? AssignedAt, bool AssignedAutomatically,
     DateTimeOffset? StartedAt, DateTimeOffset? CompletedAt, int? CompletedByUserId, DateTimeOffset? CancelledAt,
-    string? CancellationReason, IReadOnlyList<int>? ImpedimentIncidentIds, IReadOnlyList<CleaningTaskHistoryEntryResource>? History);
+    string? CancellationReason, IReadOnlyList<int>? ImpedimentIncidentIds, IReadOnlyList<CleaningTaskHistoryEntryResource>? History,
+    int ChecklistProgress = 100, IReadOnlyList<CleaningChecklistItemResource>? Checklist = null);
+
+/// <summary>One step of the checklist of a cleaning task (US-07).</summary>
+/// <param name="Id">Item id, used to mark it.</param>
+/// <param name="Position">Order in the protocol (1-based).</param>
+/// <param name="Label">What to do.</param>
+/// <param name="IsRequired">The task cannot be completed until it is done.</param>
+/// <param name="IsDone">Already done.</param>
+/// <param name="DoneAt">When it was marked done (UTC).</param>
+/// <param name="DoneByUserId">Who marked it.</param>
+public record CleaningChecklistItemResource(long Id, int Position, string Label, bool IsRequired, bool IsDone,
+    DateTimeOffset? DoneAt, int? DoneByUserId);
+
+/// <summary>Marks a step of the checklist as done or not done.</summary>
+public record MarkCleaningChecklistItemResource
+{
+    /// <summary>True: the step is done; false: it is pending again.</summary>
+    /// <example>true</example>
+    [Required]
+    public bool? Done { get; init; }
+}
+
+/// <summary>One step of a cleaning protocol.</summary>
+public record CleaningChecklistItemDefinitionResource
+{
+    /// <summary>What to do (up to 150 characters).</summary>
+    /// <example>Cambiar la ropa de cama</example>
+    [Required]
+    public string? Label { get; init; }
+
+    /// <summary>The task cannot be completed until it is done (true by default).</summary>
+    /// <example>true</example>
+    public bool? IsRequired { get; init; }
+}
+
+/// <summary>The cleaning protocol of a hotel for a room type (US-07).</summary>
+public record ConfigureCleaningChecklistResource
+{
+    /// <summary>The steps, in order (1 to 30, no repeated labels).</summary>
+    [Required]
+    public IReadOnlyList<CleaningChecklistItemDefinitionResource>? Items { get; init; }
+
+    public IReadOnlyList<ChecklistItemDefinition> ToDefinitions() =>
+        Items!.Select(item => new ChecklistItemDefinition(item.Label ?? string.Empty, item.IsRequired ?? true)).ToList();
+}
+
+/// <summary>A cleaning protocol of a hotel (US-07).</summary>
+/// <param name="HotelId">The hotel.</param>
+/// <param name="RoomTypeId">The room type (null: the hotel default).</param>
+/// <param name="IsStandard">
+///     The hotel configured no protocol: this is a suggested one, not applied to its tasks until it is saved with
+///     <c>PUT /cleaning-tasks/checklists</c>.
+/// </param>
+/// <param name="Items">The steps, in order.</param>
+/// <param name="UpdatedAt">When it was last changed.</param>
+/// <param name="UpdatedByUserId">Who changed it.</param>
+public record CleaningChecklistTemplateResource(int HotelId, int? RoomTypeId, bool IsStandard,
+    IReadOnlyList<CleaningChecklistTemplateItemResource> Items, DateTimeOffset? UpdatedAt, int? UpdatedByUserId);
+
+/// <summary>One step of a cleaning protocol.</summary>
+/// <param name="Position">Order (1-based).</param>
+/// <param name="Label">What to do.</param>
+/// <param name="IsRequired">Required to complete the task.</param>
+public record CleaningChecklistTemplateItemResource(int Position, string Label, bool IsRequired);
 
 /// <summary>How a hotel distributes its cleaning tasks.</summary>
 /// <param name="HotelId">The hotel.</param>

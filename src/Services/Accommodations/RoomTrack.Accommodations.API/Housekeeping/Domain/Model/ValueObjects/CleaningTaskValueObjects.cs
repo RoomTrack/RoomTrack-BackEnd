@@ -32,6 +32,10 @@ public enum CleaningTaskHistoryAction
     PriorityChanged,
     /// <summary>A damage found while cleaning was reported as an incident for maintenance.</summary>
     ImpedimentReported,
+    /// <summary>A step of the checklist was marked done (US-07).</summary>
+    ChecklistItemChecked,
+    /// <summary>A step of the checklist was marked as not done again.</summary>
+    ChecklistItemUnchecked,
     Completed,
     Cancelled
 }
@@ -58,4 +62,28 @@ public sealed record CleaningTaskActor(int UserId, string? Email, CleaningTaskRo
 
     /// <summary>Works on tasks assigned to someone else.</summary>
     public bool IsAdministrator => Role == CleaningTaskRole.Administrator;
+}
+
+/// <summary>One step of a cleaning protocol (US-07).</summary>
+/// <param name="Label">What to do, e.g. "Change the bed linen".</param>
+/// <param name="IsRequired">The task cannot be completed until it is done.</param>
+public sealed record ChecklistItemDefinition(string Label, bool IsRequired = true);
+
+/// <summary>
+///     A suggested starting protocol, returned by <c>GET /cleaning-tasks/checklists</c> to a hotel that configured none
+///     (it is not applied until the hotel saves it).
+/// </summary>
+public static class CleaningChecklistDefaults
+{
+    public static IReadOnlyList<ChecklistItemDefinition> Standard { get; } =
+    [
+        new("Ventilar la habitación y retirar la basura"),
+        new("Cambiar la ropa de cama y tender la cama"),
+        new("Limpiar y desinfectar el baño"),
+        new("Reponer toallas y amenities"),
+        new("Limpiar superficies, espejos y polvo"),
+        new("Aspirar o trapear el piso"),
+        new("Revisar el minibar", IsRequired: false),
+        new("Verificar luces, TV y aire acondicionado")
+    ];
 }

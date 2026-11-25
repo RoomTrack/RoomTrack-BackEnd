@@ -19,3 +19,9 @@ public record GetCleaningTasksQuery(
 
 /// <summary>How the hotel distributes its cleaning tasks.</summary>
 public record GetHousekeepingSettingsQuery(int HotelId);
+
+/// <summary>The cleaning protocols configured by a hotel (US-07).</summary>
+public record GetCleaningChecklistTemplatesQuery(int HotelId);
+
+/// <summary>The protocol a new task of the room would get: room type, then hotel default, then the standard one.</summary>
+public record GetCleaningChecklistForRoomQuery(int HotelId, int RoomTypeId);

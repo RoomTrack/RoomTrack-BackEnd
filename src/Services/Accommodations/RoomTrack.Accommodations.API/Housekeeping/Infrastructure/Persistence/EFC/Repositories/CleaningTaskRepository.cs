@@ -12,7 +12,7 @@ public class CleaningTaskRepository(AppDbContext context) : ICleaningTaskReposit
     public async Task AddAsync(CleaningTask task) => await context.Set<CleaningTask>().AddAsync(task);
 
     public Task<CleaningTask?> FindByIdAsync(int id) =>
-        context.Set<CleaningTask>().Include(t => t.History).FirstOrDefaultAsync(t => t.Id == id);
+        context.Set<CleaningTask>().Include(t => t.History).Include(t => t.Checklist).FirstOrDefaultAsync(t => t.Id == id);
 
     public async Task<IReadOnlyList<CleaningTask>> ListAsync(GetCleaningTasksQuery query)
     {
@@ -40,7 +40,7 @@ public class CleaningTaskRepository(AppDbContext context) : ICleaningTaskReposit
             .Select(entry => entry.Entity)
             .FirstOrDefault(t => t.RoomId == roomId && t.IsOpen);
         if (tracked is not null) return tracked;
-        var stored = await context.Set<CleaningTask>().Include(t => t.History)
+        var stored = await context.Set<CleaningTask>().Include(t => t.History).Include(t => t.Checklist)
             .Where(t => t.RoomId == roomId
                         && (t.Status == CleaningTaskStatus.Pending || t.Status == CleaningTaskStatus.InProgress))
             .OrderBy(t => t.Id)
@@ -64,4 +64,20 @@ public class HotelHousekeepingSettingsRepository(AppDbContext context) : IHotelH
 
     public async Task AddAsync(HotelHousekeepingSettings settings) =>
         await context.Set<HotelHousekeepingSettings>().AddAsync(settings);
+}
+
+public class CleaningChecklistTemplateRepository(AppDbContext context) : ICleaningChecklistTemplateRepository
+{
+    public Task<CleaningChecklistTemplate?> FindAsync(int hotelId, int? roomTypeId) =>
+        context.Set<CleaningChecklistTemplate>().Include(t => t.Items)
+            .FirstOrDefaultAsync(t => t.HotelId == hotelId && t.RoomTypeId == roomTypeId);
+
+    public async Task<IReadOnlyList<CleaningChecklistTemplate>> ListByHotelAsync(int hotelId) =>
+        await context.Set<CleaningChecklistTemplate>().Include(t => t.Items)
+            .Where(t => t.HotelId == hotelId)
+            .OrderBy(t => t.RoomTypeId)
+            .ToListAsync();
+
+    public async Task AddAsync(CleaningChecklistTemplate template) =>
+        await context.Set<CleaningChecklistTemplate>().AddAsync(template);
 }

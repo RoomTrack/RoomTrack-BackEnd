@@ -26,6 +26,7 @@ public class CleaningTask : IHasDomainEvents, IHasConcurrencyVersion
 
     private readonly List<IEvent> _domainEvents = [];
     private readonly List<CleaningTaskHistoryEntry> _history = [];
+    private readonly List<CleaningChecklistItem> _checklist = [];
 
     // Events recorded before the task has its generated id (an automatic assignment at creation).
     private readonly List<Func<IEvent>> _eventsAwaitingId = [];
@@ -34,8 +35,10 @@ public class CleaningTask : IHasDomainEvents, IHasConcurrencyVersion
     protected CleaningTask() { }
 
     private CleaningTask(int hotelId, int roomId, CleaningTaskPriority priority, string? notes, CleaningTaskActor? creator,
-        DateTimeOffset now)
+        IReadOnlyList<ChecklistItemDefinition>? checklist, DateTimeOffset now)
     {
+        if (checklist is not null)
+            _checklist.AddRange(checklist.Select((item, index) => new CleaningChecklistItem(index + 1, item.Label, item.IsRequired)));
         HotelId = hotelId;
         RoomId = roomId;
         Priority = priority;
@@ -47,17 +50,21 @@ public class CleaningTask : IHasDomainEvents, IHasConcurrencyVersion
             creator, now);
     }
 
-    /// <summary>The front desk creates a cleaning task for a room. It starts Pending and unassigned.</summary>
+    /// <summary>
+    ///     The front desk creates a cleaning task for a room. It starts Pending and unassigned, with the
+    ///     <paramref name="checklist"/> of the room type (US-07).
+    /// </summary>
     public static CleaningTask Create(int hotelId, int roomId, CleaningTaskPriority priority, string? notes,
-        CleaningTaskActor creator, DateTimeOffset now)
+        CleaningTaskActor creator, DateTimeOffset now, IReadOnlyList<ChecklistItemDefinition>? checklist = null)
     {
         if (!creator.CanManage) throw new CleaningTaskManageNotAllowedException("create");
-        return new CleaningTask(hotelId, roomId, priority, NormalizeNotes(notes), creator, now);
+        return new CleaningTask(hotelId, roomId, priority, NormalizeNotes(notes), creator, checklist, now);
     }
 
     /// <summary>The system creates the task of a room that went to Cleaning (a staff change, a resolved incident).</summary>
-    public static CleaningTask CreateForRoomToClean(int hotelId, int roomId, DateTimeOffset now) =>
-        new(hotelId, roomId, CleaningTaskPriority.Normal, null, null, now);
+    public static CleaningTask CreateForRoomToClean(int hotelId, int roomId, DateTimeOffset now,
+        IReadOnlyList<ChecklistItemDefinition>? checklist = null) =>
+        new(hotelId, roomId, CleaningTaskPriority.Normal, null, null, checklist, now);
 
     public int Id { get; private set; }
     public int HotelId { get; private set; }
@@ -95,6 +102,18 @@ public class CleaningTask : IHasDomainEvents, IHasConcurrencyVersion
 
     /// <summary>What happened to the task, oldest first.</summary>
     public IReadOnlyList<CleaningTaskHistoryEntry> History => _history.AsReadOnly();
+
+    /// <summary>The steps of the cleaning protocol of the room type, in order (US-07).</summary>
+    public IReadOnlyList<CleaningChecklistItem> Checklist => _checklist.OrderBy(item => item.Position).ToList();
+
+    /// <summary>Done steps over all the steps of the checklist, 0-100 (100 when the task has no checklist).</summary>
+    public int ChecklistProgress => _checklist.Count == 0
+        ? 100
+        : (int)Math.Round(100m * _checklist.Count(item => item.IsDone) / _checklist.Count, MidpointRounding.AwayFromZero);
+
+    /// <summary>Required steps not done yet, in order.</summary>
+    public IReadOnlyList<string> PendingRequiredChecklistItems =>
+        Checklist.Where(item => item.IsRequired && !item.IsDone).Select(item => item.Label).ToList();
 
     /// <summary>The incidents reported for maintenance while cleaning, oldest first.</summary>
     public IReadOnlyList<int> ImpedimentIncidentIds =>
@@ -173,6 +192,9 @@ public class CleaningTask : IHasDomainEvents, IHasConcurrencyVersion
         EnsureOpen();
         if (Status != CleaningTaskStatus.InProgress)
             throw new InvalidCleaningTaskStatusTransitionException(Id, Status, "completed");
+        // US-07: the room is not marked ready while a required step of the protocol is pending.
+        if (PendingRequiredChecklistItems is { Count: > 0 } pending)
+            throw new CleaningChecklistIncompleteException(Id, pending);
 
         Status = CleaningTaskStatus.Completed;
         CompletedAt = now;
@@ -180,6 +202,22 @@ public class CleaningTask : IHasDomainEvents, IHasConcurrencyVersion
         Record(CleaningTaskHistoryAction.Completed, null, actor, now);
         _domainEvents.Add(new CleaningTaskCompletedEvent(Id, HotelId, RoomId, actor.UserId, now));
         return true;
+    }
+
+    /// <summary>
+    ///     The assignee (or an administrator) marks a step of the checklist as done (or not done again) while the task
+    ///     is open (US-07). Marking it with the state it already has is a no-op (safe to replay offline).
+    /// </summary>
+    public CleaningChecklistItem MarkChecklistItem(long itemId, bool done, CleaningTaskActor actor, DateTimeOffset now)
+    {
+        EnsureOpen();
+        EnsureCanWork(actor);
+        var item = _checklist.FirstOrDefault(candidate => candidate.Id == itemId)
+                   ?? throw new CleaningChecklistItemNotFoundException(Id, itemId);
+        if (item.Mark(done, actor.UserId, now))
+            Record(done ? CleaningTaskHistoryAction.ChecklistItemChecked : CleaningTaskHistoryAction.ChecklistItemUnchecked,
+                $"{item.Label} ({ChecklistProgress}%)", actor, now);
+        return item;
     }
 
     /// <summary>
