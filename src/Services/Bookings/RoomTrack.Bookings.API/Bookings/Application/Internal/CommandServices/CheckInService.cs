@@ -29,7 +29,8 @@ public class CheckInService(
     IRoomAvailabilityQueryService roomAvailabilityQueryService,
     ISecretProtector secretProtector,
     HotelCalendar calendar,
-    IUnitOfWork unitOfWork) : ICheckInService
+    IUnitOfWork unitOfWork,
+    IStayFolioGate stayFolioGate) : ICheckInService
 {
     private const string AccessCodePurpose = "Bookings.RoomAccessCode";
 
@@ -99,6 +100,8 @@ public class CheckInService(
                       ?? throw new BookingNotFoundException(command.BookingId);
 
         var now = calendar.Now;
+        // US-14/16: additional charges are paid before leaving (the folio is closed by the GuestCheckedOutEvent handler).
+        if (booking.IsVisibleTo(requester)) await stayFolioGate.EnsureSettledForCheckOutAsync(booking.Id);
         booking.CheckOut(requester, calendar.Today, now);
         (await checkInRepository.FindByBookingIdAsync(booking.Id))?.EndAccess(now);
         await unitOfWork.ExecuteInTransactionAsync(async () =>

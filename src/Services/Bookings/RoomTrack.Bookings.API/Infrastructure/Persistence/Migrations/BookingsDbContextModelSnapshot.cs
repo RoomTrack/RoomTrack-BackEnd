@@ -22,310 +22,6 @@ namespace RoomTrack.Bookings.API.Infrastructure.Persistence.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("RoomTrack.Bookings.Domain.Model.Aggregates.Booking", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CancellationReason")
-                        .HasMaxLength(30)
-                        .HasColumnType("varchar(30)")
-                        .HasColumnName("cancellation_reason");
-
-                    b.Property<DateTimeOffset?>("CancelledAt")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("cancelled_at");
-
-                    b.Property<DateTime>("CheckInDate")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("check_in_date");
-
-                    b.Property<DateTime>("CheckOutDate")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("check_out_date");
-
-                    b.Property<DateTimeOffset?>("CheckedInAt")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("checked_in_at");
-
-                    b.Property<DateTimeOffset?>("CheckedOutAt")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("checked_out_at");
-
-                    b.Property<int?>("CheckedOutByUserId")
-                        .HasColumnType("int")
-                        .HasColumnName("checked_out_by_user_id");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(12)
-                        .HasColumnType("varchar(12)")
-                        .HasColumnName("code");
-
-                    b.Property<DateTimeOffset?>("ConfirmedAt")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("confirmed_at");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("created_at");
-
-                    b.Property<string>("GuestEmail")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
-                        .HasColumnName("guest_email");
-
-                    b.Property<int?>("GuestId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
-
-                    b.Property<string>("GuestName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("guest_name");
-
-                    b.Property<string>("GuestPhone")
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
-                        .HasColumnName("guest_phone");
-
-                    b.Property<Guid?>("GuestProfileId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("guest_profile_id");
-
-                    b.Property<int>("HotelId")
-                        .HasColumnType("int")
-                        .HasColumnName("hotel_id");
-
-                    b.Property<DateTimeOffset?>("PaymentDueAt")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("payment_due_at");
-
-                    b.Property<decimal>("PricePerNight")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("price_per_night");
-
-                    b.Property<int>("RoomId")
-                        .HasColumnType("int")
-                        .HasColumnName("room_id");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int")
-                        .HasColumnName("status");
-
-                    b.HasKey("Id")
-                        .HasName("p_k_bookings");
-
-                    b.HasIndex("Code")
-                        .IsUnique()
-                        .HasDatabaseName("i_x_bookings__code");
-
-                    b.HasIndex("GuestId")
-                        .HasDatabaseName("i_x_bookings_user_id");
-
-                    b.HasIndex("HotelId", "CheckInDate")
-                        .HasDatabaseName("i_x_bookings__hotel_id__check_in_date");
-
-                    b.HasIndex("Status", "PaymentDueAt")
-                        .HasDatabaseName("i_x_bookings__status__payment_due_at");
-
-                    b.ToTable("bookings");
-                });
-
-            modelBuilder.Entity("RoomTrack.Bookings.Domain.Model.Aggregates.DigitalCheckIn", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AccessCodeProtected")
-                        .IsRequired()
-                        .HasMaxLength(1024)
-                        .HasColumnType("varchar(1024)")
-                        .HasColumnName("access_code_protected");
-
-                    b.Property<DateTimeOffset>("AccessCodeValidUntil")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("access_code_valid_until");
-
-                    b.Property<int>("BookingId")
-                        .HasColumnType("int")
-                        .HasColumnName("booking_id");
-
-                    b.Property<DateTimeOffset>("CompletedAt")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("completed_at");
-
-                    b.Property<string>("DocumentContentType")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("document_content_type");
-
-                    b.Property<string>("DocumentFileId")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)")
-                        .HasColumnName("document_file_id");
-
-                    b.Property<string>("DocumentNumber")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
-                        .HasColumnName("document_number");
-
-                    b.Property<long>("DocumentSizeBytes")
-                        .HasColumnType("bigint")
-                        .HasColumnName("document_size_bytes");
-
-                    b.Property<string>("DocumentType")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
-                        .HasColumnName("document_type");
-
-                    b.Property<int?>("GuestUserId")
-                        .HasColumnType("int")
-                        .HasColumnName("guest_user_id");
-
-                    b.Property<string>("Nationality")
-                        .IsRequired()
-                        .HasMaxLength(2)
-                        .HasColumnType("varchar(2)")
-                        .HasColumnName("nationality");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
-                        .HasColumnName("status");
-
-                    b.HasKey("Id")
-                        .HasName("p_k_digital_check_ins");
-
-                    b.HasIndex("BookingId")
-                        .IsUnique()
-                        .HasDatabaseName("i_x_digital_check_ins__booking_id");
-
-                    b.ToTable("digital_check_ins", (string)null);
-                });
-
-            modelBuilder.Entity("RoomTrack.Bookings.Infrastructure.Storage.StoredDocument", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)")
-                        .HasColumnName("id");
-
-                    b.Property<string>("ContentType")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("content_type");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("created_at");
-
-                    b.Property<byte[]>("ProtectedContent")
-                        .IsRequired()
-                        .HasColumnType("longblob")
-                        .HasColumnName("protected_content");
-
-                    b.Property<string>("Purpose")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("purpose");
-
-                    b.Property<long>("SizeBytes")
-                        .HasColumnType("bigint")
-                        .HasColumnName("size_bytes");
-
-                    b.HasKey("Id")
-                        .HasName("p_k_stored_documents");
-
-                    b.ToTable("stored_documents", (string)null);
-                });
-
-            modelBuilder.Entity("RoomTrack.Payments.Domain.Model.Aggregates.Payment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("amount");
-
-                    b.Property<int>("BookingId")
-                        .HasColumnType("int")
-                        .HasColumnName("booking_id");
-
-                    b.Property<string>("FailureReason")
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
-                        .HasColumnName("failure_reason");
-
-                    b.Property<string>("Method")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("varchar(30)")
-                        .HasColumnName("payment_method");
-
-                    b.Property<string>("Note")
-                        .HasMaxLength(300)
-                        .HasColumnType("varchar(300)")
-                        .HasColumnName("note");
-
-                    b.Property<string>("OperationNumber")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("operation_number");
-
-                    b.Property<DateTime>("PaymentDate")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("payment_date");
-
-                    b.Property<int?>("RecordedByUserId")
-                        .HasColumnType("int")
-                        .HasColumnName("recorded_by_user_id");
-
-                    b.Property<DateTimeOffset?>("RefundedAt")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("refunded_at");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int")
-                        .HasColumnName("status");
-
-                    b.Property<string>("TransactionId")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("transaction_id");
-
-                    b.HasKey("Id")
-                        .HasName("p_k_payments");
-
-                    b.HasIndex("BookingId")
-                        .HasDatabaseName("i_x_payments__booking_id");
-
-                    b.ToTable("payments", (string)null);
-                });
-
             modelBuilder.Entity("MassTransit.EntityFrameworkCoreIntegration.InboxState", b =>
                 {
                     b.Property<long>("Id")
@@ -579,14 +275,616 @@ namespace RoomTrack.Bookings.API.Infrastructure.Persistence.Migrations
                     b.ToTable("room_booking_locks");
                 });
 
+            modelBuilder.Entity("RoomTrack.Bookings.Domain.Model.Aggregates.Booking", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CancellationReason")
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)")
+                        .HasColumnName("cancellation_reason");
+
+                    b.Property<DateTimeOffset?>("CancelledAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("cancelled_at");
+
+                    b.Property<DateTime>("CheckInDate")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("check_in_date");
+
+                    b.Property<DateTime>("CheckOutDate")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("check_out_date");
+
+                    b.Property<DateTimeOffset?>("CheckedInAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("checked_in_at");
+
+                    b.Property<DateTimeOffset?>("CheckedOutAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("checked_out_at");
+
+                    b.Property<int?>("CheckedOutByUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("checked_out_by_user_id");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(12)
+                        .HasColumnType("varchar(12)")
+                        .HasColumnName("code");
+
+                    b.Property<DateTimeOffset?>("ConfirmedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("confirmed_at");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("GuestEmail")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)")
+                        .HasColumnName("guest_email");
+
+                    b.Property<int?>("GuestId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
+                    b.Property<string>("GuestName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("guest_name");
+
+                    b.Property<string>("GuestPhone")
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("guest_phone");
+
+                    b.Property<Guid?>("GuestProfileId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("guest_profile_id");
+
+                    b.Property<int>("HotelId")
+                        .HasColumnType("int")
+                        .HasColumnName("hotel_id");
+
+                    b.Property<DateTimeOffset?>("PaymentDueAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("payment_due_at");
+
+                    b.Property<decimal>("PricePerNight")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("price_per_night");
+
+                    b.Property<int>("RoomId")
+                        .HasColumnType("int")
+                        .HasColumnName("room_id");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int")
+                        .HasColumnName("status");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_bookings");
+
+                    b.HasIndex("Code")
+                        .IsUnique()
+                        .HasDatabaseName("i_x_bookings__code");
+
+                    b.HasIndex("GuestId")
+                        .HasDatabaseName("i_x_bookings_user_id");
+
+                    b.HasIndex("HotelId", "CheckInDate")
+                        .HasDatabaseName("i_x_bookings__hotel_id__check_in_date");
+
+                    b.HasIndex("Status", "PaymentDueAt")
+                        .HasDatabaseName("i_x_bookings__status__payment_due_at");
+
+                    b.ToTable("bookings");
+                });
+
             modelBuilder.Entity("RoomTrack.Bookings.Domain.Model.Aggregates.DigitalCheckIn", b =>
                 {
-                    b.HasOne("RoomTrack.Bookings.Domain.Model.Aggregates.Booking", null)
-                        .WithMany()
-                        .HasForeignKey("BookingId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AccessCodeProtected")
                         .IsRequired()
-                        .HasConstraintName("f_k_digital_check_ins_bookings__booking_id");
+                        .HasMaxLength(1024)
+                        .HasColumnType("varchar(1024)")
+                        .HasColumnName("access_code_protected");
+
+                    b.Property<DateTimeOffset>("AccessCodeValidUntil")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("access_code_valid_until");
+
+                    b.Property<int>("BookingId")
+                        .HasColumnType("int")
+                        .HasColumnName("booking_id");
+
+                    b.Property<DateTimeOffset>("CompletedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("completed_at");
+
+                    b.Property<string>("DocumentContentType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("document_content_type");
+
+                    b.Property<string>("DocumentFileId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)")
+                        .HasColumnName("document_file_id");
+
+                    b.Property<string>("DocumentNumber")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("document_number");
+
+                    b.Property<long>("DocumentSizeBytes")
+                        .HasColumnType("bigint")
+                        .HasColumnName("document_size_bytes");
+
+                    b.Property<string>("DocumentType")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("document_type");
+
+                    b.Property<int?>("GuestUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("guest_user_id");
+
+                    b.Property<string>("Nationality")
+                        .IsRequired()
+                        .HasMaxLength(2)
+                        .HasColumnType("varchar(2)")
+                        .HasColumnName("nationality");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("status");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_digital_check_ins");
+
+                    b.HasIndex("BookingId")
+                        .IsUnique()
+                        .HasDatabaseName("i_x_digital_check_ins__booking_id");
+
+                    b.ToTable("digital_check_ins", (string)null);
+                });
+
+            modelBuilder.Entity("RoomTrack.Bookings.Infrastructure.Storage.StoredDocument", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)")
+                        .HasColumnName("id");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("content_type");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at");
+
+                    b.Property<byte[]>("ProtectedContent")
+                        .IsRequired()
+                        .HasColumnType("longblob")
+                        .HasColumnName("protected_content");
+
+                    b.Property<string>("Purpose")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("purpose");
+
+                    b.Property<long>("SizeBytes")
+                        .HasColumnType("bigint")
+                        .HasColumnName("size_bytes");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_stored_documents");
+
+                    b.ToTable("stored_documents", (string)null);
+                });
+
+            modelBuilder.Entity("RoomTrack.Payments.Domain.Model.Aggregates.FolioCharge", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("amount");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("category");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)")
+                        .HasColumnName("description");
+
+                    b.Property<int>("GuestFolioId")
+                        .HasColumnType("int")
+                        .HasColumnName("guest_folio_id");
+
+                    b.Property<DateTimeOffset>("PostedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("posted_at");
+
+                    b.Property<int>("PostedByUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("posted_by_user_id");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_folio_charges");
+
+                    b.HasIndex("GuestFolioId")
+                        .HasDatabaseName("i_x_folio_charges__guest_folio_id");
+
+                    b.ToTable("folio_charges", (string)null);
+                });
+
+            modelBuilder.Entity("RoomTrack.Payments.Domain.Model.Aggregates.FolioPayment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("amount");
+
+                    b.Property<int>("GuestFolioId")
+                        .HasColumnType("int")
+                        .HasColumnName("guest_folio_id");
+
+                    b.Property<string>("Method")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)")
+                        .HasColumnName("method");
+
+                    b.Property<string>("OperationNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("operation_number");
+
+                    b.Property<DateTimeOffset>("PaidAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("paid_at");
+
+                    b.Property<int?>("RecordedByUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("recorded_by_user_id");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_folio_payments");
+
+                    b.HasIndex("GuestFolioId")
+                        .HasDatabaseName("i_x_folio_payments__guest_folio_id");
+
+                    b.ToTable("folio_payments", (string)null);
+                });
+
+            modelBuilder.Entity("RoomTrack.Payments.Domain.Model.Aggregates.GuestFolio", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("BookingCode")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("booking_code");
+
+                    b.Property<int>("BookingId")
+                        .HasColumnType("int")
+                        .HasColumnName("booking_id");
+
+                    b.Property<DateTimeOffset?>("ClosedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("closed_at");
+
+                    b.Property<decimal?>("DepositAmount")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("deposit_amount");
+
+                    b.Property<DateTimeOffset?>("DepositHeldAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("deposit_held_at");
+
+                    b.Property<string>("DepositMethod")
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)")
+                        .HasColumnName("deposit_method");
+
+                    b.Property<string>("DepositOperationNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("deposit_operation_number");
+
+                    b.Property<DateTimeOffset?>("DepositReleasedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("deposit_released_at");
+
+                    b.Property<string>("DepositStatus")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("deposit_status");
+
+                    b.Property<string>("GuestEmail")
+                        .IsRequired()
+                        .HasMaxLength(254)
+                        .HasColumnType("varchar(254)")
+                        .HasColumnName("guest_email");
+
+                    b.Property<string>("GuestName")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)")
+                        .HasColumnName("guest_name");
+
+                    b.Property<int>("HotelId")
+                        .HasColumnType("int")
+                        .HasColumnName("hotel_id");
+
+                    b.Property<DateTimeOffset>("OpenedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("opened_at");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("status");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_guest_folios");
+
+                    b.HasIndex("BookingId")
+                        .IsUnique()
+                        .HasDatabaseName("i_x_guest_folios__booking_id");
+
+                    b.HasIndex("HotelId")
+                        .HasDatabaseName("i_x_guest_folios__hotel_id");
+
+                    b.ToTable("guest_folios", (string)null);
+                });
+
+            modelBuilder.Entity("RoomTrack.Payments.Domain.Model.Aggregates.Payment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("amount");
+
+                    b.Property<int>("BookingId")
+                        .HasColumnType("int")
+                        .HasColumnName("booking_id");
+
+                    b.Property<string>("FailureReason")
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)")
+                        .HasColumnName("failure_reason");
+
+                    b.Property<string>("Method")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)")
+                        .HasColumnName("payment_method");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(300)
+                        .HasColumnType("varchar(300)")
+                        .HasColumnName("note");
+
+                    b.Property<string>("OperationNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("operation_number");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("payment_date");
+
+                    b.Property<int?>("RecordedByUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("recorded_by_user_id");
+
+                    b.Property<DateTimeOffset?>("RefundedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("refunded_at");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int")
+                        .HasColumnName("status");
+
+                    b.Property<string>("TransactionId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("transaction_id");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_payments");
+
+                    b.HasIndex("BookingId")
+                        .HasDatabaseName("i_x_payments__booking_id");
+
+                    b.ToTable("payments", (string)null);
+                });
+
+            modelBuilder.Entity("RoomTrack.Payments.Domain.Model.Aggregates.Receipt", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("BookingCode")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("booking_code");
+
+                    b.Property<int>("BookingId")
+                        .HasColumnType("int")
+                        .HasColumnName("booking_id");
+
+                    b.Property<string>("Concept")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)")
+                        .HasColumnName("concept");
+
+                    b.Property<string>("CustomerAddress")
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)")
+                        .HasColumnName("customer_address");
+
+                    b.Property<string>("CustomerDocument")
+                        .HasMaxLength(11)
+                        .HasColumnType("varchar(11)")
+                        .HasColumnName("customer_document");
+
+                    b.Property<string>("CustomerEmail")
+                        .IsRequired()
+                        .HasMaxLength(254)
+                        .HasColumnType("varchar(254)")
+                        .HasColumnName("customer_email");
+
+                    b.Property<string>("CustomerName")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)")
+                        .HasColumnName("customer_name");
+
+                    b.Property<int>("HotelId")
+                        .HasColumnType("int")
+                        .HasColumnName("hotel_id");
+
+                    b.Property<decimal>("Igv")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("igv");
+
+                    b.Property<DateTimeOffset>("IssuedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("issued_at");
+
+                    b.Property<DateTimeOffset?>("LastSentAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("last_sent_at");
+
+                    b.Property<string>("Method")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)")
+                        .HasColumnName("method");
+
+                    b.Property<int>("Number")
+                        .HasColumnType("int")
+                        .HasColumnName("number");
+
+                    b.Property<int>("SentCount")
+                        .HasColumnType("int")
+                        .HasColumnName("sent_count");
+
+                    b.Property<string>("Series")
+                        .IsRequired()
+                        .HasMaxLength(4)
+                        .HasColumnType("varchar(4)")
+                        .HasColumnName("series");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("source");
+
+                    b.Property<int>("SourceId")
+                        .HasColumnType("int")
+                        .HasColumnName("source_id");
+
+                    b.Property<decimal>("Subtotal")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("subtotal");
+
+                    b.Property<decimal>("Total")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("total");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)")
+                        .HasColumnName("type");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_receipts");
+
+                    b.HasIndex("BookingId")
+                        .HasDatabaseName("i_x_receipts__booking_id");
+
+                    b.HasIndex("HotelId", "IssuedAt")
+                        .HasDatabaseName("i_x_receipts__hotel_id__issued_at");
+
+                    b.HasIndex("Source", "SourceId")
+                        .IsUnique()
+                        .HasDatabaseName("i_x_receipts__source__source_id");
+
+                    b.HasIndex("HotelId", "Series", "Number")
+                        .IsUnique()
+                        .HasDatabaseName("i_x_receipts__hotel_id__series__number");
+
+                    b.ToTable("receipts", (string)null);
                 });
 
             modelBuilder.Entity("MassTransit.EntityFrameworkCoreIntegration.OutboxMessage", b =>
@@ -601,6 +899,78 @@ namespace RoomTrack.Bookings.API.Infrastructure.Persistence.Migrations
                         .HasForeignKey("InboxMessageId", "InboxConsumerId")
                         .HasPrincipalKey("MessageId", "ConsumerId")
                         .HasConstraintName("f_k_outbox_messages_inbox_states__inbox_message_id__inbox_consumer_id");
+                });
+
+            modelBuilder.Entity("RoomTrack.Bookings.Domain.Model.Aggregates.DigitalCheckIn", b =>
+                {
+                    b.HasOne("RoomTrack.Bookings.Domain.Model.Aggregates.Booking", null)
+                        .WithMany()
+                        .HasForeignKey("BookingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("f_k_digital_check_ins_bookings__booking_id");
+                });
+
+            modelBuilder.Entity("RoomTrack.Payments.Domain.Model.Aggregates.FolioCharge", b =>
+                {
+                    b.HasOne("RoomTrack.Payments.Domain.Model.Aggregates.GuestFolio", null)
+                        .WithMany("Charges")
+                        .HasForeignKey("GuestFolioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("f_k_folio_charges_guest_folios__guest_folio_id");
+                });
+
+            modelBuilder.Entity("RoomTrack.Payments.Domain.Model.Aggregates.FolioPayment", b =>
+                {
+                    b.HasOne("RoomTrack.Payments.Domain.Model.Aggregates.GuestFolio", null)
+                        .WithMany("Payments")
+                        .HasForeignKey("GuestFolioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("f_k_folio_payments_guest_folios__guest_folio_id");
+                });
+
+            modelBuilder.Entity("RoomTrack.Payments.Domain.Model.Aggregates.GuestFolio", b =>
+                {
+                    b.OwnsOne("RoomTrack.Payments.Domain.Model.ValueObjects.InvoiceData", "InvoiceData", b1 =>
+                        {
+                            b1.Property<int>("GuestFolioId")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("Address")
+                                .HasMaxLength(200)
+                                .HasColumnType("varchar(200)")
+                                .HasColumnName("invoice_address");
+
+                            b1.Property<string>("BusinessName")
+                                .IsRequired()
+                                .HasMaxLength(150)
+                                .HasColumnType("varchar(150)")
+                                .HasColumnName("invoice_business_name");
+
+                            b1.Property<string>("Ruc")
+                                .IsRequired()
+                                .HasMaxLength(11)
+                                .HasColumnType("varchar(11)")
+                                .HasColumnName("invoice_ruc");
+
+                            b1.HasKey("GuestFolioId");
+
+                            b1.ToTable("guest_folios");
+
+                            b1.WithOwner()
+                                .HasForeignKey("GuestFolioId");
+                        });
+
+                    b.Navigation("InvoiceData");
+                });
+
+            modelBuilder.Entity("RoomTrack.Payments.Domain.Model.Aggregates.GuestFolio", b =>
+                {
+                    b.Navigation("Charges");
+
+                    b.Navigation("Payments");
                 });
 #pragma warning restore 612, 618
         }

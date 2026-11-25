@@ -1,3 +1,4 @@
+using RoomTrack.Bookings.Domain.Repositories;
 using RoomTrack.Bookings.Domain.Model.Aggregates;
 using RoomTrack.Bookings.Domain.Model.Commands;
 using RoomTrack.Bookings.Domain.Model.Queries;
@@ -9,7 +10,8 @@ namespace RoomTrack.Bookings.Application.ACL;
 
 public class BookingsContextFacade(
     IBookingQueryService bookingQueryService,
-    IBookingCommandService bookingCommandService) : IBookingsContextFacade
+    IBookingCommandService bookingCommandService,
+    IBookingRepository bookingRepository) : IBookingsContextFacade
 {
     public async Task<BookingSnapshot?> FetchBookingAsync(int bookingId, int? guestUserId = null)
     {
@@ -24,6 +26,8 @@ public class BookingsContextFacade(
         return true;
     }
 
+    public Task<IReadOnlyList<int>> FetchBookingIdsOfHotelAsync(int hotelId) => bookingRepository.ListIdsByHotelAsync(hotelId);
+
     private static BookingSnapshot ToSnapshot(Booking booking) => new(
         booking.Id,
         booking.RoomId,
@@ -35,5 +39,6 @@ public class BookingsContextFacade(
         booking.HotelId,
         booking.Code.Value,
         booking.TotalPrice,
-        booking.GuestEmail);
+        booking.GuestEmail,
+        booking.GuestName);
 }

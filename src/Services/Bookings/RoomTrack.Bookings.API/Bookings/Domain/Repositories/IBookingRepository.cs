@@ -42,4 +42,7 @@ public interface IBookingRepository : IBaseRepository<Booking>
 
     /// <summary>Pending bookings whose payment deadline is at or before <paramref name="now"/>.</summary>
     Task<IReadOnlyList<Booking>> ListPendingPaymentDueAsync(DateTimeOffset now);
+
+    /// <summary>The ids of every booking of the hotel.</summary>
+    Task<IReadOnlyList<int>> ListIdsByHotelAsync(int hotelId);
 }
