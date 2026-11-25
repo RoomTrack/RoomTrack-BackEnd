@@ -1,3 +1,4 @@
+using RoomTrack.ShiftHandovers.Infrastructure.Interfaces.ASP.Configuration.Extensions;
 using RoomTrack.Messaging.Infrastructure.Interfaces.ASP.Configuration.Extensions;
 using RoomTrack.GuestRequests.Infrastructure.Interfaces.ASP.Configuration.Extensions;
 using RoomTrack.Accommodations.Infrastructure.Interfaces.ASP.Configuration.Extensions;
@@ -15,8 +16,8 @@ using RoomTrack.Accommodations.API.Infrastructure.Persistence;
 using RoomTrack.BuildingBlocks.Clients;
 
 // Accommodations service: hotels, rooms and room types (Accommodations), incidents of the rooms (Incidents), cleaning
-// tasks of the rooms (Housekeeping), requests of the guests (GuestRequests), conversations (Messaging), hotel images (Media) and the IoT emulator
-// of the rooms' devices.
+// tasks of the rooms (Housekeeping), requests of the guests (GuestRequests), conversations (Messaging), shift handovers
+// (ShiftHandovers), hotel images (Media) and the IoT emulator of the rooms' devices.
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddRoomTrackServiceDefaults<AccommodationsDbContext, Program>("Accommodations");
@@ -26,6 +27,7 @@ builder.AddIncidentsContextServices();
 builder.AddHousekeepingContextServices();
 builder.AddGuestRequestsContextServices();
 builder.AddMessagingContextServices();
+builder.AddShiftHandoversContextServices();
 builder.AddMediaContextServices();
 builder.AddIoTEmulatorServices();
 
