@@ -1,3 +1,4 @@
+using RoomTrack.Shifts.Infrastructure;
 using RoomTrack.Marketing.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using RoomTrack.Profiles.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration;
@@ -5,13 +6,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace RoomTrack.Profiles.API.Infrastructure.Persistence;
 
-/// <summary>Database of the Profiles service: guest and staff profiles (Profiles) and the landing's demo requests (Marketing).</summary>
+/// <summary>
+///     Database of the Profiles service: guest and staff profiles (Profiles), the staff shifts and shift swaps (Shifts)
+///     and the landing's demo requests (Marketing).
+/// </summary>
 public class ProfilesDbContext(DbContextOptions<ProfilesDbContext> options) : AppDbContext(options)
 {
     protected override void ApplyServiceConfiguration(ModelBuilder builder)
     {
         builder.ApplyProfilesConfiguration();
         builder.ApplyMarketingConfiguration();
+        builder.ApplyShiftsConfiguration();
     }
 }
 

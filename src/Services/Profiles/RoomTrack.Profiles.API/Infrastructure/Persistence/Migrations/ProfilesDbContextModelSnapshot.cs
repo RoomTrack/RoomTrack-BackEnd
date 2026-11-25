@@ -22,273 +22,6 @@ namespace RoomTrack.Profiles.API.Infrastructure.Persistence.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("RoomTrack.Marketing.Domain.Model.Aggregates.DemoRequest", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AccommodationType")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
-                        .HasColumnName("accommodation_type");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(254)
-                        .HasColumnType("varchar(254)")
-                        .HasColumnName("email");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("first_name");
-
-                    b.Property<DateTimeOffset?>("FollowedUpAt")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("followed_up_at");
-
-                    b.Property<string>("HotelName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("hotel_name");
-
-                    b.Property<string>("JobTitle")
-                        .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("varchar(60)")
-                        .HasColumnName("job_title");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("last_name");
-
-                    b.Property<string>("Message")
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)")
-                        .HasColumnName("message");
-
-                    b.Property<string>("Phone")
-                        .HasMaxLength(16)
-                        .HasColumnType("varchar(16)")
-                        .HasColumnName("phone");
-
-                    b.Property<string>("Profile")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
-                        .HasColumnName("profile");
-
-                    b.Property<DateTimeOffset>("ReceivedAt")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("received_at");
-
-                    b.Property<string>("ReferralSource")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
-                        .HasColumnName("referral_source");
-
-                    b.Property<string>("RoomsRange")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
-                        .HasColumnName("rooms_range");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
-                        .HasColumnName("status");
-
-                    b.HasKey("Id")
-                        .HasName("p_k_demo_requests");
-
-                    b.HasIndex("Email")
-                        .HasDatabaseName("i_x_demo_requests__email");
-
-                    b.HasIndex("Status", "ReceivedAt")
-                        .HasDatabaseName("i_x_demo_requests__status__received_at");
-
-                    b.ToTable("demo_requests", (string)null);
-                });
-
-            modelBuilder.Entity("RoomTrack.Profiles.Infrastructure.Persistence.EFC.Entities.EmployeeCodeSequence", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    b.Property<int>("LastValue")
-                        .HasColumnType("int")
-                        .HasColumnName("last_value");
-
-                    b.HasKey("Id")
-                        .HasName("p_k_employee_code_sequences");
-
-                    b.ToTable("employee_code_sequences", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            LastValue = 0
-                        });
-                });
-
-            modelBuilder.Entity("RoomTrack.Profiles.Domain.Model.Aggregates.GuestProfile", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("id");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("created_at");
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
-                        .HasColumnName("phone");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
-                        .HasColumnName("status");
-
-                    b.Property<DateTimeOffset?>("UpdatedAt")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("updated_at");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("Id")
-                        .HasName("p_k_guest_profiles");
-
-                    b.HasIndex(new[] { "UserId" }, "ix_guest_profiles_user_id")
-                        .IsUnique()
-                        .HasDatabaseName("ix_guest_profiles_user_id");
-
-                    b.ToTable("guest_profiles", (string)null);
-                });
-
-            modelBuilder.Entity("RoomTrack.Profiles.Domain.Model.Aggregates.StaffProfile", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("id");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
-                        .HasColumnName("code");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("created_at");
-
-                    b.Property<string>("Phone")
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
-                        .HasColumnName("phone");
-
-                    b.Property<string>("Position")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("position");
-
-                    b.Property<string>("Shift")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
-                        .HasColumnName("shift");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
-                        .HasColumnName("status");
-
-                    b.Property<DateTimeOffset?>("UpdatedAt")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("updated_at");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("Id")
-                        .HasName("p_k_staff_profiles");
-
-                    b.HasIndex(new[] { "Code" }, "ix_staff_profiles_employee_code")
-                        .IsUnique()
-                        .HasDatabaseName("ix_staff_profiles_employee_code");
-
-                    b.HasIndex(new[] { "UserId" }, "ix_staff_profiles_user_id")
-                        .IsUnique()
-                        .HasDatabaseName("ix_staff_profiles_user_id");
-
-                    b.ToTable("staff_profiles", (string)null);
-                });
-
-            modelBuilder.Entity("RoomTrack.Profiles.Domain.Model.Entities.StaffAssignment", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("id");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
-                        .HasColumnName("role");
-
-                    b.Property<string>("Scope")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
-                        .HasColumnName("scope");
-
-                    b.Property<Guid>("StaffProfileId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("staff_profile_id");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
-                        .HasColumnName("status");
-
-                    b.Property<int>("TargetId")
-                        .HasColumnType("int")
-                        .HasColumnName("target_id");
-
-                    b.HasKey("Id")
-                        .HasName("p_k_staff_assignments");
-
-                    b.HasIndex(new[] { "StaffProfileId" }, "ix_staff_assignments_staff_profile_id")
-                        .HasDatabaseName("ix_staff_assignments_staff_profile_id");
-
-                    b.HasIndex(new[] { "TargetId" }, "ix_staff_assignments_target_id")
-                        .HasDatabaseName("ix_staff_assignments_target_id");
-
-                    b.ToTable("staff_assignments", (string)null);
-                });
-
             modelBuilder.Entity("MassTransit.EntityFrameworkCoreIntegration.InboxState", b =>
                 {
                     b.Property<long>("Id")
@@ -528,6 +261,435 @@ namespace RoomTrack.Profiles.API.Infrastructure.Persistence.Migrations
                         .HasName("p_k_data_protection_keys");
 
                     b.ToTable("data_protection_keys");
+                });
+
+            modelBuilder.Entity("RoomTrack.Marketing.Domain.Model.Aggregates.DemoRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AccommodationType")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("accommodation_type");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(254)
+                        .HasColumnType("varchar(254)")
+                        .HasColumnName("email");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("first_name");
+
+                    b.Property<DateTimeOffset?>("FollowedUpAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("followed_up_at");
+
+                    b.Property<string>("HotelName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("hotel_name");
+
+                    b.Property<string>("JobTitle")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("varchar(60)")
+                        .HasColumnName("job_title");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("last_name");
+
+                    b.Property<string>("Message")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)")
+                        .HasColumnName("message");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(16)
+                        .HasColumnType("varchar(16)")
+                        .HasColumnName("phone");
+
+                    b.Property<string>("Profile")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("profile");
+
+                    b.Property<DateTimeOffset>("ReceivedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("received_at");
+
+                    b.Property<string>("ReferralSource")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("referral_source");
+
+                    b.Property<string>("RoomsRange")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("rooms_range");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("status");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_demo_requests");
+
+                    b.HasIndex("Email")
+                        .HasDatabaseName("i_x_demo_requests__email");
+
+                    b.HasIndex("Status", "ReceivedAt")
+                        .HasDatabaseName("i_x_demo_requests__status__received_at");
+
+                    b.ToTable("demo_requests", (string)null);
+                });
+
+            modelBuilder.Entity("RoomTrack.Profiles.Domain.Model.Aggregates.GuestProfile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("phone");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("status");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("updated_at");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_guest_profiles");
+
+                    b.HasIndex(new[] { "UserId" }, "ix_guest_profiles_user_id")
+                        .IsUnique()
+                        .HasDatabaseName("ix_guest_profiles_user_id");
+
+                    b.ToTable("guest_profiles", (string)null);
+                });
+
+            modelBuilder.Entity("RoomTrack.Profiles.Domain.Model.Aggregates.StaffProfile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("code");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("phone");
+
+                    b.Property<string>("Position")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("position");
+
+                    b.Property<string>("Shift")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("shift");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("status");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("updated_at");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_staff_profiles");
+
+                    b.HasIndex(new[] { "Code" }, "ix_staff_profiles_employee_code")
+                        .IsUnique()
+                        .HasDatabaseName("ix_staff_profiles_employee_code");
+
+                    b.HasIndex(new[] { "UserId" }, "ix_staff_profiles_user_id")
+                        .IsUnique()
+                        .HasDatabaseName("ix_staff_profiles_user_id");
+
+                    b.ToTable("staff_profiles", (string)null);
+                });
+
+            modelBuilder.Entity("RoomTrack.Profiles.Domain.Model.Entities.StaffAssignment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("role");
+
+                    b.Property<string>("Scope")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("scope");
+
+                    b.Property<Guid>("StaffProfileId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("staff_profile_id");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("status");
+
+                    b.Property<int>("TargetId")
+                        .HasColumnType("int")
+                        .HasColumnName("target_id");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_staff_assignments");
+
+                    b.HasIndex(new[] { "StaffProfileId" }, "ix_staff_assignments_staff_profile_id")
+                        .HasDatabaseName("ix_staff_assignments_staff_profile_id");
+
+                    b.HasIndex(new[] { "TargetId" }, "ix_staff_assignments_target_id")
+                        .HasDatabaseName("ix_staff_assignments_target_id");
+
+                    b.ToTable("staff_assignments", (string)null);
+                });
+
+            modelBuilder.Entity("RoomTrack.Profiles.Infrastructure.Persistence.EFC.Entities.EmployeeCodeSequence", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<int>("LastValue")
+                        .HasColumnType("int")
+                        .HasColumnName("last_value");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_employee_code_sequences");
+
+                    b.ToTable("employee_code_sequences", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            LastValue = 0
+                        });
+                });
+
+            modelBuilder.Entity("RoomTrack.Shifts.Domain.ShiftAssignee", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)")
+                        .HasColumnName("display_name");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("WorkShiftId")
+                        .HasColumnType("int")
+                        .HasColumnName("work_shift_id");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_work_shift_assignees");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("i_x_work_shift_assignees__user_id");
+
+                    b.HasIndex("WorkShiftId", "UserId")
+                        .IsUnique()
+                        .HasDatabaseName("i_x_work_shift_assignees__work_shift_id__user_id");
+
+                    b.ToTable("work_shift_assignees", (string)null);
+                });
+
+            modelBuilder.Entity("RoomTrack.Shifts.Domain.ShiftSwapRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ColleagueShiftId")
+                        .HasColumnType("int")
+                        .HasColumnName("colleague_shift_id");
+
+                    b.Property<int>("ColleagueUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("colleague_user_id");
+
+                    b.Property<DateTimeOffset?>("DecidedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("decided_at");
+
+                    b.Property<int?>("DecidedByUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("decided_by_user_id");
+
+                    b.Property<int>("HotelId")
+                        .HasColumnType("int")
+                        .HasColumnName("hotel_id");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(300)
+                        .HasColumnType("varchar(300)")
+                        .HasColumnName("reason");
+
+                    b.Property<DateTimeOffset>("RequestedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("requested_at");
+
+                    b.Property<int>("RequesterShiftId")
+                        .HasColumnType("int")
+                        .HasColumnName("requester_shift_id");
+
+                    b.Property<int>("RequesterUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("requester_user_id");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("status");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_shift_swap_requests");
+
+                    b.HasIndex("HotelId", "Status")
+                        .HasDatabaseName("i_x_shift_swap_requests__hotel_id__status");
+
+                    b.ToTable("shift_swap_requests", (string)null);
+                });
+
+            modelBuilder.Entity("RoomTrack.Shifts.Domain.WorkShift", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Area")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("area");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date")
+                        .HasColumnName("date");
+
+                    b.Property<int>("HotelId")
+                        .HasColumnType("int")
+                        .HasColumnName("hotel_id");
+
+                    b.Property<int>("MinimumStaff")
+                        .HasColumnType("int")
+                        .HasColumnName("minimum_staff");
+
+                    b.Property<string>("Period")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("period");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_work_shifts");
+
+                    b.HasIndex("HotelId", "Date", "Period", "Area")
+                        .IsUnique()
+                        .HasDatabaseName("i_x_work_shifts__hotel_id__date__period__area");
+
+                    b.ToTable("work_shifts", (string)null);
+                });
+
+            modelBuilder.Entity("MassTransit.EntityFrameworkCoreIntegration.OutboxMessage", b =>
+                {
+                    b.HasOne("MassTransit.EntityFrameworkCoreIntegration.OutboxState", null)
+                        .WithMany()
+                        .HasForeignKey("OutboxId")
+                        .HasConstraintName("f_k_outbox_messages__outbox_state__outbox_id");
+
+                    b.HasOne("MassTransit.EntityFrameworkCoreIntegration.InboxState", null)
+                        .WithMany()
+                        .HasForeignKey("InboxMessageId", "InboxConsumerId")
+                        .HasPrincipalKey("MessageId", "ConsumerId")
+                        .HasConstraintName("f_k_outbox_messages_inbox_states__inbox_message_id__inbox_consumer_id");
                 });
 
             modelBuilder.Entity("RoomTrack.Profiles.Domain.Model.Aggregates.GuestProfile", b =>
@@ -822,23 +984,24 @@ namespace RoomTrack.Profiles.API.Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MassTransit.EntityFrameworkCoreIntegration.OutboxMessage", b =>
+            modelBuilder.Entity("RoomTrack.Shifts.Domain.ShiftAssignee", b =>
                 {
-                    b.HasOne("MassTransit.EntityFrameworkCoreIntegration.OutboxState", null)
-                        .WithMany()
-                        .HasForeignKey("OutboxId")
-                        .HasConstraintName("f_k_outbox_messages__outbox_state__outbox_id");
-
-                    b.HasOne("MassTransit.EntityFrameworkCoreIntegration.InboxState", null)
-                        .WithMany()
-                        .HasForeignKey("InboxMessageId", "InboxConsumerId")
-                        .HasPrincipalKey("MessageId", "ConsumerId")
-                        .HasConstraintName("f_k_outbox_messages_inbox_states__inbox_message_id__inbox_consumer_id");
+                    b.HasOne("RoomTrack.Shifts.Domain.WorkShift", null)
+                        .WithMany("Assignees")
+                        .HasForeignKey("WorkShiftId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("f_k_work_shift_assignees_work_shifts__work_shift_id");
                 });
 
             modelBuilder.Entity("RoomTrack.Profiles.Domain.Model.Aggregates.StaffProfile", b =>
                 {
                     b.Navigation("Assignments");
+                });
+
+            modelBuilder.Entity("RoomTrack.Shifts.Domain.WorkShift", b =>
+                {
+                    b.Navigation("Assignees");
                 });
 #pragma warning restore 612, 618
         }
