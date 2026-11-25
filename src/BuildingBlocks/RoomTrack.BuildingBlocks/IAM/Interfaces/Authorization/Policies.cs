@@ -98,6 +98,19 @@ public static class Policies
     /// <summary>Register the payment of a booking received by the hotel (D1).</summary>
     public const string RegisterPayments = nameof(RegisterPayments);
 
+    /// <summary>Read the folio of a stay and the receipts of its payments (guests only of their own bookings).</summary>
+    public const string ReadFolios = nameof(ReadFolios);
+    /// <summary>Post additional charges, hold the guarantee deposit and manage receipts (front desk, US-16/17).</summary>
+    public const string ManageFolios = nameof(ManageFolios);
+    /// <summary>Pay the balance of a folio and give the invoice data (guest or front desk, US-16/17).</summary>
+    public const string SettleFolios = nameof(SettleFolios);
+
+    // ── Shifts (US-31, US-32) ────────────────────────────────────────
+    /// <summary>Leave and read the shift handovers of the hotel and see the shift schedule.</summary>
+    public const string UseShifts = nameof(UseShifts);
+    /// <summary>Define shifts, assign staff, review coverage and approve shift swaps.</summary>
+    public const string ManageShifts = nameof(ManageShifts);
+
     // ── Analytics ────────────────────────────────────────────────────
     /// <summary>Read the performance dashboard (KPIs).</summary>
     public const string ViewAnalytics = nameof(ViewAnalytics);
@@ -203,6 +216,12 @@ public static class Policies
 
         [ReadPayments] = GuestOrFrontDesk,
         [RegisterPayments] = FrontDesk,
+        [ReadFolios] = GuestOrFrontDesk,
+        [ManageFolios] = FrontDesk,
+        [SettleFolios] = GuestOrFrontDesk,
+
+        [UseShifts] = HotelStaff,
+        [ManageShifts] = Administrators,
 
         [ViewAnalytics] = Administrators,
         [OperateAnalyticsLab] = [UserRoles.ChainAdmin],
