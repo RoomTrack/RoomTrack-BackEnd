@@ -64,7 +64,7 @@ fecha con su personal, huecos de cobertura y cambios de turno aprobados por un a
 
 La agrupación de Incidencias dentro de Accommodations y de Pagos dentro de Bookings está justificada en
 [`docs/adr/ADR-001-agrupacion-de-bounded-contexts.md`](docs/adr/ADR-001-agrupacion-de-bounded-contexts.md). El despliegue
-objetivo en AWS está en [`docs/arquitectura-cloud-aws.md`](docs/arquitectura-cloud-aws.md).
+objetivo en Microsoft Azure está en [`docs/arquitectura-cloud-azure.md`](docs/arquitectura-cloud-azure.md).
 
 Las notificaciones push (US-22) avisan de estos cambios a quien corresponde: el personal asignado, el área o el huésped.
 

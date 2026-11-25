@@ -1,6 +1,6 @@
 # ADR-001 — Incidencias dentro de `accommodations-service` y Pagos dentro de `bookings-service`
 
-- **Estado:** Aceptada (25/11/2026). Revisable antes del despliegue en AWS (ver "Cuándo revisarla").
+- **Estado:** Aceptada (25/11/2026). Revisable antes del despliegue en Azure (ver "Cuándo revisarla").
 - **Contexto de la observación:** retroalimentación del Avance 4 (criterio 2, *Refactoring to Microservices*): de los
   7 bounded contexts de CON-01, 5 tienen servicio propio; Incidencias está dentro de Accommodations y Pagos y
   Facturación dentro de Bookings. Se pide extraerlos o justificar formalmente la agrupación.
@@ -65,7 +65,7 @@ Se extraerá `incidents-service` o `billing-service` cuando se cumpla **alguno**
    cambio, dependencias externas y requisitos de cumplimiento (PCI) propios → `billing-service`.
 2. Mantenimiento se integre con sensores IoT o un CMMS externo, o su volumen supere al de Habitaciones →
    `maintenance-service`.
-3. Se migre a AWS con despliegue independiente por equipo (ver `docs/arquitectura-cloud-aws.md`).
+3. Se migre a Azure con despliegue independiente por equipo (ver `docs/arquitectura-cloud-azure.md`).
 
 El plan de extracción (strangler fig) sería: (1) publicar los eventos que hoy son internos como eventos de integración,
 (2) reemplazar la llamada transaccional por una saga orquestada con compensación (`HoldRoomForIncident` ↔
