@@ -27,6 +27,9 @@ public static class ModelBuilderExtensions
         builder.Entity<Incident>().HasIndex(i => new { i.HotelId, i.Status });
         builder.Entity<Incident>().HasIndex(i => new { i.RoomId, i.Status });
         builder.Entity<Incident>().HasIndex(i => new { i.AssigneeUserId, i.Status });
+        builder.Entity<Incident>().Property(i => i.Kind).HasConversion<string>().HasMaxLength(20).IsRequired();
+        builder.Entity<Incident>().HasIndex(i => new { i.RoomId, i.ReportedAt });
+        builder.Entity<Incident>().HasIndex(i => i.PreventivePlanId);
 
         // History, append-only, owned by the incident
         builder.Entity<Incident>().HasMany(i => i.History).WithOne().HasForeignKey(h => h.IncidentId)
@@ -37,10 +40,27 @@ public static class ModelBuilderExtensions
         builder.Entity<IncidentHistoryEntry>().ToTable("incident_history");
         builder.Entity<IncidentHistoryEntry>().HasKey(h => h.Id);
         builder.Entity<IncidentHistoryEntry>().Property(h => h.Id).ValueGeneratedOnAdd();
-        builder.Entity<IncidentHistoryEntry>().Property(h => h.Action).HasConversion<string>().HasMaxLength(20).IsRequired();
+        builder.Entity<IncidentHistoryEntry>().Property(h => h.Action).HasConversion<string>().HasMaxLength(30).IsRequired();
         builder.Entity<IncidentHistoryEntry>().Property(h => h.Status).HasConversion<string>().HasMaxLength(20).IsRequired();
         builder.Entity<IncidentHistoryEntry>().Property(h => h.Detail).HasMaxLength(IncidentHistoryEntry.MaxDetailLength);
         builder.Entity<IncidentHistoryEntry>().Property(h => h.ActorEmail).HasMaxLength(IncidentHistoryEntry.MaxEmailLength);
         builder.Entity<IncidentHistoryEntry>().HasIndex(h => new { h.IncidentId, h.OccurredAt });
+    }
+}
+
+public static class PreventiveMaintenanceModelBuilderExtensions
+{
+    /// <summary>Preventive maintenance plans of the rooms (US-30). The room is a logical reference (id).</summary>
+    public static void ApplyPreventiveMaintenanceConfiguration(this ModelBuilder builder)
+    {
+        builder.Entity<PreventiveMaintenancePlan>().ToTable("preventive_maintenance_plans");
+        builder.Entity<PreventiveMaintenancePlan>().HasKey(p => p.Id);
+        builder.Entity<PreventiveMaintenancePlan>().Property(p => p.Id).ValueGeneratedOnAdd();
+        builder.Entity<PreventiveMaintenancePlan>().Property(p => p.Title).IsRequired().HasMaxLength(PreventiveMaintenancePlan.TitleMaxLength);
+        builder.Entity<PreventiveMaintenancePlan>().Property(p => p.Description).HasMaxLength(PreventiveMaintenancePlan.DescriptionMaxLength);
+        builder.Entity<PreventiveMaintenancePlan>().Ignore(p => p.DomainEvents);
+        builder.Entity<PreventiveMaintenancePlan>().HasIndex(p => new { p.HotelId, p.IsActive });
+        builder.Entity<PreventiveMaintenancePlan>().HasIndex(p => new { p.IsActive, p.NextDueOn });
+        builder.Entity<PreventiveMaintenancePlan>().HasIndex(p => p.RoomId);
     }
 }

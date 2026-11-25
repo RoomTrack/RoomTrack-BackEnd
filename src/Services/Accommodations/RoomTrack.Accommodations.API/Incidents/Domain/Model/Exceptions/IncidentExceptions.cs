@@ -36,3 +36,15 @@ public class IncidentNotAssignedException(int incidentId)
 public class NotIncidentAssigneeException(int incidentId)
     : OperationNotAllowedException(IncidentErrorCodes.NotAssignee,
         $"Incident {incidentId} is assigned to someone else. Only its assignee or an administrator can work on it.");
+
+/// <summary>Stable error codes of the preventive maintenance plans (US-30).</summary>
+public static class PreventiveMaintenanceErrorCodes
+{
+    public const string TitleLength = "preventive_maintenance.title_length";
+    public const string DescriptionLength = "preventive_maintenance.description_length";
+    public const string FrequencyRange = "preventive_maintenance.frequency_range";
+    public const string ReminderRange = "preventive_maintenance.reminder_range";
+    public const string FirstDueInPast = "preventive_maintenance.first_due_in_past";
+    public const string NotDue = "preventive_maintenance.not_due";
+    public const string Inactive = "preventive_maintenance.inactive";
+}
