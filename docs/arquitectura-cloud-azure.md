@@ -17,7 +17,7 @@ flowchart LR
 
     web & app -->|HTTPS| fd[Azure Front Door + WAF]
 
-    subgraph VNet[Azure Virtual Network 10.0.0.0/16 — región Brazil South o East US 2]
+    subgraph VNet[Azure Virtual Network 10.0.0.0/16 — región Chile Central]
         subgraph CAE[Subred de aplicación — Azure Container Apps Environment]
             gw[Container App<br/>gateway YARP<br/>ingress externo]
             id[Container App<br/>identity-service]
@@ -90,3 +90,20 @@ flowchart LR
 Los servicios siguen siendo contenedores Docker con configuración externalizada y MySQL estándar: el mismo diseño se
 traslada a AWS (ECS Fargate, RDS for MySQL, Amazon MQ) o a Google Cloud (Cloud Run, Cloud SQL) cambiando solo la
 infraestructura, no el código.
+
+## Despliegue con Azure for Students (`deploy/azure/deploy.ps1`)
+
+La suscripción Azure for Students de la UPC solo permite las regiones `westus3`, `mexicocentral`, `southcentralus`,
+`canadacentral` y `chilecentral`; se usa **Chile Central**, la más cercana a Lima. Para no agotar el crédito, el
+despliegue real es un subconjunto del diagrama: Container Apps (plan de consumo, ingress externo solo en el gateway,
+`identity-service`, `analytics-service` y el worker con 1 réplica porque consumen RabbitMQ, el resto escala a cero),
+MySQL Flexible Server *Burstable B1ms* con acceso solo desde servicios de Azure y TLS obligatorio, y Log Analytics.
+Front Door, la VNet privada, Key Vault y ACR se dejan para producción; RabbitMQ (CloudAMQP), Brevo y Cloudinary siguen
+siendo externos, y las imágenes se descargan de GHCR.
+
+```powershell
+Copy-Item deploy\azure\roomtrack.azure.env.example deploy\azure\roomtrack.azure.env   # y completar los REQUIRED
+az login
+.\deploy\azure\deploy.ps1                 # crea o actualiza todo (idempotente)
+.\deploy\azure\deploy.ps1 -UpdateImages   # nueva revisión de cada app tras publicar imágenes
+```

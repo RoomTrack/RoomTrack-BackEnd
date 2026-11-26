@@ -8,3 +8,6 @@ riderModule.iml
 artifacts/
 # Rider / IntelliJ (per-developer settings)
 .idea/
+
+# Azure deployment settings and secrets (deploy/azure/deploy.ps1)
+deploy/azure/roomtrack.azure.env
