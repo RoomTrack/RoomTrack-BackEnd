@@ -57,7 +57,7 @@ public class ShiftHandoversController(
         var hotelId = User.GetHotelId()
                       ?? throw new InvalidFieldException("hotelId", AccommodationErrorCodes.HotelRequired,
                           "Only the staff of a hotel hands over a shift.");
-        var handover = await commandService.Handle(new CreateShiftHandoverCommand(hotelId, resource.Area, resource.Notes, Actor()));
+        var handover = await commandService.Handle(new CreateShiftHandoverCommand(hotelId, resource.ToArea(), resource.Notes, Actor()));
         return CreatedAtAction(nameof(GetShiftHandover), new { shiftHandoverId = handover.Id },
             ShiftHandoverResourceAssembler.ToResource(handover, User.GetUserId()));
     }

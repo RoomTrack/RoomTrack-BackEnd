@@ -1,10 +1,12 @@
+using RoomTrack.Shared.Domain.Model.Exceptions;
+using RoomTrack.Shared.Infrastructure.Interfaces.ASP.Validation;
 using System.ComponentModel.DataAnnotations;
 using RoomTrack.ShiftHandovers.Domain.Model.ValueObjects;
 
 namespace RoomTrack.ShiftHandovers.Interfaces.REST.Resources;
 
 /// <summary>The end of a shift (US-32).</summary>
-public record CreateShiftHandoverResource
+public record CreateShiftHandoverResource : IValidatableObject
 {
     /// <summary>What the next shift must know (up to 2000 characters).</summary>
     /// <example>La 204 pidió almohadas extra para las 20:00. La 310 sigue con olor a humedad, avisé a mantenimiento.</example>
@@ -14,7 +16,18 @@ public record CreateShiftHandoverResource
     ///     FrontDesk, Housekeeping or Maintenance. Only an administrator names it; staff hand over the area of their role.
     /// </summary>
     /// <example>Housekeeping</example>
-    public ShiftArea? Area { get; init; }
+    public string? Area { get; init; }
+
+    public ShiftArea? ToArea() => string.IsNullOrWhiteSpace(Area) ? null : Enum.Parse<ShiftArea>(Area, ignoreCase: true);
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (!string.IsNullOrWhiteSpace(Area)
+            && (int.TryParse(Area, out _) || !Enum.TryParse<ShiftArea>(Area, true, out var parsed) || !Enum.IsDefined(parsed)))
+            yield return new CodedValidationResult(ErrorCodes.FieldNotAllowed,
+                $"Area must be one of: {string.Join(", ", Enum.GetNames<ShiftArea>())}.", ["area"],
+                new Dictionary<string, object?> { ["allowed"] = Enum.GetNames<ShiftArea>() });
+    }
 }
 
 /// <summary>A task or incident open when the shift ended.</summary>

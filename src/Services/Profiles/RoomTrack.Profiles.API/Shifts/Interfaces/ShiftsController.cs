@@ -1,3 +1,4 @@
+using RoomTrack.Shared.Infrastructure.Interfaces.ASP.Validation;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,22 +12,22 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace RoomTrack.Shifts.Interfaces;
 
 /// <summary>A new shift of an area (US-31).</summary>
-public record DefineShiftResource
+public record DefineShiftResource : IValidatableObject
 {
     /// <summary>The date (yyyy-MM-dd, today or later).</summary>
     /// <example>2026-12-01</example>
     [Required]
     public DateOnly? Date { get; init; }
 
-    /// <summary>Morning (07-15), Afternoon (15-23) or Night (23-07).</summary>
+    /// <summary>Morning (07-15), Afternoon (15-23) or Night (23-07), case-insensitive.</summary>
     /// <example>Morning</example>
     [Required]
-    public ShiftPeriod? Period { get; init; }
+    public string? Period { get; init; }
 
-    /// <summary>FrontDesk, Housekeeping or Maintenance.</summary>
+    /// <summary>FrontDesk, Housekeeping or Maintenance, case-insensitive.</summary>
     /// <example>Housekeeping</example>
     [Required]
-    public ShiftArea? Area { get; init; }
+    public string? Area { get; init; }
 
     /// <summary>People the area needs (1-50).</summary>
     /// <example>3</example>
@@ -35,6 +36,25 @@ public record DefineShiftResource
 
     /// <summary>The staff members who work it (IAM user ids of the hotel's staff).</summary>
     public IReadOnlyList<int>? AssigneeUserIds { get; init; }
+
+    public ShiftPeriod ToPeriod() => Enum.Parse<ShiftPeriod>(Period!, ignoreCase: true);
+
+    public ShiftArea ToArea() => Enum.Parse<ShiftArea>(Area!, ignoreCase: true);
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext) =>
+        ShiftEnumValidation.Validate<ShiftPeriod>(Period, "period").Concat(ShiftEnumValidation.Validate<ShiftArea>(Area, "area"));
+}
+
+internal static class ShiftEnumValidation
+{
+    public static IEnumerable<ValidationResult> Validate<TEnum>(string? value, string field) where TEnum : struct, Enum
+    {
+        if (!string.IsNullOrWhiteSpace(value)
+            && (int.TryParse(value, out _) || !Enum.TryParse<TEnum>(value, true, out var parsed) || !Enum.IsDefined(parsed)))
+            yield return new CodedValidationResult(ErrorCodes.FieldNotAllowed,
+                $"{field} must be one of: {string.Join(", ", Enum.GetNames<TEnum>())}.", [field],
+                new Dictionary<string, object?> { ["allowed"] = Enum.GetNames<TEnum>() });
+    }
 }
 
 /// <summary>A staff member to add to a shift.</summary>
@@ -137,7 +157,7 @@ public class ShiftsController(ShiftService shiftService) : ControllerBase
     [OpenApiResponseExample(StatusCodes.Status201Created, ShiftExample)]
     public async Task<IActionResult> DefineShift([FromQuery] int? hotelId, [FromBody] DefineShiftResource resource)
     {
-        var shift = await shiftService.DefineAsync(HotelOf(hotelId), resource.Date!.Value, resource.Period!.Value, resource.Area!.Value,
+        var shift = await shiftService.DefineAsync(HotelOf(hotelId), resource.Date!.Value, resource.ToPeriod(), resource.ToArea(),
             resource.MinimumStaff!.Value, resource.AssigneeUserIds ?? [], User.GetUserId());
         return CreatedAtAction(nameof(GetShift), new { shiftId = shift.Id }, ToResource(shift));
     }
