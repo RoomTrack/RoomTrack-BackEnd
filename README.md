@@ -4,9 +4,10 @@ API REST de RoomTrack (ASP.NET Core 9, MySQL 8, RabbitMQ) organizada como **micr
 cinco servicios con su propia base de datos y un worker de notificaciones. Los clientes solo hablan con el gateway;
 la documentación de todos los servicios está en `http://localhost:8080/docs`.
 
-**Producción:** API en `https://roomtrack-api.onrender.com/api/v1/...` y Swagger UI de todos los servicios en
-[https://roomtrack-api.onrender.com/docs](https://roomtrack-api.onrender.com/docs) (si los servicios están dormidos,
-la primera carga tarda ~30–60 s).
+**Producción (Azure Container Apps, Chile Central):** API en `https://gateway.bravepond-f06cc29c.chilecentral.azurecontainerapps.io/api/v1/...` y Swagger UI de
+todos los servicios en [https://gateway.bravepond-f06cc29c.chilecentral.azurecontainerapps.io/docs](https://gateway.bravepond-f06cc29c.chilecentral.azurecontainerapps.io/docs) (el gateway y
+algunos servicios escalan a cero: la primera petición tras un rato sin uso tarda ~10–20 s). Ver
+[Despliegue en Azure](#despliegue-en-azure).
 
 ## Arquitectura
 
@@ -242,6 +243,33 @@ producto completo) con ejemplos JSON de request y response en las operaciones pr
 **CI** (`.github/workflows/ci.yml`): en cada push y pull request a `develop` y `main` compila la solución y corre
 todos los tests, con un MySQL 8 como servicio del job. Los resultados quedan como artefacto `test-results` del run.
 
+## Despliegue en Azure
+
+El sistema corre en **Azure Container Apps** (suscripción Azure for Students, región Chile Central), desplegado con
+`deploy/azure/deploy.ps1`; la arquitectura objetivo y lo que se dejó para producción están en
+[`docs/arquitectura-cloud-azure.md`](docs/arquitectura-cloud-azure.md).
+
+| Recurso (grupo `rg-roomtrack`) | Detalle |
+|---|---|
+| `gateway` | Ingress externo HTTPS: `https://gateway.bravepond-f06cc29c.chilecentral.azurecontainerapps.io` |
+| `identity-service`, `accommodations-service`, `bookings-service`, `profiles-service`, `analytics-service` | Ingress interno; se llaman por nombre (`http://identity-service`...). `identity` y `analytics` mantienen 1 réplica porque consumen eventos de RabbitMQ; el resto escala a cero |
+| `notifications-worker` | Sin ingress, 1 réplica (consume RabbitMQ) |
+| `roomtrack-mysql-gre6r` | Azure Database for MySQL Flexible Server B1ms: una base y un usuario por servicio, acceso solo desde servicios de Azure, TLS obligatorio |
+| Externos | RabbitMQ (CloudAMQP), Brevo (correo), Cloudinary (imágenes); las imágenes Docker vienen de GHCR (`docker-publish.yml`) |
+
+```powershell
+az login
+Copy-Item deploy\azure\roomtrack.azure.env.example deploy\azure\roomtrack.azure.env   # primera vez: completar los REQUIRED
+.\deploy\azure\deploy.ps1                 # crea o actualiza todo (idempotente; la primera vez necesita Docker)
+.\deploy\azure\deploy.ps1 -UpdateImages   # tras publicar imágenes nuevas: nueva revisión de cada app
+```
+
+`roomtrack.azure.env` (git-ignored) guarda los secretos y las contraseñas generadas en el primer despliegue: no se sube
+al repositorio y no hay que regenerarlo. El scheduler (`scheduler.yml`) usa la variable `API_BASE_URL`
+(`https://gateway.bravepond-f06cc29c.chilecentral.azurecontainerapps.io/api/v1`) y el secret `CRON_API_KEY` (el mismo valor que en `roomtrack.azure.env`).
+
+`render.yaml` describe el despliegue anterior en el plan gratuito de Render.
+
 ## Configuración y secretos
 
 Cada servicio lee su configuración por capas: `appsettings.json` (sin secretos), `appsettings.{Environment}.json`
@@ -274,8 +302,8 @@ con el destinatario enmascarado; nunca la API key ni el cuerpo.
   JSON de una cuenta de servicio del proyecto de Firebase con el rol *Firebase Cloud Messaging API Admin*, completa y
   en una sola línea. `Push__Fcm__ProjectId` es opcional (por defecto, el `project_id` de la clave). Si la clave no
   es válida, el worker no arranca.
-- `Log` (por defecto): la notificación se escribe en el log. Es lo que usa Render mientras no haya un proyecto de
-  Firebase configurado.
+- `Log` (por defecto): la notificación se escribe en el log. Es lo que usa producción mientras no haya un proyecto
+  de Firebase configurado.
 
 Los errores temporales de FCM (429, 5xx, timeouts) se reintentan; si FCM rechaza las credenciales (401/403), el
 mensaje falla y el error queda en el log.
@@ -296,7 +324,7 @@ saltando solo proxies de confianza: loopback, rangos privados (las redes de Dock
 Cloudflare. Así el cliente no puede falsear su IP. `ForwardedHeaders__TrustedNetworks__0`, `__1`... reemplazan la
 lista por defecto.
 
-**Servicios dormidos** (plan gratuito de Render, `render.yaml`). Cada servicio se duerme tras ~15 min sin tráfico, y
+**Servicios dormidos** (solo en el plan gratuito de Render, `render.yaml`; en Azure no aplica y `KeepAwake__Urls` va vacío). Cada servicio se duerme tras ~15 min sin tráfico, y
 Render solo lo despierta con tráfico de fuera de Render: las llamadas del gateway no bastan. Por eso `/docs` despierta a
 todos desde el navegador (un `fetch` `no-cors` al `/health` público de cada URL de `KeepAwake__Urls`, `KeepAwake.cs`), y
 antes de reenviar a un servicio que no ha respondido en los últimos 10 minutos el gateway consulta su `/health` hasta
