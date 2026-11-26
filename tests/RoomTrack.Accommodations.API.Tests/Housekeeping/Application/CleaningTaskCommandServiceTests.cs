@@ -67,16 +67,18 @@ public class CleaningTaskCommandServiceTests : IDisposable
         var tasks = new CleaningTaskRepository(_context);
         var settings = new HotelHousekeepingSettingsRepository(_context);
         var strategy = new LeastWorkloadAssignmentStrategy(tasks, _iam);
-        var dispatcher = new RoomEventsDispatcher(new RoomCleaningTaskHandler(tasks, settings, strategy, TimeProvider.System));
-        var unitOfWork = new UnitOfWork(_context, dispatcher);
+        var checklists = new CleaningChecklistTemplateRepository(_context);
         var roomRepository = new RoomRepository(_context);
         var statusChanges = new RoomStatusChangeRepository(_context);
         var roomQueries = new RoomQueryService(roomRepository, statusChanges);
+        var dispatcher = new RoomEventsDispatcher(new RoomCleaningTaskHandler(tasks, settings, checklists, roomQueries, strategy,
+            TimeProvider.System));
+        var unitOfWork = new UnitOfWork(_context, dispatcher);
         _rooms = new RoomCommandService(roomRepository, statusChanges, new RoomTypeRepository(_context), null!, unitOfWork,
             Options.Create(new RoomOperationsSettings()), TimeProvider.System, null!);
         _incidents = new IncidentCommandService(new IncidentRepository(_context), roomQueries, _rooms, _iam, unitOfWork,
             Options.Create(new IncidentSettings()), TimeProvider.System);
-        _service = new CleaningTaskCommandService(tasks, settings, strategy, roomQueries, _rooms, _incidents, _iam, unitOfWork,
+        _service = new CleaningTaskCommandService(tasks, settings, checklists, strategy, roomQueries, _rooms, _incidents, _iam, unitOfWork,
             TimeProvider.System);
         Seed();
     }

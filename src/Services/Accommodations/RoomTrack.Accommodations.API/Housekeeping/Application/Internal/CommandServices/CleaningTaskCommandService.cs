@@ -26,6 +26,7 @@ namespace RoomTrack.Housekeeping.Application.Internal.CommandServices;
 public class CleaningTaskCommandService(
     ICleaningTaskRepository cleaningTaskRepository,
     IHotelHousekeepingSettingsRepository settingsRepository,
+    ICleaningChecklistTemplateRepository checklistTemplateRepository,
     ICleaningTaskAssignmentStrategy assignmentStrategy,
     IRoomQueryService roomQueryService,
     IRoomCommandService roomCommandService,
@@ -40,7 +41,8 @@ public class CleaningTaskCommandService(
                    ?? throw new EntityNotFoundException("Room", command.RoomId);
 
         var now = timeProvider.GetUtcNow();
-        var task = CleaningTask.Create(room.HotelId, room.Id, command.Priority, command.Notes, command.Actor, now);
+        var checklist = await checklistTemplateRepository.ResolveForRoomTypeAsync(room.HotelId, room.RoomTypeId);
+        var task = CleaningTask.Create(room.HotelId, room.Id, command.Priority, command.Notes, command.Actor, now, checklist);
         if (command.AssigneeUserId is { } assigneeUserId)
         {
             await EnsureHousekeeperOfHotelAsync(task.HotelId, assigneeUserId);
@@ -170,6 +172,33 @@ public class CleaningTaskCommandService(
         settings.Configure(command.AutoAssign, command.UpdatedByUserId, timeProvider.GetUtcNow());
         await unitOfWork.CompleteAsync();
         return settings;
+    }
+
+    public async Task<CleaningTask?> Handle(MarkCleaningChecklistItemCommand command)
+    {
+        var task = await cleaningTaskRepository.FindByIdAsync(command.CleaningTaskId);
+        if (task is null) return null;
+
+        var now = timeProvider.GetUtcNow();
+        // A housekeeper ticking a step of an unassigned task takes it, as when starting it.
+        if (task.AssigneeUserId is null && command.Actor.Role == CleaningTaskRole.Housekeeper)
+            task.AssignTo(command.Actor.UserId, command.Actor, now);
+        task.MarkChecklistItem(command.ItemId, command.Done, command.Actor, now);
+        await unitOfWork.CompleteAsync();
+        return task;
+    }
+
+    public async Task<CleaningChecklistTemplate> Handle(ConfigureCleaningChecklistCommand command)
+    {
+        var template = await checklistTemplateRepository.FindAsync(command.HotelId, command.RoomTypeId);
+        if (template is null)
+        {
+            template = new CleaningChecklistTemplate(command.HotelId, command.RoomTypeId);
+            await checklistTemplateRepository.AddAsync(template);
+        }
+        template.Configure(command.Items, command.UpdatedByUserId, timeProvider.GetUtcNow());
+        await unitOfWork.CompleteAsync();
+        return template;
     }
 
     private async Task EnsureHousekeeperOfHotelAsync(int hotelId, int userId)

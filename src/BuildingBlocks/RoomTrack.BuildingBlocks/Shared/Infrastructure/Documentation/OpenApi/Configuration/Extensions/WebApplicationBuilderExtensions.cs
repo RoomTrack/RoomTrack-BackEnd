@@ -8,6 +8,19 @@ namespace RoomTrack.Shared.Infrastructure.Documentation.OpenApi.Configuration.Ex
 /// </summary>
 public static class WebApplicationBuilderExtensions
 {
+    private const string CommonDescription = """
+
+
+        **Gateway.** Every service is published behind the YARP API gateway, which routes `/api/v1/...` to it; this
+        document describes only the operations of this service.
+
+        **Authentication.** Sign in with `POST /api/v1/authentication/sign-in` (Identity service) and send the returned
+        `token` as `Authorization: Bearer <token>`. Access tokens last 30 minutes.
+
+        **Errors.** Every error is an RFC 7807 ProblemDetails (`application/problem+json`): read `detail`, branch on the
+        stable `code` (e.g. `cleaning_task.checklist_incomplete`); validation errors list each invalid field in `errors`.
+        """;
+
     /// <summary>
     /// Configures OpenAPI/Swagger documentation services with JWT authentication support.
     /// </summary>
@@ -25,18 +38,7 @@ public static class WebApplicationBuilderExtensions
                 {
                     Title = $"RoomTrack {serviceTitle} API",
                     Version = "v1",
-                    Description = """
-                        REST API of RoomTrack, the hotel management platform: accounts and access (authentication,
-                        users, audit log), hotels and rooms, bookings and payments, guest and staff profiles, analytics
-                        and demo requests from the landing.
-
-                        **Authentication.** Sign in with `POST /api/v1/authentication/sign-in` and send the returned
-                        `token` as `Authorization: Bearer <token>`. Access tokens last 30 minutes; with `rememberMe`
-                        the response also carries a refresh token for `POST /api/v1/authentication/refresh`.
-
-                        **Errors.** Every error is an RFC 7807 ProblemDetails (`application/problem+json`): read
-                        `detail`; validation errors list each invalid field in `errors`.
-                        """,
+                    Description = ServiceDescriptions.For(serviceTitle) + CommonDescription,
                     Contact = new OpenApiContact
                     {
                         Name = "RoomTrack",
@@ -73,6 +75,9 @@ public static class WebApplicationBuilderExtensions
             options.OperationFilter<BearerSecurityRequirementOperationFilter>();
 
             options.EnableAnnotations();
+
+            // Request and response JSON examples of the operations ([OpenApiRequestExample]/[OpenApiResponseExample]).
+            options.OperationFilter<OpenApiExamplesOperationFilter>();
 
             // XML documentation comments: summaries, remarks, parameters and <example> values of the resources.
             options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{builder.Environment.ApplicationName}.xml"), includeControllerXmlComments: true);

@@ -68,6 +68,8 @@ public class BookingCommandServiceAclIntegrationTests
 
         public Task<IReadOnlyList<Booking>> ListPendingPaymentDueAsync(DateTimeOffset now) =>
             Task.FromResult<IReadOnlyList<Booking>>([]);
+
+        public Task<IReadOnlyList<int>> ListIdsByHotelAsync(int hotelId) => Task.FromResult<IReadOnlyList<int>>([]);
     }
 
     private class FakeUnitOfWork : IUnitOfWork

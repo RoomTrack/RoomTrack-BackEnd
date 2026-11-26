@@ -1,3 +1,4 @@
+using RoomTrack.Shifts.Infrastructure;
 using RoomTrack.Accommodations.Interfaces.ACL;
 using RoomTrack.Marketing.Infrastructure.Interfaces.ASP.Configuration.Extensions;
 using RoomTrack.Profiles.Infrastructure.Interfaces.ASP.Configuration.Extensions;
@@ -15,6 +16,7 @@ builder.AddRoomTrackServiceDefaults<ProfilesDbContext, Program>("Profiles");
 
 builder.AddProfilesContextServices();
 builder.AddMarketingContextServices();
+builder.AddShiftsServices();
 
 // Ports to the other services (HTTP)
 builder.Services.AddInternalServiceClient<IAccommodationsContextFacade, HttpAccommodationsContextFacade>(builder.Configuration, "Accommodations");

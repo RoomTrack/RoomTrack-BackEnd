@@ -95,4 +95,7 @@ public class BookingRepository(AppDbContext context) : BaseRepository<Booking>(c
             .GroupBy(b => b.RoomId)
             .Select(group => new { RoomId = group.Key, Count = group.Count() })
             .ToDictionaryAsync(row => row.RoomId, row => row.Count);
+
+    public async Task<IReadOnlyList<int>> ListIdsByHotelAsync(int hotelId) =>
+        await Context.Set<Booking>().Where(b => b.HotelId == hotelId).Select(b => b.Id).ToListAsync();
 }

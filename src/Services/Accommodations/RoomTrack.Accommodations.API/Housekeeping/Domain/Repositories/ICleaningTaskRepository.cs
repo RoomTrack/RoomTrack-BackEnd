@@ -1,3 +1,4 @@
+using RoomTrack.Housekeeping.Domain.Model.ValueObjects;
 using RoomTrack.Housekeeping.Domain.Model.Aggregates;
 using RoomTrack.Housekeeping.Domain.Model.Queries;
 
@@ -25,4 +26,28 @@ public interface IHotelHousekeepingSettingsRepository
     Task<HotelHousekeepingSettings?> FindByHotelIdAsync(int hotelId);
 
     Task AddAsync(HotelHousekeepingSettings settings);
+}
+
+public interface ICleaningChecklistTemplateRepository
+{
+    /// <summary>The protocol of the hotel for the room type (null: the hotel's default), with its items, or null.</summary>
+    Task<CleaningChecklistTemplate?> FindAsync(int hotelId, int? roomTypeId);
+
+    /// <summary>Every protocol of the hotel, with their items.</summary>
+    Task<IReadOnlyList<CleaningChecklistTemplate>> ListByHotelAsync(int hotelId);
+
+    Task AddAsync(CleaningChecklistTemplate template);
+}
+
+public static class CleaningChecklistTemplateRepositoryExtensions
+{
+    /// <summary>
+    ///     The steps a new cleaning task of a room of <paramref name="roomTypeId"/> gets (US-07): the hotel's protocol for
+    ///     that type, else the hotel's default protocol, else none (a hotel that configured no protocol keeps completing
+    ///     its tasks without a checklist).
+    /// </summary>
+    public static async Task<IReadOnlyList<ChecklistItemDefinition>> ResolveForRoomTypeAsync(
+        this ICleaningChecklistTemplateRepository repository, int hotelId, int roomTypeId) =>
+        (await repository.FindAsync(hotelId, roomTypeId) ?? await repository.FindAsync(hotelId, null))?.Definitions
+        ?? [];
 }

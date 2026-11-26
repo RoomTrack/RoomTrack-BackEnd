@@ -33,8 +33,14 @@ public class IncidentCommandService(
     {
         var room = await roomQueryService.Handle(new GetRoomByIdQuery(command.RoomId))
                    ?? throw new EntityNotFoundException("Room", command.RoomId);
+        var now = timeProvider.GetUtcNow();
         var incident = Incident.Report(room.HotelId, room.Id, command.Title, command.Description, command.Priority,
-            command.BlocksRoom, command.Reporter, timeProvider.GetUtcNow());
+            command.BlocksRoom, command.Reporter, now);
+
+        // US-10: more than RecurrenceThreshold similar incidents of the room in the window form a pattern.
+        var similar = await incidentRepository.CountSimilarSinceAsync(room.Id, incident.Title,
+            now.AddDays(-settings.Value.RecurrenceWindowDays)) + 1;
+        incident.FlagRecurrence(similar, settings.Value.RecurrenceThreshold, now);
 
         await unitOfWork.ExecuteInTransactionAsync(async () =>
         {

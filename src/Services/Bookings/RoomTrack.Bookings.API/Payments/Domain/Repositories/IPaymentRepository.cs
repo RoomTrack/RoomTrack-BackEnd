@@ -18,4 +18,7 @@ public interface IPaymentRepository : IBaseRepository<Payment>
 
     /// <summary>The completed payment of the booking, or null.</summary>
     Task<Payment?> FindCompletedByBookingIdAsync(int bookingId);
+
+    /// <summary>Completed and refunded payments of the bookings, registered or refunded in the period (US-17 history).</summary>
+    Task<IReadOnlyList<Payment>> ListSettledOfBookingsAsync(IReadOnlyCollection<int> bookingIds, DateTimeOffset from, DateTimeOffset to);
 }

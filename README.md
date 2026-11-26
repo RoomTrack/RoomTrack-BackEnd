@@ -39,9 +39,9 @@ la primera carga tarda ~30–60 s).
 | Servicio | Bounded contexts | Base de datos | Rutas públicas (`/api/v1/...`) |
 |---|---|---|---|
 | `identity-service` | IAM, Audit, Notifications (dispositivos y preferencias de push) | `roomtrack_identity` | `authentication`, `users` (incluye `users/me/push-devices` y `users/me/notification-preferences`), `audit-logs` |
-| `accommodations-service` | Accommodations, Media, emulador IoT, Housekeeping, Incidents, GuestRequests, Messaging | `roomtrack_accommodations` | `hotels`, `rooms`, `room-types`, `accommodations/options`, `media`, `io-t-emulator`, `cleaning-tasks`, `incidents`, `guest-requests`, `conversations` |
-| `bookings-service` | Bookings (con check-in y check-out), Payments | `roomtrack_bookings` | `bookings`, `payments`, `rooms/available` |
-| `profiles-service` | Profiles, Marketing | `roomtrack_profiles` | `guests`, `staff`, `demo-requests` |
+| `accommodations-service` | Accommodations, Media, emulador IoT, Housekeeping, Incidents (con mantenimiento preventivo), GuestRequests, Messaging, ShiftHandovers | `roomtrack_accommodations` | `hotels`, `rooms` (incluye `rooms/{id}/maintenance-history`), `room-types`, `accommodations/options`, `media`, `io-t-emulator`, `cleaning-tasks` (incluye `checklists`), `incidents` (incluye `alerts`), `preventive-maintenance-plans`, `guest-requests`, `conversations`, `shift-handovers` |
+| `bookings-service` | Bookings (con check-in y check-out), Payments (pago de reserva, folio y comprobantes) | `roomtrack_bookings` | `bookings` (incluye `bookings/{id}/folio` y `bookings/{id}/receipts`), `payments` (incluye `payments/history`), `receipts`, `rooms/available` |
+| `profiles-service` | Profiles, Shifts, Marketing | `roomtrack_profiles` | `guests`, `staff`, `shifts`, `shift-swaps`, `demo-requests` |
 | `analytics-service` | Analytics | `roomtrack_analytics` | `analytics` |
 | `notifications-worker` | entrega de correos y notificaciones push | — (solo RabbitMQ) | — |
 | `gateway` | — | — | todas las anteriores + `/docs` y `/health` |
@@ -50,10 +50,21 @@ Lo que cubre cada contexto nuevo de `accommodations-service` (las historias de u
 
 | Contexto | Historias | Qué hace |
 |---|---|---|
-| Housekeeping | US-05, US-06 | Tareas de limpieza: se crean al pasar una habitación a `Cleaning`, se asignan (a mano o al personal con menos carga) y se siguen hasta terminar. |
-| Incidents | US-08, US-09 | Incidencias de mantenimiento: pueden bloquear la habitación hasta resolverse; las críticas no atendidas a tiempo se escalan. |
+| Housekeeping | US-05, US-06, US-07 | Tareas de limpieza: se crean al pasar una habitación a `Cleaning`, se asignan (a mano o al personal con menos carga) y se siguen hasta terminar. Cada tarea copia la checklist del tipo de habitación; no se completa con pasos obligatorios pendientes. |
+| Incidents | US-08, US-09, US-10, US-23, US-30 | Incidencias de mantenimiento: pueden bloquear la habitación hasta resolverse; las críticas no atendidas a tiempo se escalan y las recurrentes (más de 3 iguales en un mes) se resaltan. Planes de mantenimiento preventivo que generan su tarea en cada ciclo, con recordatorio; historial de mantenimiento por habitación y registro de alertas. |
 | GuestRequests | US-11, US-19 | Solicitudes del huésped durante su estadía: recepción las deriva al área que las atiende y el huésped ve el estado y el tiempo estimado. |
 | Messaging | US-12, US-20 | Conversaciones dentro de la plataforma: huésped con recepción, canal de cada área y comentarios sobre una tarea. |
+| ShiftHandovers | US-32 | Entrega de turno: resumen con notas y las tareas e incidencias abiertas del área; el turno siguiente lo lee y confirma (quién y cuándo). |
+
+En `bookings-service`, **Payments** cubre US-15/16/17: el pago que confirma la reserva, el **folio** de la estancia
+(cargos adicionales, depósito de garantía, pago del saldo dividido entre varios medios; el check-out se rechaza con saldo
+pendiente y libera el depósito) y los **comprobantes** (boleta o factura con IGV, emitidos y enviados por correo en cada
+pago, reenviables, e historial de pagos del hotel). En `profiles-service`, **Shifts** cubre US-31: turnos por área y
+fecha con su personal, huecos de cobertura y cambios de turno aprobados por un administrador.
+
+La agrupación de Incidencias dentro de Accommodations y de Pagos dentro de Bookings está justificada en
+[`docs/adr/ADR-001-agrupacion-de-bounded-contexts.md`](docs/adr/ADR-001-agrupacion-de-bounded-contexts.md). El despliegue
+objetivo en Microsoft Azure está en [`docs/arquitectura-cloud-azure.md`](docs/arquitectura-cloud-azure.md).
 
 Las notificaciones push (US-22) avisan de estos cambios a quien corresponde: el personal asignado, el área o el huésped.
 
@@ -210,13 +221,23 @@ tests de xUnit, dentro del mismo `dotnet test`:
 
 | Sprint | Historias | Proyecto |
 |---|---|---|
-| 1 | US-05, US-06 (limpieza), US-08, US-09 (incidencias) | `RoomTrack.Accommodations.API.Tests` |
+| 1 | US-05, US-06, US-07 (limpieza y checklist), US-08, US-09 (incidencias) | `RoomTrack.Accommodations.API.Tests` |
 | 1 | Autenticación (bloqueo, segundo factor, contraseñas, sesiones) | `RoomTrack.Identity.API.Tests` |
-| 2 | US-13, US-14, US-15, US-16, US-17, US-27 (estancia, pagos, comprobantes) | `RoomTrack.Bookings.API.Tests` |
+| 2 | US-13, US-14, US-15, US-16, US-17, US-27 (estancia, folio, pagos, comprobantes) | `RoomTrack.Bookings.API.Tests` |
+| 3 | US-10, US-30, US-11, US-19, US-20, US-12, US-32, US-23 | `RoomTrack.Accommodations.API.Tests` |
+| 3 | US-31 (turnos, cobertura y cambios de turno) | `RoomTrack.Profiles.API.Tests` |
+| 3 | US-22 (entrega de push y correo) | `RoomTrack.Notifications.Worker.Tests` |
+| 4 | US-18 (indicadores del panel) | `RoomTrack.Analytics.API.Tests` |
 
-Los escenarios cuya funcionalidad aún no existe en la API llevan `@ignore` y salen como *omitidos*, nunca como
-aprobados (detalle en `tests/RoomTrack.Bookings.API.Tests/Features/Sprint2/README.md`). Para correr solo los de una
-historia: `dotnet test --filter "Category=US05"`.
+Resultado al 25/11/2026: **486 pruebas aprobadas y 7 omitidas** en 6 proyectos de pruebas. Los escenarios cuya
+funcionalidad aún no existe en la API llevan `@ignore` y salen como *omitidos*, nunca como aprobados (US-13 E01–E03,
+US-14 E04, US-15 E01–E02 y US-23 E01). La trazabilidad escenario → evidencia está en
+`tests/RoomTrack.Bookings.API.Tests/Features/Sprint2/README.md` y `tests/RoomTrack.Accommodations.API.Tests/Features/README.md`.
+Para correr solo los de una historia: `dotnet test --filter "Category=US05"`.
+
+**Documentación de la API.** Cada servicio publica su propio documento OpenAPI (descripción de sus contextos, no la del
+producto completo) con ejemplos JSON de request y response en las operaciones principales
+(`[OpenApiRequestExample]`/`[OpenApiResponseExample]`) y un ejemplo ProblemDetails en cada respuesta de error.
 
 **CI** (`.github/workflows/ci.yml`): en cada push y pull request a `develop` y `main` compila la solución y corre
 todos los tests, con un MySQL 8 como servicio del job. Los resultados quedan como artefacto `test-results` del run.

@@ -1,3 +1,4 @@
+using RoomTrack.Shared.Infrastructure.Documentation.OpenApi.Configuration;
 using RoomTrack.Accommodations.Domain.Model.Exceptions;
 using RoomTrack.Accommodations.Domain.Model.Queries;
 using RoomTrack.Accommodations.Domain.Services;
@@ -47,6 +48,20 @@ public class IncidentsController(
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [OpenApiRequestExample("""
+        { "roomId": 12, "title": "Ducha con fuga", "description": "Gotea aunque la llave esté cerrada.", "priority": "High",
+          "blocksRoom": false }
+        """)]
+    [OpenApiResponseExample(StatusCodes.Status201Created, """
+        { "id": 18, "hotelId": 1, "roomId": 12, "title": "Ducha con fuga", "description": "Gotea aunque la llave esté cerrada.",
+          "priority": "High", "status": "Pending", "blocksRoom": false, "reportedByUserId": 10,
+          "reportedByEmail": "recepcion@roomtrack.pe", "reportedAt": "2026-11-25T15:00:00+00:00", "assigneeUserId": null,
+          "assignedAt": null, "startedAt": null, "resolvedAt": null, "resolvedByUserId": null, "resolutionNotes": null,
+          "escalatedAt": null,
+          "history": [ { "action": "Reported", "status": "Pending", "detail": "Priority High", "actorUserId": 10,
+                         "actorEmail": "recepcion@roomtrack.pe", "occurredAt": "2026-11-25T15:00:00+00:00" } ],
+          "kind": "Corrective", "preventivePlanId": null, "isRecurring": false, "recurrenceCount": null }
+        """)]
     public async Task<IActionResult> ReportIncident([FromBody] ReportIncidentResource resource)
     {
         var room = await roomQueryService.Handle(new GetRoomByIdQuery(resource.RoomId!.Value));
@@ -90,6 +105,42 @@ public class IncidentsController(
         var incidents = await incidentQueryService.Handle(new GetIncidentsQuery(targetHotelId.Value, status, priority, roomId,
             assignedToMe ? User.GetUserId() : assigneeUserId, open, limit));
         return Ok(incidents.Select(incident => IncidentResourceAssembler.ToResource(incident, withHistory: false)));
+    }
+
+    /// <summary>The automatic alerts of a hotel and how each one was resolved (US-23).</summary>
+    /// <remarks>
+    ///     Critical incidents nobody started in time (escalated to the administrators) and recurring incidents of a room
+    ///     (more than 3 similar ones in a month), newest first, with the current status and resolution of the incident.
+    ///     Without dates: the last 30 days.
+    /// </remarks>
+    /// <param name="hotelId">The hotel (optional for hotel staff; required for a chain admin).</param>
+    /// <param name="from">From (ISO 8601).</param>
+    /// <param name="to">To (ISO 8601).</param>
+    [HttpGet("alerts")]
+    [SwaggerOperation(Summary = "List the incident alerts of a hotel", OperationId = "GetIncidentAlerts")]
+    [ProducesResponseType(typeof(IEnumerable<IncidentAlertResource>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    [OpenApiResponseExample(StatusCodes.Status200OK, """
+        [ { "kind": "Escalation", "raisedAt": "2026-11-25T16:00:00+00:00", "incidentId": 52, "roomId": 12,
+            "title": "Cerradura rota", "priority": "Critical", "status": "Resolved", "resolvedAt": "2026-11-25T16:40:00+00:00",
+            "resolvedByUserId": 20, "resolutionNotes": "Cerradura reemplazada" },
+          { "kind": "Recurrence", "raisedAt": "2026-11-24T10:00:00+00:00", "incidentId": 49, "roomId": 31,
+            "title": "Aire acondicionado no enfría", "priority": "High", "status": "Pending", "resolvedAt": null,
+            "resolvedByUserId": null, "resolutionNotes": null } ]
+        """)]
+    public async Task<IActionResult> GetIncidentAlerts([FromQuery] int? hotelId, [FromQuery] DateTimeOffset? from,
+        [FromQuery] DateTimeOffset? to)
+    {
+        var targetHotelId = hotelId ?? (User.IsChainAdmin() ? null : User.GetHotelId());
+        if (targetHotelId is null)
+            throw new InvalidFieldException("hotelId", AccommodationErrorCodes.HotelRequired, "Send the hotelId of the alerts.");
+        if (!User.IsChainAdmin() && User.GetHotelId() != targetHotelId) return Forbid();
+        var until = to ?? DateTimeOffset.UtcNow;
+        var alerts = await incidentQueryService.Handle(new GetIncidentAlertsQuery(targetHotelId.Value, from ?? until.AddDays(-30), until));
+        return Ok(alerts.Select(alert => new IncidentAlertResource(alert.Kind, alert.RaisedAt, alert.Incident.Id, alert.Incident.RoomId,
+            alert.Incident.Title, alert.Incident.Priority.ToString(), alert.Incident.Status.ToString(), alert.Incident.ResolvedAt,
+            alert.Incident.ResolvedByUserId, alert.Incident.ResolutionNotes)));
     }
 
     /// <summary>An incident with its history.</summary>

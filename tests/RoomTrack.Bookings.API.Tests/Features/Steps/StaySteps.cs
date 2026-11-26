@@ -19,7 +19,9 @@ using RoomTrack.Bookings.Domain.Model.Queries;
 using RoomTrack.Bookings.Domain.Model.ValueObjects;
 using RoomTrack.Bookings.Domain.Services;
 using RoomTrack.Bookings.Infrastructure.Persistence.EFC.Repositories;
+using RoomTrack.Payments.Application.ACL;
 using RoomTrack.Payments.Domain.Model.Aggregates;
+using RoomTrack.Payments.Infrastructure.Persistence.EFC.Repositories;
 using RoomTrack.Payments.Domain.Model.ValueObjects;
 using RoomTrack.Profiles.Interfaces.ACL;
 using RoomTrack.Shared.Application.OutboundServices;
@@ -218,7 +220,8 @@ public sealed class StaySteps : IDisposable
         var context = _requestContext = NewContext();
         return new CheckInService(new BookingRepository(context), new DigitalCheckInRepository(context), new FakeDocumentStorage(),
             _accommodations, new NoGuestProfiles(), new FakeAvailability(_accommodations), new PlainSecretProtector(),
-            new HotelCalendar(Options.Create(new BookingPolicySettings()), _clock), new ContextUnitOfWork(context));
+            new HotelCalendar(Options.Create(new BookingPolicySettings()), _clock), new ContextUnitOfWork(context),
+            new StayFolioGate(new GuestFolioRepository(context)));
     }
 
     private sealed class FixedClock(DateTimeOffset now) : TimeProvider

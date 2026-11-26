@@ -1,3 +1,5 @@
+using RoomTrack.Incidents.Domain.Services;
+using RoomTrack.Incidents.Domain.Model.ValueObjects;
 using RoomTrack.Incidents.Domain.Model.Aggregates;
 using RoomTrack.Incidents.Domain.Model.Entities;
 using RoomTrack.Incidents.Interfaces.REST.Resources;
@@ -13,7 +15,21 @@ public static class IncidentResourceAssembler
             incident.Status.ToString(), incident.BlocksRoom, incident.ReportedByUserId, incident.ReportedByEmail,
             incident.ReportedAt, incident.AssigneeUserId, incident.AssignedAt, incident.StartedAt, incident.ResolvedAt,
             incident.ResolvedByUserId, incident.ResolutionNotes, incident.EscalatedAt,
-            withHistory ? incident.History.OrderBy(entry => entry.OccurredAt).ThenBy(entry => entry.Id).Select(ToResource).ToList() : null);
+            withHistory ? incident.History.OrderBy(entry => entry.OccurredAt).ThenBy(entry => entry.Id).Select(ToResource).ToList() : null,
+            incident.Kind.ToString(), incident.PreventivePlanId, incident.IsRecurring, incident.RecurrenceCount);
+
+    public static PreventiveMaintenancePlanResource ToResource(PreventiveMaintenancePlan plan) =>
+        new(plan.Id, plan.HotelId, plan.RoomId, plan.Title, plan.Description, plan.FrequencyDays, plan.NextDueOn,
+            plan.ReminderDaysBefore, plan.IsActive, plan.GeneratedCount, plan.LastIncidentId, plan.LastGeneratedAt,
+            plan.CreatedByUserId, plan.CreatedAt);
+
+    public static RoomMaintenanceHistoryResource ToResource(RoomMaintenanceHistory history) =>
+        new(history.RoomId,
+            history.Incidents.Count(incident => incident.Kind == IncidentKind.Corrective),
+            history.Incidents.Count(incident => incident.Kind == IncidentKind.Preventive),
+            history.Incidents.Count(incident => incident.IsRecurring),
+            history.Incidents.Select(incident => ToResource(incident, withHistory: false)).ToList(),
+            history.Plans.Select(ToResource).ToList());
 
     private static IncidentHistoryEntryResource ToResource(IncidentHistoryEntry entry) =>
         new(entry.Action.ToString(), entry.Status.ToString(), entry.Detail, entry.ActorUserId, entry.ActorEmail, entry.OccurredAt);

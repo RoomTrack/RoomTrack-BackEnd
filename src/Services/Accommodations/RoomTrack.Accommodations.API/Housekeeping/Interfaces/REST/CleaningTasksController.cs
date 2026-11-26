@@ -1,3 +1,4 @@
+using RoomTrack.Shared.Infrastructure.Documentation.OpenApi.Configuration;
 using RoomTrack.Accommodations.Domain.Model.Exceptions;
 using RoomTrack.Accommodations.Domain.Model.Queries;
 using RoomTrack.Accommodations.Domain.Services;
@@ -133,6 +134,64 @@ public class CleaningTasksController(
         return Ok(CleaningTaskResourceAssembler.ToResource(settings));
     }
 
+    /// <summary>The cleaning protocols (checklists) of a hotel per room type (US-07).</summary>
+    /// <remarks>
+    ///     Every protocol configured by the hotel; a <c>roomTypeId</c> null is its default for the types it did not
+    ///     configure. A hotel without any gets a suggested protocol (<c>isStandard</c>), which its tasks do not use
+    ///     until it is saved. New cleaning tasks copy the protocol of their room's type.
+    /// </remarks>
+    /// <param name="hotelId">The hotel (optional for hotel staff; required for a chain admin).</param>
+    [HttpGet("checklists")]
+    [SwaggerOperation(Summary = "List the cleaning checklists of a hotel", OperationId = "GetCleaningChecklists")]
+    [ProducesResponseType(typeof(IReadOnlyList<CleaningChecklistTemplateResource>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    [OpenApiResponseExample(StatusCodes.Status200OK, """
+        [{ "hotelId": 1, "roomTypeId": 3, "isStandard": false,
+           "items": [ { "position": 1, "label": "Cambiar la ropa de cama", "isRequired": true },
+                      { "position": 2, "label": "Revisar el jacuzzi", "isRequired": true },
+                      { "position": 3, "label": "Reponer frutas de cortesía", "isRequired": false } ],
+           "updatedAt": "2026-11-24T15:00:00Z", "updatedByUserId": 2 }]
+        """)]
+    public async Task<IActionResult> GetCleaningChecklists([FromQuery] int? hotelId)
+    {
+        var (targetHotelId, denied) = HotelInScope(hotelId);
+        if (denied is not null) return denied;
+        var templates = await cleaningTaskQueryService.Handle(new GetCleaningChecklistTemplatesQuery(targetHotelId));
+        return Ok(templates.Count == 0
+            ? [CleaningTaskResourceAssembler.ToStandardResource(targetHotelId)]
+            : templates.Select(CleaningTaskResourceAssembler.ToResource).ToList());
+    }
+
+    /// <summary>Sets the cleaning protocol (checklist) of a hotel for a room type (US-07).</summary>
+    /// <remarks>
+    ///     Administrators only. Replaces the steps of the protocol of <c>roomTypeId</c> (omit it to set the hotel
+    ///     default). Tasks created afterwards get it; tasks already created keep theirs. A task cannot be completed while
+    ///     a required step is pending (409 <c>cleaning_task.checklist_incomplete</c>).
+    /// </remarks>
+    /// <param name="hotelId">The hotel (optional for a hotel admin; required for a chain admin).</param>
+    /// <param name="roomTypeId">The room type; omit it for the hotel default.</param>
+    /// <param name="resource">The steps.</param>
+    [HttpPut("checklists")]
+    [Authorize(Policy = Policies.ManageHotels)]
+    [SwaggerOperation(Summary = "Set the cleaning checklist of a room type", OperationId = "ConfigureCleaningChecklist")]
+    [ProducesResponseType(typeof(CleaningChecklistTemplateResource), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    [OpenApiRequestExample("""
+        { "items": [ { "label": "Cambiar la ropa de cama", "isRequired": true },
+                     { "label": "Revisar el jacuzzi", "isRequired": true },
+                     { "label": "Reponer frutas de cortesía", "isRequired": false } ] }
+        """)]
+    public async Task<IActionResult> ConfigureCleaningChecklist([FromQuery] int? hotelId, [FromQuery] int? roomTypeId,
+        [FromBody] ConfigureCleaningChecklistResource resource)
+    {
+        var (targetHotelId, denied) = HotelInScope(hotelId);
+        if (denied is not null) return denied;
+        var template = await cleaningTaskCommandService.Handle(new ConfigureCleaningChecklistCommand(targetHotelId, roomTypeId,
+            resource.ToDefinitions(), User.GetUserId()));
+        return Ok(CleaningTaskResourceAssembler.ToResource(template));
+    }
+
     /// <summary>A cleaning task with its history and impediments.</summary>
     [HttpGet("{cleaningTaskId:int}")]
     [SwaggerOperation(Summary = "Get a cleaning task", OperationId = "GetCleaningTask")]
@@ -184,8 +243,10 @@ public class CleaningTasksController(
     /// <summary>Finishes cleaning: InProgress → Completed, and the room becomes Available.</summary>
     /// <remarks>
     ///     Only its assignee (or an administrator) completes it. Reception is notified that the room can be assigned
-    ///     to a new guest. 409 while an incident blocks the room (it is resolved first). Completing a task already
-    ///     completed is a no-op (safe to replay from an offline queue).
+    ///     to a new guest. 409 while an incident blocks the room (it is resolved first), and 409
+    ///     <c>cleaning_task.checklist_incomplete</c> while a required step of its checklist is pending (listed in
+    ///     <c>pendingItems</c>, US-07). Completing a task already completed is a no-op (safe to replay from an offline
+    ///     queue).
     /// </remarks>
     [HttpPost("{cleaningTaskId:int}/complete")]
     [Authorize(Policy = Policies.HandleCleaningTasks)]
@@ -197,6 +258,26 @@ public class CleaningTasksController(
     public Task<IActionResult> CompleteCleaningTask(int cleaningTaskId) =>
         ExecuteInScopeAsync(cleaningTaskId, () =>
             cleaningTaskCommandService.Handle(new CompleteCleaningTaskCommand(cleaningTaskId, Actor())));
+
+    /// <summary>Marks a step of the checklist of a cleaning task as done or pending (US-07).</summary>
+    /// <remarks>
+    ///     Only its assignee (or an administrator), on an open task; a housekeeper marking a step of an unassigned
+    ///     task takes it. The response carries the updated <c>checklistProgress</c> (0-100). Marking a step with the
+    ///     state it already has is a no-op (safe to replay from an offline queue).
+    /// </remarks>
+    [HttpPut("{cleaningTaskId:int}/checklist/{itemId:long}")]
+    [Authorize(Policy = Policies.HandleCleaningTasks)]
+    [SwaggerOperation(Summary = "Mark a checklist item of a cleaning task", OperationId = "MarkCleaningChecklistItem")]
+    [ProducesResponseType(typeof(CleaningTaskResource), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    [OpenApiRequestExample("""{ "done": true }""")]
+    public Task<IActionResult> MarkCleaningChecklistItem(int cleaningTaskId, long itemId,
+        [FromBody] MarkCleaningChecklistItemResource resource) =>
+        ExecuteInScopeAsync(cleaningTaskId, () =>
+            cleaningTaskCommandService.Handle(new MarkCleaningChecklistItemCommand(cleaningTaskId, itemId, resource.Done!.Value, Actor())));
 
     /// <summary>Reports a damage found while cleaning: an incident is created for maintenance and linked to the task.</summary>
     /// <remarks>

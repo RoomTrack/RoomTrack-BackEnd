@@ -14,6 +14,7 @@ namespace RoomTrack.Bookings.Interfaces.ACL;
 /// <param name="Code">Human-readable booking code.</param>
 /// <param name="TotalPrice">Price per night agreed × nights: the amount to pay.</param>
 /// <param name="GuestEmail">Where the booking e-mails go.</param>
+/// <param name="GuestName">Who the booking is for (the name on the receipts).</param>
 public record BookingSnapshot(
     int BookingId,
     int RoomId,
@@ -25,7 +26,15 @@ public record BookingSnapshot(
     int HotelId,
     string Code,
     decimal TotalPrice,
-    string GuestEmail);
+    string GuestEmail,
+    string GuestName = "")
+{
+    /// <summary>The guest is staying (checked in): additional charges can be posted.</summary>
+    public bool IsStaying => Status == "CheckedIn";
+
+    /// <summary>The stay has not ended yet: a deposit can be held, the invoice data given.</summary>
+    public bool IsUpcomingOrStaying => Status is "Confirmed" or "CheckedIn";
+}
 
 /// <summary>
 ///     Anti-corruption layer facade of the Bookings bounded context.
@@ -44,4 +53,7 @@ public interface IBookingsContextFacade
     /// </summary>
     /// <exception cref="RoomTrack.Shared.Domain.Model.Exceptions.EntityNotFoundException">The booking does not exist.</exception>
     Task<bool> ConfirmBookingAsync(int bookingId);
+
+    /// <summary>The ids of every booking of the hotel (for its payment history).</summary>
+    Task<IReadOnlyList<int>> FetchBookingIdsOfHotelAsync(int hotelId);
 }

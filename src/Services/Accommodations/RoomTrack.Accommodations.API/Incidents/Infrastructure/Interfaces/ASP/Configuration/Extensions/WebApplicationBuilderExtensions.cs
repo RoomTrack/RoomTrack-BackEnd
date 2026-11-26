@@ -44,6 +44,14 @@ public static class WebApplicationBuilderExtensions
         builder.Services.AddScoped<IDomainEventHandler<IncidentPriorityChangedEvent>>(sp => sp.GetRequiredService<IncidentPushHandler>());
         builder.Services.AddScoped<IDomainEventHandler<IncidentEscalatedEvent>>(sp => sp.GetRequiredService<IncidentPushHandler>());
 
+        // Preventive maintenance plans (US-30) and maintenance alerts (US-10 recurrence, US-30 reminders)
+        builder.Services.AddScoped<IPreventiveMaintenancePlanRepository, PreventiveMaintenancePlanRepository>();
+        builder.Services.AddScoped<IPreventiveMaintenanceCommandService, PreventiveMaintenanceCommandService>();
+        builder.Services.AddScoped<IPreventiveMaintenanceQueryService, PreventiveMaintenanceQueryService>();
+        builder.Services.AddScoped<PreventiveMaintenancePushHandler>();
+        builder.Services.AddScoped<IDomainEventHandler<PreventiveMaintenanceReminderDueEvent>>(sp => sp.GetRequiredService<PreventiveMaintenancePushHandler>());
+        builder.Services.AddScoped<IDomainEventHandler<IncidentRecurrenceDetectedEvent>>(sp => sp.GetRequiredService<PreventiveMaintenancePushHandler>());
+
         // Resource-based authorization (hotel scope)
         builder.Services.AddSingleton<IAuthorizationHandler, IncidentScopeAuthorizationHandler>();
     }

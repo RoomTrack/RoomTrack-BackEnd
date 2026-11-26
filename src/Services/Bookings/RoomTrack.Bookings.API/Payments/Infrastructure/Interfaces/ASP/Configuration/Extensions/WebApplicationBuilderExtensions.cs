@@ -1,3 +1,7 @@
+using RoomTrack.Bookings.Application.OutboundServices;
+using RoomTrack.Payments.Application.ACL;
+using RoomTrack.Payments.Infrastructure.Notifications;
+using RoomTrack.Payments.Domain.Model.Events;
 using RoomTrack.Bookings.Domain.Model.Events;
 using RoomTrack.Payments.Application.Internal.CommandServices;
 using RoomTrack.Payments.Application.Internal.EventHandlers;
@@ -33,6 +37,21 @@ public static class WebApplicationBuilderExtensions
 
         // Query Services
         builder.Services.AddScoped<IPaymentQueryService, PaymentQueryService>();
+
+        // Folio of the stay (US-15/16) and receipts (US-17)
+        builder.Services.AddScoped<IGuestFolioRepository, GuestFolioRepository>();
+        builder.Services.AddScoped<IReceiptRepository, ReceiptRepository>();
+        builder.Services.AddScoped<IFolioCommandService, FolioCommandService>();
+        builder.Services.AddScoped<IFolioQueryService, FolioQueryService>();
+        builder.Services.AddScoped<ReceiptIssuer>();
+        builder.Services.AddScoped<IReceiptNotificationService, ReceiptEmailNotificationService>();
+        builder.Services.AddScoped<IssueReceiptOnPaymentHandler>();
+        builder.Services.AddScoped<IDomainEventHandler<PaymentCompletedEvent>>(sp => sp.GetRequiredService<IssueReceiptOnPaymentHandler>());
+        builder.Services.AddScoped<IDomainEventHandler<FolioPaymentRecordedEvent>>(sp => sp.GetRequiredService<IssueReceiptOnPaymentHandler>());
+        builder.Services.AddScoped<IDomainEventHandler<GuestCheckedOutEvent>, CloseFolioOnCheckOutHandler>();
+
+        // Port of the check-out (Bookings) to the folio: nothing unpaid at check-out
+        builder.Services.AddScoped<IStayFolioGate, StayFolioGate>();
     }
 }
 

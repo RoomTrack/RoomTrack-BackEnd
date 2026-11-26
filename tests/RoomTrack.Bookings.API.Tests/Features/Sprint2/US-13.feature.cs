@@ -28,9 +28,9 @@ namespace RoomTrack.Bookings.API.Tests.Features.Sprint2
                 "Sprint2",
                 "US13"};
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("es"), "Features/Sprint2", "US-13 — Check-in digital del huésped", "  Criterios de aceptación del informe (Avance 3, corte 01/11/2026).\r\n  Los escena" +
-                "rios con @ignore aún no tienen implementación en la API (ver README.md): Reqnrol" +
-                "l los reporta como\r\n  omitidos, no como aprobados.", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("es"), "Features/Sprint2", "US-13 — Check-in digital del huésped", "  Criterios de aceptación del informe (TF1, corte 25/11/2026).\r\n  Los escenarios " +
+                "con @ignore aún no tienen implementación en la API (ver README.md): Reqnroll los" +
+                " reporta como\r\n  omitidos, no como aprobados.", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
         private global::Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         

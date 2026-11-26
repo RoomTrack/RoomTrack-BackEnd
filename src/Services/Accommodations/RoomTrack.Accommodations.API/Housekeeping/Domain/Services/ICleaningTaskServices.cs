@@ -1,6 +1,7 @@
 using RoomTrack.Housekeeping.Domain.Model.Aggregates;
 using RoomTrack.Housekeeping.Domain.Model.Commands;
 using RoomTrack.Housekeeping.Domain.Model.Queries;
+using RoomTrack.Housekeeping.Domain.Model.ValueObjects;
 
 namespace RoomTrack.Housekeeping.Domain.Services;
 
@@ -31,6 +32,13 @@ public interface ICleaningTaskCommandService
     Task<CleaningTask?> Handle(CancelCleaningTaskCommand command);
 
     Task<HotelHousekeepingSettings> Handle(ConfigureHousekeepingCommand command);
+
+    /// <summary>Marks a checklist step of the task (US-07).</summary>
+    /// <returns>The task, or null when it does not exist.</returns>
+    Task<CleaningTask?> Handle(MarkCleaningChecklistItemCommand command);
+
+    /// <summary>Creates or replaces the cleaning protocol of the hotel for a room type (US-07).</summary>
+    Task<CleaningChecklistTemplate> Handle(ConfigureCleaningChecklistCommand command);
 }
 
 public interface ICleaningTaskQueryService
@@ -41,6 +49,12 @@ public interface ICleaningTaskQueryService
 
     /// <summary>The settings of the hotel (defaults when it never configured them).</summary>
     Task<HotelHousekeepingSettings> Handle(GetHousekeepingSettingsQuery query);
+
+    /// <summary>The protocols configured by the hotel (US-07).</summary>
+    Task<IReadOnlyList<CleaningChecklistTemplate>> Handle(GetCleaningChecklistTemplatesQuery query);
+
+    /// <summary>The steps a new task of a room of that type gets: its type's, the hotel default or the standard ones.</summary>
+    Task<IReadOnlyList<ChecklistItemDefinition>> Handle(GetCleaningChecklistForRoomQuery query);
 }
 
 /// <summary>

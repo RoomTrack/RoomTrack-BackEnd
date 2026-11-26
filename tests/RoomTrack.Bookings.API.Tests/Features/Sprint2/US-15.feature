@@ -1,7 +1,7 @@
 # language: es
 @Sprint2 @US15
 Característica: US-15 — Pago de reserva durante el check-in
-  Criterios de aceptación del informe (Avance 3, corte 01/11/2026).
+  Criterios de aceptación del informe (TF1, corte 25/11/2026).
   Los escenarios con @ignore aún no tienen implementación en la API (ver README.md): Reqnroll los reporta como
   omitidos, no como aprobados.
 
@@ -19,9 +19,8 @@ Característica: US-15 — Pago de reserva durante el check-in
     Cuando esto ocurre
     Entonces el sistema me notifica el motivo y me permite intentar otro medio de pago
 
-  @US15_E03 @pendiente_implementacion @ignore
+  @US15_E03
   Escenario: Depósito de garantía
-    # La API no maneja depósito de garantía.
     Dado que el hotel requiere un depósito reembolsable
     Cuando completo el pago
     Entonces el monto queda retenido y visible en mi folio de huésped

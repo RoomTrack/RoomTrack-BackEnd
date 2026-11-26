@@ -29,3 +29,14 @@ public sealed record IncidentEscalatedEvent(int IncidentId, int HotelId, DateTim
 public sealed record IncidentPriorityChangedEvent(int IncidentId, int HotelId, int RoomId, int? AssigneeUserId,
     IncidentPriority FromPriority, IncidentPriority ToPriority, int ChangedByUserId, DateTimeOffset OccurredOn)
     : DomainEvent(OccurredOn);
+
+/// <summary>
+///     US-10: the room accumulated <paramref name="SimilarCount"/> similar incidents (same title) within the recurrence
+///     window, counting the new one: the administrators are alerted of the pattern.
+/// </summary>
+public sealed record IncidentRecurrenceDetectedEvent(int IncidentId, int HotelId, int RoomId, string Title, int SimilarCount,
+    DateTimeOffset OccurredOn) : DomainEvent(OccurredOn);
+
+/// <summary>US-30: the due date of a preventive maintenance plan is near: the maintenance staff is reminded.</summary>
+public sealed record PreventiveMaintenanceReminderDueEvent(int PlanId, int HotelId, int RoomId, string Title, DateOnly DueOn,
+    DateTimeOffset OccurredOn) : DomainEvent(OccurredOn);

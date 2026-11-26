@@ -28,9 +28,9 @@ namespace RoomTrack.Bookings.API.Tests.Features.Sprint2
                 "Sprint2",
                 "US16"};
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("es"), "Features/Sprint2", "US-16 — Pago de cargos adicionales y check-out", "  Criterios de aceptación del informe (Avance 3, corte 01/11/2026).\r\n  Los escena" +
-                "rios con @ignore aún no tienen implementación en la API (ver README.md): Reqnrol" +
-                "l los reporta como\r\n  omitidos, no como aprobados.", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("es"), "Features/Sprint2", "US-16 — Pago de cargos adicionales y check-out", "  Criterios de aceptación del informe (TF1, corte 25/11/2026).\r\n  Los escenarios " +
+                "con @ignore aún no tienen implementación en la API (ver README.md): Reqnroll los" +
+                " reporta como\r\n  omitidos, no como aprobados.", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
         private global::Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
@@ -139,20 +139,17 @@ namespace RoomTrack.Bookings.API.Tests.Features.Sprint2
             await this.TestTearDownAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Revisión del folio", Skip="Ignored")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="Revisión del folio")]
         [global::Xunit.TraitAttribute("FeatureTitle", "US-16 — Pago de cargos adicionales y check-out")]
         [global::Xunit.TraitAttribute("Description", "Revisión del folio")]
         [global::Xunit.TraitAttribute("Category", "US16_E01")]
-        [global::Xunit.TraitAttribute("Category", "pendiente_implementacion")]
         public async global::System.Threading.Tasks.Task RevisionDelFolio()
         {
             string[] tagsOfScenario = new string[] {
-                    "US16_E01",
-                    "pendiente_implementacion",
-                    "ignore"};
+                    "US16_E01"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Revisión del folio", "", tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Revisión del folio", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 9
@@ -165,36 +162,33 @@ namespace RoomTrack.Bookings.API.Tests.Features.Sprint2
             else
             {
                 await this.ScenarioStartAsync();
-#line 11
+#line 10
     await testRunner.GivenAsync("que voy a hacer check-out", ((string)(null)), ((global::Reqnroll.Table)(null)), "Dado ");
 #line hidden
-#line 12
+#line 11
     await testRunner.WhenAsync("reviso mi folio", ((string)(null)), ((global::Reqnroll.Table)(null)), "Cuando ");
 #line hidden
-#line 13
+#line 12
     await testRunner.ThenAsync("veo el detalle de todos los cargos antes de pagar", ((string)(null)), ((global::Reqnroll.Table)(null)), "Entonces ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Pago del saldo pendiente", Skip="Ignored")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="Pago del saldo pendiente")]
         [global::Xunit.TraitAttribute("FeatureTitle", "US-16 — Pago de cargos adicionales y check-out")]
         [global::Xunit.TraitAttribute("Description", "Pago del saldo pendiente")]
         [global::Xunit.TraitAttribute("Category", "US16_E02")]
-        [global::Xunit.TraitAttribute("Category", "pendiente_implementacion")]
         public async global::System.Threading.Tasks.Task PagoDelSaldoPendiente()
         {
             string[] tagsOfScenario = new string[] {
-                    "US16_E02",
-                    "pendiente_implementacion",
-                    "ignore"};
+                    "US16_E02"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "1";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Pago del saldo pendiente", "", tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Pago del saldo pendiente", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 16
+#line 15
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -204,36 +198,33 @@ namespace RoomTrack.Bookings.API.Tests.Features.Sprint2
             else
             {
                 await this.ScenarioStartAsync();
-#line 18
+#line 16
     await testRunner.GivenAsync("que tengo un saldo pendiente", ((string)(null)), ((global::Reqnroll.Table)(null)), "Dado ");
 #line hidden
-#line 19
+#line 17
     await testRunner.WhenAsync("confirmo el pago", ((string)(null)), ((global::Reqnroll.Table)(null)), "Cuando ");
 #line hidden
-#line 20
+#line 18
     await testRunner.ThenAsync("el sistema lo procesa y actualiza mi folio a \"saldado\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Entonces ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="División de pago", Skip="Ignored")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="División de pago")]
         [global::Xunit.TraitAttribute("FeatureTitle", "US-16 — Pago de cargos adicionales y check-out")]
         [global::Xunit.TraitAttribute("Description", "División de pago")]
         [global::Xunit.TraitAttribute("Category", "US16_E03")]
-        [global::Xunit.TraitAttribute("Category", "pendiente_implementacion")]
         public async global::System.Threading.Tasks.Task DivisionDePago()
         {
             string[] tagsOfScenario = new string[] {
-                    "US16_E03",
-                    "pendiente_implementacion",
-                    "ignore"};
+                    "US16_E03"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "2";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("División de pago", "", tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("División de pago", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 23
+#line 21
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -243,36 +234,33 @@ namespace RoomTrack.Bookings.API.Tests.Features.Sprint2
             else
             {
                 await this.ScenarioStartAsync();
-#line 25
+#line 22
     await testRunner.GivenAsync("que quiero pagar con dos métodos distintos", ((string)(null)), ((global::Reqnroll.Table)(null)), "Dado ");
 #line hidden
-#line 26
+#line 23
     await testRunner.WhenAsync("distribuyo el monto entre ambos", ((string)(null)), ((global::Reqnroll.Table)(null)), "Cuando ");
 #line hidden
-#line 27
+#line 24
     await testRunner.ThenAsync("el sistema procesa ambos pagos correctamente", ((string)(null)), ((global::Reqnroll.Table)(null)), "Entonces ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Liberación del depósito", Skip="Ignored")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="Liberación del depósito")]
         [global::Xunit.TraitAttribute("FeatureTitle", "US-16 — Pago de cargos adicionales y check-out")]
         [global::Xunit.TraitAttribute("Description", "Liberación del depósito")]
         [global::Xunit.TraitAttribute("Category", "US16_E04")]
-        [global::Xunit.TraitAttribute("Category", "pendiente_implementacion")]
         public async global::System.Threading.Tasks.Task LiberacionDelDeposito()
         {
             string[] tagsOfScenario = new string[] {
-                    "US16_E04",
-                    "pendiente_implementacion",
-                    "ignore"};
+                    "US16_E04"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "3";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Liberación del depósito", "", tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Liberación del depósito", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 30
+#line 27
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -282,13 +270,13 @@ namespace RoomTrack.Bookings.API.Tests.Features.Sprint2
             else
             {
                 await this.ScenarioStartAsync();
-#line 32
+#line 28
     await testRunner.GivenAsync("que no tengo cargos adicionales al depósito de garantía", ((string)(null)), ((global::Reqnroll.Table)(null)), "Dado ");
 #line hidden
-#line 33
+#line 29
     await testRunner.WhenAsync("hago check-out", ((string)(null)), ((global::Reqnroll.Table)(null)), "Cuando ");
 #line hidden
-#line 34
+#line 30
     await testRunner.ThenAsync("el sistema inicia automáticamente la devolución del depósito", ((string)(null)), ((global::Reqnroll.Table)(null)), "Entonces ");
 #line hidden
             }

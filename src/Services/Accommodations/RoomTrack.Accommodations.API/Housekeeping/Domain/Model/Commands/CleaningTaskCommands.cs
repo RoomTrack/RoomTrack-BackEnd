@@ -37,3 +37,13 @@ public record CancelCleaningTaskCommand(int CleaningTaskId, string? Reason, Clea
 
 /// <summary>Turns the automatic assignment of the cleaning tasks of a hotel on or off.</summary>
 public record ConfigureHousekeepingCommand(int HotelId, bool AutoAssign, int UpdatedByUserId);
+
+/// <summary>The assignee marks a step of the checklist of a cleaning task as done or not done (US-07).</summary>
+public record MarkCleaningChecklistItemCommand(int CleaningTaskId, long ItemId, bool Done, CleaningTaskActor Actor);
+
+/// <summary>
+///     Sets the cleaning protocol of a hotel for a room type (<paramref name="RoomTypeId"/> null: the hotel's default
+///     for the types it did not configure). New tasks get it; existing ones keep theirs (US-07).
+/// </summary>
+public record ConfigureCleaningChecklistCommand(int HotelId, int? RoomTypeId, IReadOnlyList<ChecklistItemDefinition> Items,
+    int UpdatedByUserId);

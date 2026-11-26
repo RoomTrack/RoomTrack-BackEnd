@@ -22,6 +22,247 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
+            modelBuilder.Entity("MassTransit.EntityFrameworkCoreIntegration.InboxState", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime?>("Consumed")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("consumed");
+
+                    b.Property<Guid>("ConsumerId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("consumer_id");
+
+                    b.Property<DateTime?>("Delivered")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("delivered");
+
+                    b.Property<DateTime?>("ExpirationTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("expiration_time");
+
+                    b.Property<long?>("LastSequenceNumber")
+                        .HasColumnType("bigint")
+                        .HasColumnName("last_sequence_number");
+
+                    b.Property<Guid>("LockId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("lock_id");
+
+                    b.Property<Guid>("MessageId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("message_id");
+
+                    b.Property<int>("ReceiveCount")
+                        .HasColumnType("int")
+                        .HasColumnName("receive_count");
+
+                    b.Property<DateTime>("Received")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("received");
+
+                    b.Property<DateTime?>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp(6)")
+                        .HasColumnName("row_version");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_inbox_states");
+
+                    b.HasAlternateKey("MessageId", "ConsumerId")
+                        .HasName("a_k_inbox_states__message_id__consumer_id");
+
+                    b.HasIndex("Delivered")
+                        .HasDatabaseName("i_x_inbox_states__delivered");
+
+                    b.ToTable("inbox_states");
+                });
+
+            modelBuilder.Entity("MassTransit.EntityFrameworkCoreIntegration.OutboxMessage", b =>
+                {
+                    b.Property<long>("SequenceNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("sequence_number");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("SequenceNumber"));
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("body");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)")
+                        .HasColumnName("content_type");
+
+                    b.Property<Guid?>("ConversationId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("conversation_id");
+
+                    b.Property<Guid?>("CorrelationId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("correlation_id");
+
+                    b.Property<string>("DestinationAddress")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)")
+                        .HasColumnName("destination_address");
+
+                    b.Property<DateTime?>("EnqueueTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("enqueue_time");
+
+                    b.Property<DateTime?>("ExpirationTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("expiration_time");
+
+                    b.Property<string>("FaultAddress")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)")
+                        .HasColumnName("fault_address");
+
+                    b.Property<string>("Headers")
+                        .HasColumnType("longtext")
+                        .HasColumnName("headers");
+
+                    b.Property<Guid?>("InboxConsumerId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("inbox_consumer_id");
+
+                    b.Property<Guid?>("InboxMessageId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("inbox_message_id");
+
+                    b.Property<Guid?>("InitiatorId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("initiator_id");
+
+                    b.Property<Guid>("MessageId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("message_id");
+
+                    b.Property<string>("MessageType")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("message_type");
+
+                    b.Property<Guid?>("OutboxId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("outbox_id");
+
+                    b.Property<string>("Properties")
+                        .HasColumnType("longtext")
+                        .HasColumnName("properties");
+
+                    b.Property<Guid?>("RequestId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("request_id");
+
+                    b.Property<string>("ResponseAddress")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)")
+                        .HasColumnName("response_address");
+
+                    b.Property<DateTime>("SentTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("sent_time");
+
+                    b.Property<string>("SourceAddress")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)")
+                        .HasColumnName("source_address");
+
+                    b.HasKey("SequenceNumber")
+                        .HasName("p_k_outbox_messages");
+
+                    b.HasIndex("EnqueueTime")
+                        .HasDatabaseName("i_x_outbox_messages__enqueue_time");
+
+                    b.HasIndex("ExpirationTime")
+                        .HasDatabaseName("i_x_outbox_messages__expiration_time");
+
+                    b.HasIndex("OutboxId", "SequenceNumber")
+                        .IsUnique()
+                        .HasDatabaseName("i_x_outbox_messages__outbox_id__sequence_number");
+
+                    b.HasIndex("InboxMessageId", "InboxConsumerId", "SequenceNumber")
+                        .IsUnique()
+                        .HasDatabaseName("i_x_outbox_messages__inbox_message_id__inbox_consumer_id__sequence_number");
+
+                    b.ToTable("outbox_messages");
+                });
+
+            modelBuilder.Entity("MassTransit.EntityFrameworkCoreIntegration.OutboxState", b =>
+                {
+                    b.Property<Guid>("OutboxId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)")
+                        .HasColumnName("outbox_id");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created");
+
+                    b.Property<DateTime?>("Delivered")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("delivered");
+
+                    b.Property<long?>("LastSequenceNumber")
+                        .HasColumnType("bigint")
+                        .HasColumnName("last_sequence_number");
+
+                    b.Property<Guid>("LockId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("lock_id");
+
+                    b.Property<DateTime?>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp(6)")
+                        .HasColumnName("row_version");
+
+                    b.HasKey("OutboxId")
+                        .HasName("p_k_outbox_states");
+
+                    b.HasIndex("Created")
+                        .HasDatabaseName("i_x_outbox_states__created");
+
+                    b.ToTable("outbox_states");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FriendlyName")
+                        .HasColumnType("longtext")
+                        .HasColumnName("friendly_name");
+
+                    b.Property<string>("Xml")
+                        .HasColumnType("longtext")
+                        .HasColumnName("xml");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_data_protection_keys");
+
+                    b.ToTable("data_protection_keys");
+                });
+
             modelBuilder.Entity("RoomTrack.Accommodations.Domain.Model.Aggregates.Hotel", b =>
                 {
                     b.Property<int>("Id")
@@ -525,6 +766,77 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                     b.ToTable("guest_request_histories", (string)null);
                 });
 
+            modelBuilder.Entity("RoomTrack.Housekeeping.Domain.Model.Aggregates.CleaningChecklistTemplate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("HotelId")
+                        .HasColumnType("int")
+                        .HasColumnName("hotel_id");
+
+                    b.Property<int?>("RoomTypeId")
+                        .HasColumnType("int")
+                        .HasColumnName("room_type_id");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("updated_at");
+
+                    b.Property<int?>("UpdatedByUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("updated_by_user_id");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_cleaning_checklist_templates");
+
+                    b.HasIndex("HotelId", "RoomTypeId")
+                        .IsUnique()
+                        .HasDatabaseName("i_x_cleaning_checklist_templates__hotel_id__room_type_id");
+
+                    b.ToTable("cleaning_checklist_templates", (string)null);
+                });
+
+            modelBuilder.Entity("RoomTrack.Housekeeping.Domain.Model.Aggregates.CleaningChecklistTemplateItem", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("CleaningChecklistTemplateId")
+                        .HasColumnType("int")
+                        .HasColumnName("cleaning_checklist_template_id");
+
+                    b.Property<bool>("IsRequired")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("is_required");
+
+                    b.Property<string>("Label")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)")
+                        .HasColumnName("label");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("int")
+                        .HasColumnName("position");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_cleaning_checklist_template_items");
+
+                    b.HasIndex("CleaningChecklistTemplateId")
+                        .HasDatabaseName("i_x_cleaning_checklist_template_items__cleaning_checklist_template_id");
+
+                    b.ToTable("cleaning_checklist_template_items", (string)null);
+                });
+
             modelBuilder.Entity("RoomTrack.Housekeeping.Domain.Model.Aggregates.CleaningTask", b =>
                 {
                     b.Property<int>("Id")
@@ -644,6 +956,54 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                     b.ToTable("hotel_housekeeping_settings", (string)null);
                 });
 
+            modelBuilder.Entity("RoomTrack.Housekeeping.Domain.Model.Entities.CleaningChecklistItem", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("CleaningTaskId")
+                        .HasColumnType("int")
+                        .HasColumnName("cleaning_task_id");
+
+                    b.Property<DateTimeOffset?>("DoneAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("done_at");
+
+                    b.Property<int?>("DoneByUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("done_by_user_id");
+
+                    b.Property<bool>("IsDone")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("is_done");
+
+                    b.Property<bool>("IsRequired")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("is_required");
+
+                    b.Property<string>("Label")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)")
+                        .HasColumnName("label");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("int")
+                        .HasColumnName("position");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_cleaning_task_checklist_items");
+
+                    b.HasIndex("CleaningTaskId", "Position")
+                        .HasDatabaseName("i_x_cleaning_task_checklist_items__cleaning_task_id__position");
+
+                    b.ToTable("cleaning_task_checklist_items", (string)null);
+                });
+
             modelBuilder.Entity("RoomTrack.Housekeeping.Domain.Model.Entities.CleaningTaskHistoryEntry", b =>
                 {
                     b.Property<long>("Id")
@@ -734,11 +1094,29 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("hotel_id");
 
+                    b.Property<bool>("IsRecurring")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("is_recurring");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("kind");
+
+                    b.Property<int?>("PreventivePlanId")
+                        .HasColumnType("int")
+                        .HasColumnName("preventive_plan_id");
+
                     b.Property<string>("Priority")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)")
                         .HasColumnName("priority");
+
+                    b.Property<int?>("RecurrenceCount")
+                        .HasColumnType("int")
+                        .HasColumnName("recurrence_count");
 
                     b.Property<DateTimeOffset>("ReportedAt")
                         .HasColumnType("datetime(6)")
@@ -794,16 +1172,109 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                     b.HasKey("Id")
                         .HasName("p_k_incidents");
 
+                    b.HasIndex("PreventivePlanId")
+                        .HasDatabaseName("i_x_incidents__preventive_plan_id");
+
                     b.HasIndex("AssigneeUserId", "Status")
                         .HasDatabaseName("i_x_incidents__assignee_user_id__status");
 
                     b.HasIndex("HotelId", "Status")
                         .HasDatabaseName("i_x_incidents__hotel_id__status");
 
+                    b.HasIndex("RoomId", "ReportedAt")
+                        .HasDatabaseName("i_x_incidents__room_id__reported_at");
+
                     b.HasIndex("RoomId", "Status")
                         .HasDatabaseName("i_x_incidents__room_id__status");
 
                     b.ToTable("incidents", (string)null);
+                });
+
+            modelBuilder.Entity("RoomTrack.Incidents.Domain.Model.Aggregates.PreventiveMaintenancePlan", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<DateTimeOffset?>("DeactivatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("deactivated_at");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)")
+                        .HasColumnName("description");
+
+                    b.Property<int>("FrequencyDays")
+                        .HasColumnType("int")
+                        .HasColumnName("frequency_days");
+
+                    b.Property<int>("GeneratedCount")
+                        .HasColumnType("int")
+                        .HasColumnName("generated_count");
+
+                    b.Property<int>("HotelId")
+                        .HasColumnType("int")
+                        .HasColumnName("hotel_id");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("is_active");
+
+                    b.Property<DateTimeOffset?>("LastGeneratedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("last_generated_at");
+
+                    b.Property<int?>("LastIncidentId")
+                        .HasColumnType("int")
+                        .HasColumnName("last_incident_id");
+
+                    b.Property<DateOnly>("NextDueOn")
+                        .HasColumnType("date")
+                        .HasColumnName("next_due_on");
+
+                    b.Property<int>("ReminderDaysBefore")
+                        .HasColumnType("int")
+                        .HasColumnName("reminder_days_before");
+
+                    b.Property<DateOnly?>("ReminderSentForDueOn")
+                        .HasColumnType("date")
+                        .HasColumnName("reminder_sent_for_due_on");
+
+                    b.Property<int>("RoomId")
+                        .HasColumnType("int")
+                        .HasColumnName("room_id");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("varchar(120)")
+                        .HasColumnName("title");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_preventive_maintenance_plans");
+
+                    b.HasIndex("RoomId")
+                        .HasDatabaseName("i_x_preventive_maintenance_plans__room_id");
+
+                    b.HasIndex("HotelId", "IsActive")
+                        .HasDatabaseName("i_x_preventive_maintenance_plans__hotel_id__is_active");
+
+                    b.HasIndex("IsActive", "NextDueOn")
+                        .HasDatabaseName("i_x_preventive_maintenance_plans__is_active__next_due_on");
+
+                    b.ToTable("preventive_maintenance_plans", (string)null);
                 });
 
             modelBuilder.Entity("RoomTrack.Incidents.Domain.Model.Entities.IncidentHistoryEntry", b =>
@@ -817,8 +1288,8 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("Action")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)")
                         .HasColumnName("action");
 
                     b.Property<string>("ActorEmail")
@@ -975,225 +1446,7 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                     b.ToTable("conversation_messages", (string)null);
                 });
 
-            modelBuilder.Entity("MassTransit.EntityFrameworkCoreIntegration.InboxState", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<DateTime?>("Consumed")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("consumed");
-
-                    b.Property<Guid>("ConsumerId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("consumer_id");
-
-                    b.Property<DateTime?>("Delivered")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("delivered");
-
-                    b.Property<DateTime?>("ExpirationTime")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("expiration_time");
-
-                    b.Property<long?>("LastSequenceNumber")
-                        .HasColumnType("bigint")
-                        .HasColumnName("last_sequence_number");
-
-                    b.Property<Guid>("LockId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("lock_id");
-
-                    b.Property<Guid>("MessageId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("message_id");
-
-                    b.Property<int>("ReceiveCount")
-                        .HasColumnType("int")
-                        .HasColumnName("receive_count");
-
-                    b.Property<DateTime>("Received")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("received");
-
-                    b.Property<DateTime?>("RowVersion")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp(6)")
-                        .HasColumnName("row_version");
-
-                    b.HasKey("Id")
-                        .HasName("p_k_inbox_states");
-
-                    b.HasAlternateKey("MessageId", "ConsumerId")
-                        .HasName("a_k_inbox_states__message_id__consumer_id");
-
-                    b.HasIndex("Delivered")
-                        .HasDatabaseName("i_x_inbox_states__delivered");
-
-                    b.ToTable("inbox_states");
-                });
-
-            modelBuilder.Entity("MassTransit.EntityFrameworkCoreIntegration.OutboxMessage", b =>
-                {
-                    b.Property<long>("SequenceNumber")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("sequence_number");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("SequenceNumber"));
-
-                    b.Property<string>("Body")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("body");
-
-                    b.Property<string>("ContentType")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)")
-                        .HasColumnName("content_type");
-
-                    b.Property<Guid?>("ConversationId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("conversation_id");
-
-                    b.Property<Guid?>("CorrelationId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("correlation_id");
-
-                    b.Property<string>("DestinationAddress")
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)")
-                        .HasColumnName("destination_address");
-
-                    b.Property<DateTime?>("EnqueueTime")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("enqueue_time");
-
-                    b.Property<DateTime?>("ExpirationTime")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("expiration_time");
-
-                    b.Property<string>("FaultAddress")
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)")
-                        .HasColumnName("fault_address");
-
-                    b.Property<string>("Headers")
-                        .HasColumnType("longtext")
-                        .HasColumnName("headers");
-
-                    b.Property<Guid?>("InboxConsumerId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("inbox_consumer_id");
-
-                    b.Property<Guid?>("InboxMessageId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("inbox_message_id");
-
-                    b.Property<Guid?>("InitiatorId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("initiator_id");
-
-                    b.Property<Guid>("MessageId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("message_id");
-
-                    b.Property<string>("MessageType")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("message_type");
-
-                    b.Property<Guid?>("OutboxId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("outbox_id");
-
-                    b.Property<string>("Properties")
-                        .HasColumnType("longtext")
-                        .HasColumnName("properties");
-
-                    b.Property<Guid?>("RequestId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("request_id");
-
-                    b.Property<string>("ResponseAddress")
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)")
-                        .HasColumnName("response_address");
-
-                    b.Property<DateTime>("SentTime")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("sent_time");
-
-                    b.Property<string>("SourceAddress")
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)")
-                        .HasColumnName("source_address");
-
-                    b.HasKey("SequenceNumber")
-                        .HasName("p_k_outbox_messages");
-
-                    b.HasIndex("EnqueueTime")
-                        .HasDatabaseName("i_x_outbox_messages__enqueue_time");
-
-                    b.HasIndex("ExpirationTime")
-                        .HasDatabaseName("i_x_outbox_messages__expiration_time");
-
-                    b.HasIndex("OutboxId", "SequenceNumber")
-                        .IsUnique()
-                        .HasDatabaseName("i_x_outbox_messages__outbox_id__sequence_number");
-
-                    b.HasIndex("InboxMessageId", "InboxConsumerId", "SequenceNumber")
-                        .IsUnique()
-                        .HasDatabaseName("i_x_outbox_messages__inbox_message_id__inbox_consumer_id__sequence_number");
-
-                    b.ToTable("outbox_messages");
-                });
-
-            modelBuilder.Entity("MassTransit.EntityFrameworkCoreIntegration.OutboxState", b =>
-                {
-                    b.Property<Guid>("OutboxId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)")
-                        .HasColumnName("outbox_id");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("created");
-
-                    b.Property<DateTime?>("Delivered")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("delivered");
-
-                    b.Property<long?>("LastSequenceNumber")
-                        .HasColumnType("bigint")
-                        .HasColumnName("last_sequence_number");
-
-                    b.Property<Guid>("LockId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("lock_id");
-
-                    b.Property<DateTime?>("RowVersion")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp(6)")
-                        .HasColumnName("row_version");
-
-                    b.HasKey("OutboxId")
-                        .HasName("p_k_outbox_states");
-
-                    b.HasIndex("Created")
-                        .HasDatabaseName("i_x_outbox_states__created");
-
-                    b.ToTable("outbox_states");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey", b =>
+            modelBuilder.Entity("RoomTrack.ShiftHandovers.Domain.Model.Aggregates.ShiftHandover", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1202,18 +1455,149 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("FriendlyName")
-                        .HasColumnType("longtext")
-                        .HasColumnName("friendly_name");
+                    b.Property<string>("Area")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("area");
 
-                    b.Property<string>("Xml")
-                        .HasColumnType("longtext")
-                        .HasColumnName("xml");
+                    b.Property<string>("AuthorEmail")
+                        .HasMaxLength(254)
+                        .HasColumnType("varchar(254)")
+                        .HasColumnName("author_email");
+
+                    b.Property<int>("AuthorUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("author_user_id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("HotelId")
+                        .HasColumnType("int")
+                        .HasColumnName("hotel_id");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(2000)
+                        .HasColumnType("varchar(2000)")
+                        .HasColumnName("notes");
 
                     b.HasKey("Id")
-                        .HasName("p_k_data_protection_keys");
+                        .HasName("p_k_shift_handovers");
 
-                    b.ToTable("data_protection_keys");
+                    b.HasIndex("HotelId", "Area", "CreatedAt")
+                        .HasDatabaseName("i_x_shift_handovers__hotel_id__area__created_at");
+
+                    b.ToTable("shift_handovers", (string)null);
+                });
+
+            modelBuilder.Entity("RoomTrack.ShiftHandovers.Domain.Model.Aggregates.ShiftHandoverAcknowledgement", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTimeOffset>("AcknowledgedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("acknowledged_at");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(254)
+                        .HasColumnType("varchar(254)")
+                        .HasColumnName("email");
+
+                    b.Property<int>("ShiftHandoverId")
+                        .HasColumnType("int")
+                        .HasColumnName("shift_handover_id");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_shift_handover_acknowledgements");
+
+                    b.HasIndex("ShiftHandoverId", "UserId")
+                        .IsUnique()
+                        .HasDatabaseName("i_x_shift_handover_acknowledgements__shift_handover_id__user_id");
+
+                    b.ToTable("shift_handover_acknowledgements", (string)null);
+                });
+
+            modelBuilder.Entity("RoomTrack.ShiftHandovers.Domain.Model.Aggregates.ShiftHandoverItem", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<int?>("AssigneeUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("assignee_user_id");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("kind");
+
+                    b.Property<string>("Priority")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("priority");
+
+                    b.Property<int>("ReferenceId")
+                        .HasColumnType("int")
+                        .HasColumnName("reference_id");
+
+                    b.Property<int>("RoomId")
+                        .HasColumnType("int")
+                        .HasColumnName("room_id");
+
+                    b.Property<int>("ShiftHandoverId")
+                        .HasColumnType("int")
+                        .HasColumnName("shift_handover_id");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("status");
+
+                    b.Property<string>("Summary")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)")
+                        .HasColumnName("summary");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_shift_handover_items");
+
+                    b.HasIndex("ShiftHandoverId")
+                        .HasDatabaseName("i_x_shift_handover_items__shift_handover_id");
+
+                    b.ToTable("shift_handover_items", (string)null);
+                });
+
+            modelBuilder.Entity("MassTransit.EntityFrameworkCoreIntegration.OutboxMessage", b =>
+                {
+                    b.HasOne("MassTransit.EntityFrameworkCoreIntegration.OutboxState", null)
+                        .WithMany()
+                        .HasForeignKey("OutboxId")
+                        .HasConstraintName("f_k_outbox_messages__outbox_state__outbox_id");
+
+                    b.HasOne("MassTransit.EntityFrameworkCoreIntegration.InboxState", null)
+                        .WithMany()
+                        .HasForeignKey("InboxMessageId", "InboxConsumerId")
+                        .HasPrincipalKey("MessageId", "ConsumerId")
+                        .HasConstraintName("f_k_outbox_messages_inbox_states__inbox_message_id__inbox_consumer_id");
                 });
 
             modelBuilder.Entity("RoomTrack.Accommodations.Domain.Model.Aggregates.Hotel", b =>
@@ -1306,6 +1690,26 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                         .HasConstraintName("f_k_guest_request_histories_guest_requests__guest_request_id");
                 });
 
+            modelBuilder.Entity("RoomTrack.Housekeeping.Domain.Model.Aggregates.CleaningChecklistTemplateItem", b =>
+                {
+                    b.HasOne("RoomTrack.Housekeeping.Domain.Model.Aggregates.CleaningChecklistTemplate", null)
+                        .WithMany("Items")
+                        .HasForeignKey("CleaningChecklistTemplateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("f_k_cleaning_checklist_template_items_cleaning_checklist_templat~");
+                });
+
+            modelBuilder.Entity("RoomTrack.Housekeeping.Domain.Model.Entities.CleaningChecklistItem", b =>
+                {
+                    b.HasOne("RoomTrack.Housekeeping.Domain.Model.Aggregates.CleaningTask", null)
+                        .WithMany("Checklist")
+                        .HasForeignKey("CleaningTaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("f_k_cleaning_task_checklist_items_cleaning_tasks__cleaning_task_id");
+                });
+
             modelBuilder.Entity("RoomTrack.Housekeeping.Domain.Model.Entities.CleaningTaskHistoryEntry", b =>
                 {
                     b.HasOne("RoomTrack.Housekeeping.Domain.Model.Aggregates.CleaningTask", null)
@@ -1338,18 +1742,24 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                     b.Navigation("Conversation");
                 });
 
-            modelBuilder.Entity("MassTransit.EntityFrameworkCoreIntegration.OutboxMessage", b =>
+            modelBuilder.Entity("RoomTrack.ShiftHandovers.Domain.Model.Aggregates.ShiftHandoverAcknowledgement", b =>
                 {
-                    b.HasOne("MassTransit.EntityFrameworkCoreIntegration.OutboxState", null)
-                        .WithMany()
-                        .HasForeignKey("OutboxId")
-                        .HasConstraintName("f_k_outbox_messages__outbox_state__outbox_id");
+                    b.HasOne("RoomTrack.ShiftHandovers.Domain.Model.Aggregates.ShiftHandover", null)
+                        .WithMany("Acknowledgements")
+                        .HasForeignKey("ShiftHandoverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("f_k_shift_handover_acknowledgements_shift_handovers__shift_handove~");
+                });
 
-                    b.HasOne("MassTransit.EntityFrameworkCoreIntegration.InboxState", null)
-                        .WithMany()
-                        .HasForeignKey("InboxMessageId", "InboxConsumerId")
-                        .HasPrincipalKey("MessageId", "ConsumerId")
-                        .HasConstraintName("f_k_outbox_messages_inbox_states__inbox_message_id__inbox_consumer_id");
+            modelBuilder.Entity("RoomTrack.ShiftHandovers.Domain.Model.Aggregates.ShiftHandoverItem", b =>
+                {
+                    b.HasOne("RoomTrack.ShiftHandovers.Domain.Model.Aggregates.ShiftHandover", null)
+                        .WithMany("Items")
+                        .HasForeignKey("ShiftHandoverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("f_k_shift_handover_items_shift_handovers__shift_handover_id");
                 });
 
             modelBuilder.Entity("RoomTrack.Accommodations.Domain.Model.Aggregates.Hotel", b =>
@@ -1362,14 +1772,28 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                     b.Navigation("History");
                 });
 
+            modelBuilder.Entity("RoomTrack.Housekeeping.Domain.Model.Aggregates.CleaningChecklistTemplate", b =>
+                {
+                    b.Navigation("Items");
+                });
+
             modelBuilder.Entity("RoomTrack.Housekeeping.Domain.Model.Aggregates.CleaningTask", b =>
                 {
+                    b.Navigation("Checklist");
+
                     b.Navigation("History");
                 });
 
             modelBuilder.Entity("RoomTrack.Incidents.Domain.Model.Aggregates.Incident", b =>
                 {
                     b.Navigation("History");
+                });
+
+            modelBuilder.Entity("RoomTrack.ShiftHandovers.Domain.Model.Aggregates.ShiftHandover", b =>
+                {
+                    b.Navigation("Acknowledgements");
+
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }
