@@ -149,18 +149,29 @@ public class BookingCommandServiceAclIntegrationTests
             Task.FromResult<IReadOnlyList<RoomOffer>>([]);
     }
 
-    /// <summary>IAM port: every user id is an active account with a predictable e-mail.</summary>
+    /// <summary>
+    ///     IAM port: every user id is an active account with a predictable e-mail. <see cref="Accounts"/> are the
+    ///     accounts found by e-mail (none by default), with their role.
+    /// </summary>
     private class FakeIamContextFacade : IIamContextFacade
     {
         public static string EmailOf(int userId) => $"user{userId}@example.com";
 
-        public Task<UserContact?> FetchUserContactAsync(int userId) =>
-            Task.FromResult<UserContact?>(new UserContact(userId, EmailOf(userId), $"User {userId}", "guest"));
+        public Dictionary<string, (int UserId, string Role)> Accounts { get; } = new(StringComparer.OrdinalIgnoreCase);
+
+        public Task<UserContact?> FetchUserContactAsync(int userId)
+        {
+            var known = Accounts.FirstOrDefault(a => a.Value.UserId == userId);
+            return Task.FromResult<UserContact?>(known.Key is null
+                ? new UserContact(userId, EmailOf(userId), $"User {userId}", "guest")
+                : new UserContact(userId, known.Key, $"User {userId}", known.Value.Role));
+        }
 
         public Task<IReadOnlyList<UserContact>> ListHotelStaffAsync(int hotelId, IReadOnlyCollection<string> roles) =>
             Task.FromResult<IReadOnlyList<UserContact>>([]);
 
-        public Task<int> FetchUserIdByEmail(string email) => Task.FromResult(0);
+        public Task<int> FetchUserIdByEmail(string email) =>
+            Task.FromResult(Accounts.TryGetValue(email, out var account) ? account.UserId : 0);
 
         public Task<string> FetchEmailByUserId(int userId) => Task.FromResult(EmailOf(userId));
 
@@ -178,8 +189,10 @@ public class BookingCommandServiceAclIntegrationTests
         _calendar = new HotelCalendar(_settings, TimeProvider.System);
     }
 
+    private readonly FakeIamContextFacade _iam = new();
+
     private BookingCommandService CreateService(FakeGuestProfilesContextFacade facade) =>
-        new(_repo, _uow, facade, new FakeAccommodationsContextFacade(), new FakeIamContextFacade(),
+        new(_repo, _uow, facade, new FakeAccommodationsContextFacade(), _iam,
             new RoomAvailabilityService(_repo), _calendar, _settings, NullLogger<BookingCommandService>.Instance);
 
     private static BookingRequester Staff => BookingRequester.HotelStaff(StaffUserId, HotelId);
@@ -275,6 +288,44 @@ public class BookingCommandServiceAclIntegrationTests
         result.GuestEmail.Should().Be("anonymous@guest.com");
         facade.FetchByUserIdCalled.Should().BeTrue();
         _uow.CompleteCalled.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task CreateBooking_WithEmailOfGuestAccount_ShouldBelongToThatAccount()
+    {
+        // Arrange: a guest who just signed up has an account but no guest profile yet.
+        const int guestAccountId = 77;
+        const string email = "nueva@example.com";
+        _iam.Accounts[email] = (guestAccountId, "guest");
+        var facade = new FakeGuestProfilesContextFacade();
+        var service = CreateService(facade);
+
+        // Act
+        var result = await service.Handle(StaffBooking("Nueva Huésped", "Nueva@Example.com"));
+
+        // Assert
+        result.GuestId!.Value.Should().Be(guestAccountId);
+        result.GuestName.Should().Be("Nueva Huésped");
+        result.GuestEmail.Should().Be(email);
+        result.GuestProfileId.Should().BeNull();
+        facade.LastCheckedUserId.Should().Be(guestAccountId);
+        facade.FetchByEmailCalled.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task CreateBooking_WithEmailOfStaffAccount_ShouldNotBelongToIt()
+    {
+        // Arrange
+        const string email = "recepcion@example.com";
+        _iam.Accounts[email] = (88, "reception");
+        var service = CreateService(new FakeGuestProfilesContextFacade());
+
+        // Act
+        var result = await service.Handle(StaffBooking("Walk-in Guest", email));
+
+        // Assert
+        result.GuestId.Should().BeNull();
+        result.GuestEmail.Should().Be(email);
     }
 
     [Fact]

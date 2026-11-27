@@ -6,6 +6,7 @@ using RoomTrack.Bookings.Domain.Model.Exceptions;
 using RoomTrack.Bookings.Domain.Model.ValueObjects;
 using RoomTrack.Bookings.Domain.Repositories;
 using RoomTrack.Bookings.Domain.Services;
+using RoomTrack.IAM.Domain.Model.Constants;
 using RoomTrack.IAM.Interfaces.ACL;
 using RoomTrack.Profiles.Interfaces.ACL;
 using RoomTrack.Shared.Domain.Repositories;
@@ -34,6 +35,7 @@ public class BookingCommandService(
     public async Task<Booking> Handle(CreateBookingCommand command)
     {
         var dates = new DateRange(command.CheckInDate, command.CheckOutDate);
+        if (!command.Requester.IsGuest) command = await AttachGuestAccountByEmailAsync(command);
         var requester = await ResolveGuestProfileAsync(command.Requester);
         var contact = await ResolveContactAsync(command, requester);
         var guestProfileId = requester.IsGuest
@@ -146,8 +148,22 @@ public class BookingCommandService(
     /// <summary>Desk bookings are attached to the guest's profile when it can be found by account or e-mail.</summary>
     private async Task<Guid?> FindGuestProfileForStaffBookingAsync(CreateBookingCommand command, GuestContact contact)
     {
-        if (command.UserId is > 0)
-            return await guestProfilesContextFacade.FetchGuestProfileIdByUserIdAsync(command.UserId.Value);
+        if (command.UserId is > 0
+            && await guestProfilesContextFacade.FetchGuestProfileIdByUserIdAsync(command.UserId.Value) is { } byAccount)
+            return byAccount;
         return await guestProfilesContextFacade.FetchGuestProfileIdByEmailAsync(contact.Email);
+    }
+
+    /// <summary>
+    ///     A desk booking typed with only the e-mail of an existing guest account belongs to that account, so the guest
+    ///     sees it in their app (a new account has no guest profile to attach it to). Staff accounts are never used.
+    /// </summary>
+    private async Task<CreateBookingCommand> AttachGuestAccountByEmailAsync(CreateBookingCommand command)
+    {
+        if (command.UserId is > 0 || string.IsNullOrWhiteSpace(command.GuestEmail)) return command;
+        var userId = await iamContextFacade.FetchUserIdByEmail(command.GuestEmail.Trim());
+        if (userId <= 0) return command;
+        var account = await iamContextFacade.FetchUserContactAsync(userId);
+        return account?.Role == UserRoles.Guest ? command with { UserId = userId } : command;
     }
 }
