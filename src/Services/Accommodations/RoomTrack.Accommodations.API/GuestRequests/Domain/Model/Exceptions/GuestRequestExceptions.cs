@@ -15,7 +15,20 @@ public static class GuestRequestErrorCodes
     public const string AssigneeNotOfArea = "guest_request.assignee_not_of_area";
     public const string RoomRequired = "guest_request.room_required";
     public const string AreaRequired = "guest_request.area_required";
+
+    public const string ServiceNameLength = "service_catalog.name_length";
+    public const string ServiceDescriptionLength = "service_catalog.description_length";
+    public const string ServicePriceInvalid = "service_catalog.price_invalid";
+    public const string ServiceEstimatedMinutesInvalid = "service_catalog.estimated_minutes_invalid";
+    public const string ServiceNotAvailable = "service_catalog.not_available";
+    public const string ServiceOfOtherHotel = "service_catalog.other_hotel";
+    public const string ServiceHotelRequired = "service_catalog.hotel_required";
 }
+
+/// <summary>The hotel withdrew the service from its catalog: it can no longer be requested.</summary>
+public class ServiceNotAvailableException(int serviceItemId)
+    : BusinessRuleViolationException(GuestRequestErrorCodes.ServiceNotAvailable,
+        $"Service {serviceItemId} is not available right now.");
 
 /// <summary>A guest without a stay today cannot send requests: there is no room to attend.</summary>
 public class NoCurrentStayException()

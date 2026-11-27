@@ -15,7 +15,8 @@ using RoomTrack.Bookings.API.Infrastructure.Concurrency;
 using RoomTrack.Bookings.API.Infrastructure.Persistence;
 using RoomTrack.BuildingBlocks.Clients;
 
-// Bookings service: bookings, availability and digital check-in (Bookings) and the payments of the bookings.
+// Bookings service: bookings, availability, digital check-in and the evaluation of the stays (Bookings) and the
+// payments of the bookings.
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddRoomTrackServiceDefaults<BookingsDbContext, Program>("Bookings");

@@ -46,6 +46,15 @@ public static class ModelBuilderExtensions
             .HasConversion<int>()
             .IsRequired();
     
+        // Stay reviews (US-21, US-26): one per booking, by its guest, after the check-out.
+        builder.Entity<StayReview>().ToTable("stay_reviews");
+        builder.Entity<StayReview>().HasKey(r => r.Id);
+        builder.Entity<StayReview>().Property(r => r.Id).ValueGeneratedOnAdd();
+        builder.Entity<StayReview>().HasIndex(r => r.BookingId).IsUnique();
+        builder.Entity<StayReview>().HasOne<Booking>().WithMany().HasForeignKey(r => r.BookingId).OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<StayReview>().HasIndex(r => new { r.HotelId, r.SubmittedAt });
+        builder.Entity<StayReview>().Property(r => r.Comment).HasMaxLength(StayReview.CommentMaxLength);
+
         // Digital check-in: one per booking; the access code is stored encrypted.
         builder.Entity<DigitalCheckIn>().ToTable("digital_check_ins");
         builder.Entity<DigitalCheckIn>().HasKey(c => c.Id);

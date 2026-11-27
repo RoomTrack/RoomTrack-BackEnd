@@ -12,7 +12,10 @@ namespace RoomTrack.GuestRequests.Infrastructure.Interfaces.ASP.Configuration.Ex
 
 public static class WebApplicationBuilderExtensions
 {
-    /// <summary>Guest requests context: requests of the guests during their stay and their coordination by area (US-11, US-19).</summary>
+    /// <summary>
+    ///     Guest requests context: requests of the guests during their stay and their coordination by area (US-11, US-19),
+    ///     and the service catalog the guests request from (US-33).
+    /// </summary>
     public static void AddGuestRequestsContextServices(this WebApplicationBuilder builder)
     {
         builder.Services.AddOptions<GuestRequestSettings>()
@@ -23,6 +26,11 @@ public static class WebApplicationBuilderExtensions
         builder.Services.AddScoped<IGuestRequestRepository, GuestRequestRepository>();
         builder.Services.AddScoped<IGuestRequestCommandService, GuestRequestCommandService>();
         builder.Services.AddScoped<IGuestRequestQueryService, GuestRequestQueryService>();
+
+        // Service catalog of each hotel (US-33)
+        builder.Services.AddScoped<IServiceCatalogRepository, ServiceCatalogRepository>();
+        builder.Services.AddScoped<IServiceCatalogCommandService, ServiceCatalogCommandService>();
+        builder.Services.AddScoped<IServiceCatalogQueryService, ServiceCatalogQueryService>();
 
         // Push notifications to the staff of the area and to the guest (US-22)
         builder.Services.AddScoped<GuestRequestPushHandler>();

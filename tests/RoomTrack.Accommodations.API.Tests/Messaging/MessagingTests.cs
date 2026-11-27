@@ -139,6 +139,8 @@ public class MessagingTests : IDisposable
 
         public Task<GuestStay?> FetchCurrentStayOfRoomAsync(int roomId) => Task.FromResult(Stay?.RoomId == roomId ? Stay : null);
 
+        public Task<FrontDeskSummary> FetchFrontDeskSummaryAsync(int hotelId) => throw new NotSupportedException();
+
         public Task<IReadOnlyDictionary<int, int>> CountActiveBookingsAsync(IReadOnlyCollection<int> roomIds) =>
             throw new NotSupportedException();
 

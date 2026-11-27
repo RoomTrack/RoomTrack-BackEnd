@@ -26,6 +26,8 @@ using RoomTrack.Shared.Infrastructure.Events;
 using RoomTrack.Shared.Infrastructure.Persistence.EFC.Configuration;
 using RoomTrack.Shared.Infrastructure.Persistence.EFC.Repositories;
 using RoomTrack.ShiftHandovers.Infrastructure.Interfaces.ASP.Configuration.Extensions;
+using RoomTrack.StaffPerformance.Infrastructure.Interfaces.ASP.Configuration.Extensions;
+using RoomTrack.Dashboard.Infrastructure;
 
 namespace RoomTrack.Tests.Features.Support;
 
@@ -51,6 +53,8 @@ public sealed class OperationsWorld : IDisposable
         builder.AddGuestRequestsContextServices();
         builder.AddMessagingContextServices();
         builder.AddShiftHandoversContextServices();
+        builder.AddStaffPerformanceContextServices();
+        builder.AddDashboardContextServices();
 
         var database = Guid.NewGuid().ToString();
         var services = builder.Services;
@@ -192,6 +196,12 @@ public sealed class OperationsWorld : IDisposable
 
         public Task<GuestStay?> FetchCurrentStayOfRoomAsync(int roomId) =>
             Task.FromResult(Current.FirstOrDefault(stay => stay.RoomId == roomId));
+
+        /// <summary>The front desk the Bookings service reports; null makes it unreachable.</summary>
+        public FrontDeskSummary? FrontDesk { get; set; } = new(0, 0, 0, 0, null, []);
+
+        public Task<FrontDeskSummary> FetchFrontDeskSummaryAsync(int hotelId) =>
+            FrontDesk is { } summary ? Task.FromResult(summary) : throw new HttpRequestException("Bookings is unreachable");
     }
 
     /// <summary>An implementation of <typeparamref name="T"/> whose every method does nothing (RabbitMQ is not under test).</summary>

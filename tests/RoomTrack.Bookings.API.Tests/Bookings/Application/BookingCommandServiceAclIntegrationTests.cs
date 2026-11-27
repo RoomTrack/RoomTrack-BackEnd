@@ -70,6 +70,9 @@ public class BookingCommandServiceAclIntegrationTests
             Task.FromResult<IReadOnlyList<Booking>>([]);
 
         public Task<IReadOnlyList<int>> ListIdsByHotelAsync(int hotelId) => Task.FromResult<IReadOnlyList<int>>([]);
+
+        public Task<IReadOnlyList<Booking>> ListAtFrontDeskAsync(int hotelId, DateTime today) =>
+            Task.FromResult<IReadOnlyList<Booking>>([]);
     }
 
     private class FakeUnitOfWork : IUnitOfWork

@@ -18,6 +18,32 @@ public sealed record GuestStay(int BookingId, string Code, int HotelId, int Room
 ///     facade used by Payments so it depends on nothing of Accommodations (no dependency cycle between the two
 ///     contexts).
 /// </summary>
+/// <summary>The front desk of a hotel today and what its guests said lately, for the administrator's panel (US-18).</summary>
+/// <param name="ArrivalsToday">Paid bookings whose stay covers today and that are not checked in yet.</param>
+/// <param name="InHouse">Guests checked in.</param>
+/// <param name="DeparturesToday">Guests checked in whose stay ends today (or ended and are still in).</param>
+/// <param name="ReviewsLast30Days">Stays evaluated in the last 30 days.</param>
+/// <param name="AverageRatingLast30Days">Their average overall rating, 1-5 (null without evaluations).</param>
+/// <param name="LatestReviews">The latest evaluations, newest first (at most 3).</param>
+public sealed record FrontDeskSummary(
+    int ArrivalsToday,
+    int InHouse,
+    int DeparturesToday,
+    int ReviewsLast30Days,
+    double? AverageRatingLast30Days,
+    IReadOnlyList<ReviewSnippet> LatestReviews);
+
+/// <summary>An evaluation of a stay (US-21), as the panel shows it.</summary>
+public sealed record ReviewSnippet(
+    int BookingId,
+    int RoomId,
+    int OverallRating,
+    int? FrontDeskRating,
+    int? HousekeepingRating,
+    int? MaintenanceRating,
+    string? Comment,
+    DateTimeOffset SubmittedAt);
+
 public interface IRoomReservationsFacade
 {
     /// <summary>How many active bookings (Pending, Confirmed, CheckedIn) hold each of <paramref name="roomIds"/>.</summary>
@@ -37,4 +63,7 @@ public interface IRoomReservationsFacade
 
     /// <summary>The stay in the room today (hotel time), or null when nobody is staying there.</summary>
     Task<GuestStay?> FetchCurrentStayOfRoomAsync(int roomId);
+
+    /// <summary>Arrivals, guests in house and departures of the hotel today, and its latest evaluations (US-18).</summary>
+    Task<FrontDeskSummary> FetchFrontDeskSummaryAsync(int hotelId);
 }

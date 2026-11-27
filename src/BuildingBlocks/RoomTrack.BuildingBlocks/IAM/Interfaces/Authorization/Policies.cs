@@ -92,6 +92,12 @@ public static class Policies
     /// <summary>Check a guest out: the guest themselves or the front desk of the hotel (US-14, US-27).</summary>
     public const string CheckOut = nameof(CheckOut);
 
+    // ── Stay reviews (US-21, US-26) ──────────────────────────────────
+    /// <summary>Rate a finished stay and leave a comment (guests only their own stays: enforced by the StayReview aggregate).</summary>
+    public const string ReviewStays = nameof(ReviewStays);
+    /// <summary>Read the reviews of the guests of a hotel (hotel scope enforced by the controller).</summary>
+    public const string ViewStayReviews = nameof(ViewStayReviews);
+
     // ── Payments ─────────────────────────────────────────────────────
     /// <summary>Read the payment of a booking (guests only of their own bookings).</summary>
     public const string ReadPayments = nameof(ReadPayments);
@@ -213,6 +219,9 @@ public static class Policies
         [CompleteCheckIn] = GuestOrFrontDesk,
         [CheckOut] = GuestOrFrontDesk,
         [CancelBookings] = GuestOrFrontDesk,
+
+        [ReviewStays] = [UserRoles.Guest],
+        [ViewStayReviews] = Administrators,
 
         [ReadPayments] = GuestOrFrontDesk,
         [RegisterPayments] = FrontDesk,
