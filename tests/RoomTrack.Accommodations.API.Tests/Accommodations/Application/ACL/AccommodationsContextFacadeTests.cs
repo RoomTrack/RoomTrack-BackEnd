@@ -42,7 +42,7 @@ public class AccommodationsContextFacadeTests
 
     // HotelExistsAsync only uses the hotel query service; the other collaborators are not needed.
     private static AccommodationsContextFacade CreateFacade(IHotelQueryService hotelQueryService) =>
-        new(hotelQueryService, null!, null!, null!, null!);
+        new(hotelQueryService, null!, null!, null!, null!, null!, TimeProvider.System);
 
     [Fact]
     public async Task HotelExistsAsync_WhenHotelExists_ShouldReturnTrue()

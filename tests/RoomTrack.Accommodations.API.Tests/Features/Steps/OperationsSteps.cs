@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Reqnroll;
+using RoomTrack.Accommodations.Domain.Model.Aggregates;
+using RoomTrack.Accommodations.Domain.Model.Commands;
+using RoomTrack.Accommodations.Domain.Model.ValueObjects;
+using RoomTrack.Accommodations.Domain.Services;
 using RoomTrack.Bookings.Interfaces.ACL;
 using RoomTrack.Contracts.Messaging;
 using RoomTrack.GuestRequests.Domain.Model.Aggregates;
@@ -268,6 +272,40 @@ public sealed class OperationsSteps(OperationsWorld world, ScenarioOutcome outco
             .Which.Title.Should().Be("Limpiar filtros del aire");
         _history.Plans.Should().ContainSingle().Which.GeneratedCount.Should().Be(1);
     }
+
+    /// <summary>The guest of the room arrives at the hotel's check-in time today (3 hours from the start).</summary>
+    private static readonly DateTimeOffset ArrivalAt = OperationsWorld.Start.AddHours(3);
+
+    [Given("que una habitación con checkout inminente no está limpia")]
+    public async Task GivenARoomNotCleanForAnArrival()
+    {
+        // The previous guest left: the room is waiting for its cleaning, and the next guest arrives today.
+        var roomId = world.Rooms[204];
+        await world.Request<IRoomCommandService, Room?>(service =>
+            service.Handle(new ChangeRoomStatusCommand(roomId, RoomStatus.Cleaning, Reception.Id, Email("Recepción"))));
+        world.Reservations.Arrivals.Add(new ExpectedArrival(910, "RT-ARRIVE", world.HotelId, roomId, ArrivalAt));
+    }
+
+    [When("se acerca la hora")]
+    public async Task WhenTheArrivalIsNear()
+    {
+        world.Clock.Now = ArrivalAt.AddMinutes(-90);
+        // The scheduler runs every hour: the next run must not alert the same arrival again.
+        _arrivalAlerts = await world.Request<IRoomCommandService, int>(service => service.Handle(new RaiseArrivalReadinessAlertsCommand()));
+        _arrivalAlerts += await world.Request<IRoomCommandService, int>(service => service.Handle(new RaiseArrivalReadinessAlertsCommand()));
+    }
+
+    [Then("recibo una alerta")]
+    public void ThenIGetAnAlert()
+    {
+        _arrivalAlerts.Should().Be(1, "one alert per arrival");
+        world.Push.To(Id("Elena")).Should().ContainSingle(message => message.Title == "Habitación no lista para una llegada")
+            .Which.Body.Should().Contain("204").And.Contain("RT-ARRIVE");
+        world.Emails.Sent.Should().ContainSingle(email => email.To == Email("Elena") && email.Subject.Contains("no está lista"));
+        world.Read(context => context.Set<Room>().Single(room => room.Id == world.Rooms[204])).ArrivalAlertBookingId.Should().Be(910);
+    }
+
+    private int _arrivalAlerts;
 
     [Given("que una incidencia urgente lleva más tiempo del definido sin resolverse")]
     public Task GivenACriticalIncidentWaits() => ReportIncident(world.Rooms.Keys.First(), "Cerradura rota", IncidentPriority.Critical);

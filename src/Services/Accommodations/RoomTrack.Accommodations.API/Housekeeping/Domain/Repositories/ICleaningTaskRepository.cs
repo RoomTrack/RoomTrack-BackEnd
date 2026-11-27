@@ -19,6 +19,12 @@ public interface ICleaningTaskRepository
 
     /// <summary>How many open tasks each staff member of the hotel has assigned (only those with at least one).</summary>
     Task<IReadOnlyDictionary<int, int>> CountOpenByAssigneeAsync(int hotelId);
+
+    /// <summary>
+    ///     How long the latest <paramref name="take"/> completed cleanings of the hotel took (start to completion),
+    ///     newest first; cleanings left open for more than a working shift are left out.
+    /// </summary>
+    Task<IReadOnlyList<TimeSpan>> ListRecentCleaningDurationsAsync(int hotelId, int take);
 }
 
 public interface IHotelHousekeepingSettingsRepository

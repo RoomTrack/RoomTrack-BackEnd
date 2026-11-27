@@ -185,6 +185,12 @@ public sealed class OperationsWorld : IDisposable
     {
         public List<GuestStay> Current { get; } = [];
 
+        /// <summary>The paid bookings arriving today, not checked in yet.</summary>
+        public List<ExpectedArrival> Arrivals { get; } = [];
+
+        public Task<IReadOnlyList<ExpectedArrival>> ListExpectedArrivalsAsync(DateTimeOffset until) =>
+            Task.FromResult<IReadOnlyList<ExpectedArrival>>(Arrivals.Where(arrival => arrival.ExpectedAt <= until).ToList());
+
         public Task<IReadOnlyDictionary<int, int>> CountActiveBookingsAsync(IReadOnlyCollection<int> roomIds) =>
             Task.FromResult<IReadOnlyDictionary<int, int>>(new Dictionary<int, int>());
 

@@ -18,6 +18,12 @@ public record VacateRoomAfterCheckOutCommand(int RoomId, int? CheckedOutByUserId
 /// <summary>Alert the administrators of rooms under maintenance for too long. Run by the scheduler.</summary>
 public record RaiseMaintenanceAlertsCommand;
 
+/// <summary>
+///     Alert the administrators and the front desk of rooms not ready for a guest who arrives soon (US-23). Run by the
+///     scheduler.
+/// </summary>
+public record RaiseArrivalReadinessAlertsCommand;
+
 /// <summary>A blocking incident takes the room out of service (Maintenance) until it is released.</summary>
 public record HoldRoomForIncidentCommand(int RoomId, int? ReportedByUserId, string? ReportedByEmail);
 

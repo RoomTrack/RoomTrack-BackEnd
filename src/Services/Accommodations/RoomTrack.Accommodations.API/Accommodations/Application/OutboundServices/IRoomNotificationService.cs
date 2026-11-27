@@ -14,4 +14,8 @@ public interface IRoomNotificationService
 
     /// <summary>The room has been under maintenance for too long.</summary>
     Task SendMaintenanceOverdueAsync(IReadOnlyList<UserContact> recipients, RoomNotice room, DateTimeOffset maintenanceSince);
+
+    /// <summary>A guest arrives soon and their room is not ready yet (US-23).</summary>
+    Task SendNotReadyForArrivalAsync(IReadOnlyList<UserContact> recipients, RoomNotice room, RoomStatus status, string bookingCode,
+        DateTimeOffset expectedAt);
 }

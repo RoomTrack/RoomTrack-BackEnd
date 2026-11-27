@@ -44,8 +44,23 @@ public sealed record ReviewSnippet(
     string? Comment,
     DateTimeOffset SubmittedAt);
 
+/// <summary>A guest expected today who has not checked in yet (US-23: their room must be ready before they arrive).</summary>
+/// <param name="BookingId">The paid booking.</param>
+/// <param name="Code">The booking code.</param>
+/// <param name="HotelId">The hotel.</param>
+/// <param name="RoomId">The room the guest will move into.</param>
+/// <param name="ExpectedAt">The hotel's check-in time today (UTC): from then on the guest can ask for the room.</param>
+public sealed record ExpectedArrival(int BookingId, string Code, int HotelId, int RoomId, DateTimeOffset ExpectedAt);
+
 public interface IRoomReservationsFacade
 {
+    /// <summary>
+    ///     The paid bookings of every hotel whose check-in day is today (hotel time), not checked in yet, whose check-in
+    ///     time is at or before <paramref name="until"/> (US-23: alert the hotel of rooms not ready for them).
+    /// </summary>
+    Task<IReadOnlyList<ExpectedArrival>> ListExpectedArrivalsAsync(DateTimeOffset until) =>
+        Task.FromResult<IReadOnlyList<ExpectedArrival>>([]);
+
     /// <summary>How many active bookings (Pending, Confirmed, CheckedIn) hold each of <paramref name="roomIds"/>.</summary>
     Task<IReadOnlyDictionary<int, int>> CountActiveBookingsAsync(IReadOnlyCollection<int> roomIds);
 

@@ -47,4 +47,7 @@ public interface IRoomCommandService
 
     /// <returns>How many rooms were alerted.</returns>
     Task<int> Handle(RaiseMaintenanceAlertsCommand command);
+
+    /// <returns>How many rooms not ready for an arriving guest were alerted.</returns>
+    Task<int> Handle(RaiseArrivalReadinessAlertsCommand command);
 }

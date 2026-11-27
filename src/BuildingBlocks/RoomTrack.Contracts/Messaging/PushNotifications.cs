@@ -53,7 +53,10 @@ public static class PushCategories
     /// <summary>A new incident for maintenance, or one assigned to the user.</summary>
     public const string IncidentAssigned = "incident_assigned";
 
-    /// <summary>A critical incident was not attended in time (administrators).</summary>
+    /// <summary>
+    ///     An operations alert: a critical incident not attended in time, a recurring incident (administrators) or a room
+    ///     not ready for a guest who arrives soon (administrators and front desk, US-23).
+    /// </summary>
     public const string IncidentEscalated = "incident_escalated";
 
     /// <summary>A guest request for the user's area, or news of the request the guest made.</summary>

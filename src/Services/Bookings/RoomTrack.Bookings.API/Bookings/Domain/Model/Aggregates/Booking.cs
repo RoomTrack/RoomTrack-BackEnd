@@ -77,6 +77,20 @@ public class Booking : IHasDomainEvents
     public DateTimeOffset? CancelledAt { get; private set; }
     public CancellationReason? CancellationReason { get; private set; }
     public DateTimeOffset? CheckedInAt { get; private set; }
+
+    /// <summary>When the guest did the digital check-in before arriving (US-13, "check-in en proceso").</summary>
+    public DateTimeOffset? PreArrivalCheckInAt { get; private set; }
+
+    /// <summary>
+    ///     "InProgress" (check-in en proceso: done before arriving, waiting for the guest), "Completed" (the guest is or
+    ///     was in), or null (not done yet).
+    /// </summary>
+    public string? CheckInStage => Status switch
+    {
+        BookingStatus.CheckedIn or BookingStatus.Completed when CheckedInAt is not null => "Completed",
+        BookingStatus.Confirmed when PreArrivalCheckInAt is not null => "InProgress",
+        _ => null
+    };
     public DateTimeOffset? CheckedOutAt { get; private set; }
 
     /// <summary>Who checked the guest out: the guest themselves or a front desk staff member (assisted check-out).</summary>
@@ -305,6 +319,30 @@ public class Booking : IHasDomainEvents
             throw new InvalidFieldException("message", BookingErrorCodes.CheckInMessageTooLong, "The message cannot exceed 500 characters.");
         _domainEvents.Add(new CheckInAssistanceRequestedEvent(Id, Code.Value, HotelId, RoomId, trimmed, now));
     }
+
+    /// <summary>
+    ///     The guest did the digital check-in before arriving (US-13): the booking is marked "check-in en proceso" until
+    ///     they arrive and confirm their identity. Only a Confirmed booking, from <paramref name="windowDays"/> days before
+    ///     the check-in day until the day before it.
+    /// </summary>
+    public void StartPreArrivalCheckIn(DateTime hotelToday, int windowDays, DateTimeOffset now)
+    {
+        if (Status == BookingStatus.CheckedIn)
+            throw new InvalidBookingTransitionException(BookingErrorCodes.CheckInAlreadyCompleted, "The check-in of this booking is already completed.");
+        if (Status != BookingStatus.Confirmed)
+            throw new InvalidBookingTransitionException(BookingErrorCodes.CheckInBookingNotConfirmed,
+                $"Only a confirmed (paid) booking can check in; this one is {Status.ToString().ToLowerInvariant()}.");
+        if (PreArrivalCheckInAt is not null)
+            throw new InvalidBookingTransitionException(BookingErrorCodes.CheckInAwaitingArrival,
+                "The digital check-in is already done: confirm your identity when you arrive at the hotel.");
+        if (hotelToday.Date >= CheckInDate.Date || (CheckInDate.Date - hotelToday.Date).TotalDays > windowDays)
+            throw new InvalidBookingTransitionException(BookingErrorCodes.CheckInNotOpenYet,
+                $"The digital check-in opens {windowDays} day(s) before the check-in day ({CheckInDate:yyyy-MM-dd}).");
+        PreArrivalCheckInAt = now;
+    }
+
+    /// <summary>True on the days before the check-in day: a digital check-in done now waits for the arrival (US-13).</summary>
+    public bool IsBeforeArrivalDay(DateTime hotelToday) => hotelToday.Date < CheckInDate.Date;
 
     /// <summary>Throws when the digital check-in cannot be done today.</summary>
     public void EnsureCheckInAllowed(DateTime hotelToday)

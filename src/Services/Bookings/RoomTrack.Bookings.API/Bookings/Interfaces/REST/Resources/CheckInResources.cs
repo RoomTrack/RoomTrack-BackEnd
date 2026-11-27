@@ -56,18 +56,28 @@ public record CheckInAssistanceResource
     public string? Message { get; init; }
 }
 
-/// <summary>A completed digital check-in.</summary>
+/// <summary>The guest at the hotel confirms their identity (US-13).</summary>
+public record ConfirmArrivalResource
+{
+    /// <summary>The number of the identity document sent with the digital check-in.</summary>
+    /// <example>45678912</example>
+    [Required(ErrorMessage = "Enter the number of the identity document you sent with the digital check-in."), MaxLength(20)]
+    public string? DocumentNumber { get; init; }
+}
+
+/// <summary>A digital check-in: completed, or done before the arrival and waiting for the guest (US-13).</summary>
 /// <param name="BookingId">The booking.</param>
 /// <param name="BookingCode">Its code.</param>
-/// <param name="BookingStatus">CheckedIn.</param>
-/// <param name="RoomId">The room the guest can now enter.</param>
-/// <param name="Status">Approved (the document passed the automatic validation).</param>
+/// <param name="BookingStatus">CheckedIn (completed) or Confirmed (waiting for the arrival).</param>
+/// <param name="RoomId">The room of the stay.</param>
+/// <param name="Status">Approved (completed) or PendingArrival ("check-in en proceso": done before arriving).</param>
 /// <param name="DocumentType">DNI, PASSPORT or CE.</param>
 /// <param name="DocumentNumberMasked">Document number with all but the last 3 characters hidden.</param>
 /// <param name="Nationality">ISO country code.</param>
-/// <param name="AccessCode">6-digit room access code. Only for the guest of the booking; null for the staff.</param>
-/// <param name="AccessCodeValidUntil">The code works until the check-out (UTC).</param>
-/// <param name="CompletedAt">When the check-in was completed (UTC).</param>
+/// <param name="AccessCode">6-digit room access code. Only for the guest of a completed check-in; null otherwise.</param>
+/// <param name="AccessCodeValidUntil">The code works until the check-out (UTC); null while waiting for the arrival.</param>
+/// <param name="SubmittedAt">When the guest sent the document (UTC).</param>
+/// <param name="CompletedAt">When the check-in was completed (UTC); null while waiting for the arrival.</param>
 public record CheckInResource(int BookingId, string BookingCode, string BookingStatus, int RoomId, string Status,
     string DocumentType, string DocumentNumberMasked, string Nationality, string? AccessCode,
-    DateTimeOffset AccessCodeValidUntil, DateTimeOffset CompletedAt);
+    DateTimeOffset? AccessCodeValidUntil, DateTimeOffset SubmittedAt, DateTimeOffset? CompletedAt);

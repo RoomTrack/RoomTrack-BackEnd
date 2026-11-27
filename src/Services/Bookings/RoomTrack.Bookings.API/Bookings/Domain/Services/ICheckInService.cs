@@ -4,13 +4,22 @@ using RoomTrack.Bookings.Domain.Model.ValueObjects;
 
 namespace RoomTrack.Bookings.Domain.Services;
 
-/// <summary>A completed check-in with the access code in clear (only for its guest).</summary>
+/// <summary>
+///     A digital check-in with the access code in clear (only for its guest, and only once the check-in is completed:
+///     a check-in waiting for the arrival has none yet).
+/// </summary>
 public sealed record CheckInResult(Booking Booking, DigitalCheckIn CheckIn, RoomAccessCode? AccessCode);
 
 /// <summary>Digital check-in use cases.</summary>
 public interface ICheckInService
 {
     Task<CheckInResult> Handle(CompleteDigitalCheckInCommand command);
+
+    /// <summary>
+    ///     The guest who did the digital check-in before arriving confirms their identity at the hotel (US-13) and gets the
+    ///     access code; the booking becomes CheckedIn and the room Occupied.
+    /// </summary>
+    Task<CheckInResult> Handle(ConfirmArrivalCommand command);
 
     Task Handle(RequestCheckInAssistanceCommand command);
 

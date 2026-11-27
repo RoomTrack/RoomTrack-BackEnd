@@ -22,3 +22,12 @@ public record RequestCheckInAssistanceCommand(int BookingId, BookingRequester Re
 ///     The stay ends: the guest checks out from the app (US-14) or the front desk does it for them (US-27).
 /// </summary>
 public record CheckOutCommand(int BookingId, BookingRequester Requester);
+
+/// <summary>
+///     The guest who did the digital check-in before arriving is at the hotel (US-13): they confirm their identity with
+///     the number of the document they sent, and get the room access code. The front desk can confirm it for them.
+/// </summary>
+/// <param name="BookingId">The booking.</param>
+/// <param name="Requester">The guest (owner of the booking) or a front desk staff member of its hotel.</param>
+/// <param name="DocumentNumber">The number of the identity document sent with the digital check-in.</param>
+public record ConfirmArrivalCommand(int BookingId, BookingRequester Requester, string DocumentNumber);

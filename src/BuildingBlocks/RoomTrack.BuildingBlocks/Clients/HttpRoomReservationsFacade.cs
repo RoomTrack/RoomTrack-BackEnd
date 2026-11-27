@@ -25,6 +25,10 @@ public class HttpRoomReservationsFacade(HttpClient httpClient)
     public Task<GuestStay?> FetchCurrentStayOfRoomAsync(int roomId) =>
         GetOrDefaultAsync<GuestStay>($"internal/v1/rooms/{roomId}/stay");
 
+    public async Task<IReadOnlyList<ExpectedArrival>> ListExpectedArrivalsAsync(DateTimeOffset until) =>
+        await GetAsync<List<ExpectedArrival>>(
+            $"internal/v1/arrivals?until={Uri.EscapeDataString(until.ToString("O", CultureInfo.InvariantCulture))}");
+
     public Task<FrontDeskSummary> FetchFrontDeskSummaryAsync(int hotelId) =>
         GetAsync<FrontDeskSummary>($"internal/v1/hotels/{hotelId}/front-desk-summary");
 }

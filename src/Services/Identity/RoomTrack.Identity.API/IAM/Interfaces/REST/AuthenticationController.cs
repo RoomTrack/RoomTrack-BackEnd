@@ -8,6 +8,7 @@ using RoomTrack.Shared.Infrastructure.Interfaces.ASP.RateLimiting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Swashbuckle.AspNetCore.Annotations;
+using RoomTrack.Shared.Infrastructure.Documentation.OpenApi.Configuration;
 
 namespace RoomTrack.IAM.Interfaces.REST;
 
@@ -42,6 +43,15 @@ public class AuthenticationController(IAuthenticationCommandService authenticati
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    [OpenApiRequestExample("""{ "email": "ana.torres@example.com", "password": "una frase larga y facil de recordar", "rememberMe": true }""")]
+    [OpenApiResponseExample(StatusCodes.Status200OK, """
+        { "id": 25, "username": "ana.torres", "email": "ana.torres@example.com", "firstName": "Ana", "lastName": "Torres",
+        "role": "Guest", "hotelId": null, "chainId": null, "emailVerified": true,
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsInJvbGUiOiJHdWVzdCJ9.c2lnbmF0dXJl", "tokenType": "Bearer",
+        "expiresAt": "2026-11-24T21:00:00+00:00", "refreshToken": "rt_9f2c1e7a4b8d4f0a9c3e5b7d1a2c4e6f",
+        "refreshTokenExpiresAt": "2026-12-24T20:00:00+00:00", "mfaRequired": false, "mfaEnrollmentRequired": false,
+        "mfaToken": null, "mfaTokenExpiresAt": null, "recoveryCodes": null }
+        """)]
     public async Task<IActionResult> SignIn([FromBody] SignInResource signInResource)
     {
         var result = await authenticationCommandService.Handle(
@@ -59,6 +69,15 @@ public class AuthenticationController(IAuthenticationCommandService authenticati
     [ProducesResponseType(typeof(AuthenticatedUserResource), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [OpenApiRequestExample("""{ "refreshToken": "rt_9f2c1e7a4b8d4f0a9c3e5b7d1a2c4e6f" }""")]
+    [OpenApiResponseExample(StatusCodes.Status200OK, """
+        { "id": 25, "username": "ana.torres", "email": "ana.torres@example.com", "firstName": "Ana", "lastName": "Torres",
+        "role": "Guest", "hotelId": null, "chainId": null, "emailVerified": true,
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsInJvbGUiOiJHdWVzdCJ9.bmV3c2lnbmF0dXJl", "tokenType": "Bearer",
+        "expiresAt": "2026-11-24T22:00:00+00:00", "refreshToken": "rt_1b3d5f7a9c2e4a6c8e0b2d4f6a8c0e2b",
+        "refreshTokenExpiresAt": "2026-12-24T21:00:00+00:00", "mfaRequired": false, "mfaEnrollmentRequired": false,
+        "mfaToken": null, "mfaTokenExpiresAt": null, "recoveryCodes": null }
+        """)]
     public async Task<IActionResult> Refresh([FromBody] RefreshTokenResource resource)
     {
         var result = await authenticationCommandService.Handle(new RefreshSessionCommand(resource.RefreshToken!));
@@ -71,6 +90,7 @@ public class AuthenticationController(IAuthenticationCommandService authenticati
     [SwaggerOperation(Summary = "Sign out", OperationId = "SignOut")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [OpenApiRequestExample("""{ "refreshToken": "rt_1b3d5f7a9c2e4a6c8e0b2d4f6a8c0e2b" }""")]
     public async Task<IActionResult> SignOut([FromBody] RefreshTokenResource resource)
     {
         await authenticationCommandService.Handle(new SignOutCommand(resource.RefreshToken!));
@@ -91,6 +111,14 @@ public class AuthenticationController(IAuthenticationCommandService authenticati
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    [OpenApiRequestExample("""
+        { "firstName": "Ana", "lastName": "Torres", "email": "ana.torres@example.com", "username": "ana.torres",
+        "password": "una frase larga y facil de recordar" }
+        """)]
+    [OpenApiResponseExample(StatusCodes.Status201Created, """
+        { "id": 25, "email": "ana.torres@example.com", "emailVerified": false,
+        "message": "Account created. We have sent a verification link to your e-mail." }
+        """)]
     public async Task<IActionResult> SignUp([FromBody] SignUpResource signUpResource)
     {
         // The authentication handler still runs on anonymous endpoints: a valid token identifies the actor.
@@ -107,6 +135,8 @@ public class AuthenticationController(IAuthenticationCommandService authenticati
     [ProducesResponseType(typeof(MessageResource), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status410Gone)]
+    [OpenApiRequestExample("""{ "token": "ev_4c8a2e6b0d9f4b1a8e3c5d7f9a1b3c5d" }""")]
+    [OpenApiResponseExample(StatusCodes.Status200OK, """{ "message": "Your e-mail has been verified." }""")]
     public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailResource resource)
     {
         await authenticationCommandService.Handle(new VerifyEmailCommand(resource.Token!));
@@ -119,6 +149,8 @@ public class AuthenticationController(IAuthenticationCommandService authenticati
     [SwaggerOperation(Summary = "Resend the verification link", OperationId = "ResendEmailVerification")]
     [ProducesResponseType(typeof(MessageResource), StatusCodes.Status202Accepted)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [OpenApiRequestExample("""{ "email": "ana.torres@example.com" }""")]
+    [OpenApiResponseExample(StatusCodes.Status202Accepted, """{ "message": "If that e-mail belongs to an unverified account, we have sent it a new verification link." }""")]
     public async Task<IActionResult> ResendEmailVerification([FromBody] AccountEmailResource resource)
     {
         await authenticationCommandService.Handle(new ResendEmailVerificationCommand(resource.Email!));
@@ -135,6 +167,8 @@ public class AuthenticationController(IAuthenticationCommandService authenticati
     [SwaggerOperation(Summary = "Request password recovery", OperationId = "RequestPasswordRecovery")]
     [ProducesResponseType(typeof(MessageResource), StatusCodes.Status202Accepted)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [OpenApiRequestExample("""{ "email": "ana.torres@example.com" }""")]
+    [OpenApiResponseExample(StatusCodes.Status202Accepted, """{ "message": "If an account exists for that e-mail, we have sent it a link to reset the password." }""")]
     public async Task<IActionResult> RequestPasswordRecovery([FromBody] AccountEmailResource resource)
     {
         await authenticationCommandService.Handle(new RequestPasswordRecoveryCommand(resource.Email!));
@@ -152,6 +186,8 @@ public class AuthenticationController(IAuthenticationCommandService authenticati
     [ProducesResponseType(typeof(MessageResource), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status410Gone)]
+    [OpenApiRequestExample("""{ "token": "pr_7e1a3c5e7a9c1e3a5c7e9a1c3e5a7c9e", "newPassword": "otra frase larga y facil de recordar" }""")]
+    [OpenApiResponseExample(StatusCodes.Status200OK, """{ "message": "Your password has been updated. Sign in with the new password." }""")]
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordResource resource)
     {
         await authenticationCommandService.Handle(new ResetPasswordCommand(resource.Token!, resource.NewPassword!));

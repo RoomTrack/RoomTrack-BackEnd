@@ -55,6 +55,22 @@ public class CleaningTaskRepository(AppDbContext context) : ICleaningTaskReposit
             .GroupBy(t => t.AssigneeUserId!.Value)
             .Select(group => new { UserId = group.Key, Count = group.Count() })
             .ToDictionaryAsync(row => row.UserId, row => row.Count);
+
+    /// <summary>Longest cleaning taken into account (a task nobody closed for hours says nothing about cleaning times).</summary>
+    private static readonly TimeSpan LongestCleaning = TimeSpan.FromHours(8);
+
+    public async Task<IReadOnlyList<TimeSpan>> ListRecentCleaningDurationsAsync(int hotelId, int take)
+    {
+        var rows = await context.Set<CleaningTask>()
+            .Where(t => t.HotelId == hotelId && t.Status == CleaningTaskStatus.Completed && t.StartedAt != null && t.CompletedAt != null)
+            .OrderByDescending(t => t.Id)
+            .Take(take)
+            .Select(t => new { StartedAt = t.StartedAt!.Value, CompletedAt = t.CompletedAt!.Value })
+            .ToListAsync();
+        return rows.Select(row => row.CompletedAt - row.StartedAt)
+            .Where(duration => duration > TimeSpan.Zero && duration <= LongestCleaning)
+            .ToList();
+    }
 }
 
 public class HotelHousekeepingSettingsRepository(AppDbContext context) : IHotelHousekeepingSettingsRepository

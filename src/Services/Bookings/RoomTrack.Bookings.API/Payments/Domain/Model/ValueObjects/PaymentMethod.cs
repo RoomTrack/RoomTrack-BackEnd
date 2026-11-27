@@ -12,5 +12,10 @@ public enum PaymentMethod
     /// <summary>Cash at the front desk (no operation number).</summary>
     Cash,
     /// <summary>Card charged on the hotel's POS terminal (voucher/operation number required).</summary>
-    CardAtFrontDesk
+    CardAtFrontDesk,
+    /// <summary>
+    ///     Card paid by the guest from the app through the integrated card gateway (US-15). Only the gateway's token of
+    ///     the card reaches the API; the staff never register it by hand.
+    /// </summary>
+    OnlineCard
 }

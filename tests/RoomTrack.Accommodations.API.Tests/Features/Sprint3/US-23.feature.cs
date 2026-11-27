@@ -33,7 +33,8 @@ namespace RoomTrack.Accommodations.API.Tests.Features.Sprint3
   para intervenir antes de que afecte la experiencia del huésped.
   Criterios de aceptación del informe (TF1, corte 25/11/2026), ejecutados con Reqnroll contra los casos de uso,
   repositorios y manejadores de eventos reales del servicio Accommodations (base de datos en memoria).
-  Los escenarios con @ignore aún no tienen implementación en la API: Reqnroll los reporta como omitidos.", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+  ""Checkout inminente"" es la salida del huésped anterior: la habitación debe estar limpia antes de la llegada del
+  siguiente (hora de check-in del hotel, Bookings__CheckInTime).", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
         private global::Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
@@ -114,15 +115,15 @@ namespace RoomTrack.Accommodations.API.Tests.Features.Sprint3
         
         public virtual async global::System.Threading.Tasks.Task FeatureBackgroundAsync()
         {
-#line 11
-  #line hidden
 #line 12
+  #line hidden
+#line 13
     await testRunner.GivenAsync("un hotel con la habitación 204", ((string)(null)), ((global::Reqnroll.Table)(null)), "Dado ");
 #line hidden
-#line 13
+#line 14
     await testRunner.AndAsync("\"Mario\" trabaja en mantenimiento", ((string)(null)), ((global::Reqnroll.Table)(null)), "Y ");
 #line hidden
-#line 14
+#line 15
     await testRunner.AndAsync("\"Elena\" es administradora del hotel", ((string)(null)), ((global::Reqnroll.Table)(null)), "Y ");
 #line hidden
         }
@@ -157,23 +158,20 @@ namespace RoomTrack.Accommodations.API.Tests.Features.Sprint3
             await this.TestTearDownAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Alerta por checkout próximo", Skip="Ignored")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="Alerta por checkout próximo")]
         [global::Xunit.TraitAttribute("FeatureTitle", "US-23 — Alertas automáticas por demoras")]
         [global::Xunit.TraitAttribute("Description", "Alerta por checkout próximo")]
         [global::Xunit.TraitAttribute("Category", "US23_E01")]
-        [global::Xunit.TraitAttribute("Category", "pendiente_implementacion")]
         public async global::System.Threading.Tasks.Task AlertaPorCheckoutProximo()
         {
             string[] tagsOfScenario = new string[] {
-                    "US23_E01",
-                    "pendiente_implementacion",
-                    "ignore"};
+                    "US23_E01"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Alerta por checkout próximo", "", tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Alerta por checkout próximo", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 17
+#line 18
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -183,7 +181,7 @@ namespace RoomTrack.Accommodations.API.Tests.Features.Sprint3
             else
             {
                 await this.ScenarioStartAsync();
-#line 11
+#line 12
   await this.FeatureBackgroundAsync();
 #line hidden
 #line 19
@@ -222,7 +220,7 @@ namespace RoomTrack.Accommodations.API.Tests.Features.Sprint3
             else
             {
                 await this.ScenarioStartAsync();
-#line 11
+#line 12
   await this.FeatureBackgroundAsync();
 #line hidden
 #line 25
@@ -261,7 +259,7 @@ namespace RoomTrack.Accommodations.API.Tests.Features.Sprint3
             else
             {
                 await this.ScenarioStartAsync();
-#line 11
+#line 12
   await this.FeatureBackgroundAsync();
 #line hidden
 #line 31

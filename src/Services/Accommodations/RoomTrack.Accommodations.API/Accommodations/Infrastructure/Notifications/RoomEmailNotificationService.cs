@@ -40,6 +40,26 @@ public class RoomEmailNotificationService(
                 .To(recipient.Email, $"Alerta: habitación {room.RoomNumber} en mantenimiento desde hace {hours.ToString(CultureInfo.InvariantCulture)} horas"));
     }
 
+    public async Task SendNotReadyForArrivalAsync(IReadOnlyList<UserContact> recipients, RoomNotice room, RoomStatus status,
+        string bookingCode, DateTimeOffset expectedAt)
+    {
+        var at = TimeZoneInfo.ConvertTime(expectedAt, LimaTime).ToString("HH:mm", CultureInfo.InvariantCulture);
+        foreach (var recipient in recipients)
+            await emailSender.SendAsync(EmailLayout.Create()
+                .Greeting(Greeting(recipient))
+                .Paragraph($"El huésped de la reserva {bookingCode} llega hoy a partir de las {at} y la habitación {room.RoomNumber} de {room.HotelName} todavía no está lista (estado: {Label(status)}).")
+                .Paragraph(status switch
+                {
+                    RoomStatus.Cleaning => "Prioriza su limpieza o asigna al huésped otra habitación disponible del mismo tipo.",
+                    RoomStatus.Occupied => "El huésped anterior aún no hace check-out: coordina la salida o asigna otra habitación al que llega.",
+                    _ => "La habitación está en mantenimiento: asigna al huésped otra habitación disponible."
+                })
+                .Action("Ver el mapa de habitaciones", urls.Value.WebLink("rooms"))
+                .To(recipient.Email, $"Alerta: la habitación {room.RoomNumber} no está lista para la llegada de las {at}"));
+    }
+
+    private static readonly TimeZoneInfo LimaTime = TimeZoneInfo.FindSystemTimeZoneById("America/Lima");
+
     private static string Greeting(UserContact contact) =>
         contact.FullName is null ? "Hola:" : $"Hola, {contact.FullName.Split(' ')[0]}:";
 

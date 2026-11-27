@@ -4,6 +4,7 @@ using RoomTrack.Bookings.Domain.Services;
 using RoomTrack.Bookings.Interfaces.REST.Resources;
 using RoomTrack.Bookings.Interfaces.REST.Transform;
 using RoomTrack.IAM.Interfaces.Authorization;
+using RoomTrack.Shared.Infrastructure.Documentation.OpenApi.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -11,8 +12,8 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace RoomTrack.Bookings.Interfaces.REST;
 
 /// <summary>
-///     Check-in of a booking: digital, by the guest (US-13), or at the front desk for a guest who arrives without having
-///     done it (US-27).
+///     Check-in of a booking: digital, by the guest (US-13), before arriving or at the hotel, or at the front desk for a
+///     guest who arrives without having done it (US-27).
 /// </summary>
 [Authorize]
 [ApiController]
@@ -24,18 +25,45 @@ public class CheckInController(ICheckInService checkInService) : ControllerBase
     /// <summary>Largest multipart request accepted (the document itself is limited to 5 MB).</summary>
     private const long MaxRequestBytes = 6 * 1024 * 1024;
 
+    private const string CompletedCheckInExample = """
+        { "bookingId": 42, "bookingCode": "RT-7K2M9Q", "bookingStatus": "CheckedIn", "roomId": 101, "status": "Approved",
+          "documentType": "DNI", "documentNumberMasked": "•••••912", "nationality": "PE", "accessCode": "482915",
+          "accessCodeValidUntil": "2026-11-26T17:00:00+00:00", "submittedAt": "2026-11-24T20:00:00+00:00",
+          "completedAt": "2026-11-24T20:00:00+00:00" }
+        """;
+
+    private const string PreArrivalCheckInExample = """
+        { "bookingId": 42, "bookingCode": "RT-7K2M9Q", "bookingStatus": "Confirmed", "roomId": 101, "status": "PendingArrival",
+          "documentType": "DNI", "documentNumberMasked": "•••••912", "nationality": "PE", "accessCode": null,
+          "accessCodeValidUntil": null, "submittedAt": "2026-11-22T23:10:00+00:00", "completedAt": null }
+        """;
+
+    private const string RoomNotReadyExample = """
+        { "type": "https://tools.ietf.org/html/rfc9110#section-15.5.10", "title": "Business rule violation", "status": 409,
+          "code": "check_in.room_not_ready", "detail": "Your room is not ready yet: it should be ready in about 25 minutes.",
+          "params": { "roomId": 101, "roomStatus": "Cleaning", "estimatedReadyAt": "2026-11-24T20:25:00+00:00",
+                      "estimatedWaitMinutes": 25 } }
+        """;
+
     /// <summary>Completes the digital check-in with the identity document.</summary>
     /// <remarks>
     ///     <c>multipart/form-data</c> with <c>documentType</c> (DNI, PASSPORT, CE), <c>documentNumber</c>,
     ///     <c>nationality</c> (ISO alpha-2) and <c>document</c> (JPG, PNG or PDF, ≤ 5 MB, checked by content).
     ///     The guest of a <b>Confirmed</b> (paid) booking, or the front desk of its hotel registering the document of a
-    ///     guest at the desk (assisted check-in, US-27), from the check-in day until the day before the check-out
-    ///     (hotel time). The document format is validated automatically; when it passes, the check-in is
-    ///     approved at once: the booking becomes <c>CheckedIn</c>, the room <c>Occupied</c>, the response carries the
-    ///     6-digit room <c>accessCode</c> (valid until the check-out) and the hotel's housekeeping is notified by
-    ///     e-mail. Errors: 400 per field (<c>documentNumber</c>, <c>nationality</c>, <c>documentType</c>,
-    ///     <c>document</c>); 404 not the guest's booking; 409 not confirmed, outside the window, already checked in, or
-    ///     the room is not ready (then request assistance).
+    ///     guest at the desk (assisted check-in, US-27). The document format is validated automatically.
+    ///     <list type="bullet">
+    ///         <item><b>Before the check-in day</b> (up to <c>Bookings__PreArrivalCheckInDays</c>, 3 days, US-13): the
+    ///         check-in waits for the guest (<c>status</c> <c>PendingArrival</c>, the booking shows
+    ///         <c>checkInStage</c> <c>InProgress</c>, "check-in en proceso"); no access code yet. At the hotel the guest
+    ///         only confirms their identity (<c>POST …/check-in/arrival</c>).</item>
+    ///         <item><b>From the check-in day until the day before the check-out</b>: approved at once. The booking
+    ///         becomes <c>CheckedIn</c>, the room <c>Occupied</c>, the response carries the 6-digit room
+    ///         <c>accessCode</c> (valid until the check-out) and the hotel's housekeeping is notified by e-mail.</item>
+    ///     </list>
+    ///     Errors: 400 per field (<c>documentNumber</c>, <c>nationality</c>, <c>documentType</c>, <c>document</c>); 404
+    ///     not the guest's booking; 409 not confirmed, outside the window, already checked in, already done before the
+    ///     arrival (<c>check_in.awaiting_arrival</c>), or the room is not ready (<c>check_in.room_not_ready</c> with the
+    ///     estimated wait in <c>params</c>).
     /// </remarks>
     [HttpPost]
     [Authorize(Policy = Policies.CompleteCheckIn)]
@@ -47,6 +75,8 @@ public class CheckInController(ICheckInService checkInService) : ControllerBase
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    [OpenApiResponseExample(StatusCodes.Status201Created, CompletedCheckInExample)]
+    [OpenApiResponseExample(StatusCodes.Status409Conflict, RoomNotReadyExample)]
     public async Task<IActionResult> CompleteCheckIn(int bookingId, [FromForm] CheckInFormResource form)
     {
         using var buffer = new MemoryStream();
@@ -56,12 +86,39 @@ public class CheckInController(ICheckInService checkInService) : ControllerBase
         return CreatedAtAction(nameof(GetCheckIn), new { bookingId }, ToResource(result));
     }
 
+    /// <summary>Confirms the arrival of a guest who did the check-in before arriving (US-13).</summary>
+    /// <remarks>
+    ///     The guest at the hotel (or the front desk for them) only confirms their identity with the number of the
+    ///     document sent with the digital check-in, from the check-in day on. The booking becomes <c>CheckedIn</c>, the
+    ///     room <c>Occupied</c>, and the response carries the room <c>accessCode</c> (for the guest). Errors: 400
+    ///     <c>check_in.identity_mismatch</c> (another number); 404 not the guest's booking; 409 no check-in waiting for
+    ///     the arrival, the check-in day has not come, or the room is not ready (<c>check_in.room_not_ready</c> with
+    ///     <c>params.estimatedWaitMinutes</c>).
+    /// </remarks>
+    [HttpPost("arrival")]
+    [Authorize(Policy = Policies.CompleteCheckIn)]
+    [SwaggerOperation(Summary = "Confirm the arrival of a guest who checked in before arriving", OperationId = "ConfirmCheckInArrival")]
+    [ProducesResponseType(typeof(CheckInResource), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    [OpenApiRequestExample("""{ "documentNumber": "45678912" }""")]
+    [OpenApiResponseExample(StatusCodes.Status200OK, CompletedCheckInExample)]
+    [OpenApiResponseExample(StatusCodes.Status409Conflict, RoomNotReadyExample)]
+    public async Task<IActionResult> ConfirmArrival(int bookingId, [FromBody] ConfirmArrivalResource resource)
+    {
+        var result = await checkInService.Handle(new ConfirmArrivalCommand(bookingId, User.ToBookingRequester(), resource.DocumentNumber!));
+        return Ok(ToResource(result));
+    }
+
     /// <summary>Gets the check-in of a booking (the access code only for its guest).</summary>
+    /// <remarks>A check-in done before the arrival shows <c>PendingArrival</c> and no access code yet.</remarks>
     [HttpGet]
     [Authorize(Policy = Policies.ReadBookings)]
     [SwaggerOperation(Summary = "Get the check-in of a booking", OperationId = "GetCheckIn")]
     [ProducesResponseType(typeof(CheckInResource), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [OpenApiResponseExample(StatusCodes.Status200OK, PreArrivalCheckInExample)]
     public async Task<IActionResult> GetCheckIn(int bookingId)
     {
         var result = await checkInService.FindAsync(bookingId, User.ToBookingRequester());
@@ -79,6 +136,8 @@ public class CheckInController(ICheckInService checkInService) : ControllerBase
     [ProducesResponseType(typeof(object), StatusCodes.Status202Accepted)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    [OpenApiRequestExample("""{ "message": "The app does not accept my passport photo." }""")]
+    [OpenApiResponseExample(StatusCodes.Status202Accepted, """{ "message": "The front desk has been notified and will contact you shortly." }""")]
     public async Task<IActionResult> RequestAssistance(int bookingId, [FromBody] CheckInAssistanceResource? resource)
     {
         await checkInService.Handle(new RequestCheckInAssistanceCommand(bookingId, User.ToBookingRequester(), resource?.Message));
@@ -97,6 +156,11 @@ public class CheckInController(ICheckInService checkInService) : ControllerBase
     [ProducesResponseType(typeof(IEnumerable<AvailableRoomResource>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    [OpenApiResponseExample(StatusCodes.Status200OK, """
+        [ { "id": 102, "hotelId": 1, "roomTypeId": 2, "roomTypeName": "Doble", "description": "Doble con vista a la calle",
+            "amenities": ["WiFi", "TV"], "status": "Available", "available": true, "pricePerNight": 180.00, "nights": 2,
+            "totalPrice": 360.00, "checkInDate": "2026-11-24", "checkOutDate": "2026-11-26", "number": "102" } ]
+        """)]
     public async Task<IActionResult> GetAlternatives(int bookingId)
     {
         var rooms = await checkInService.FindAlternativeRoomsAsync(bookingId, User.ToBookingRequester());
@@ -117,5 +181,5 @@ public class CheckInController(ICheckInService checkInService) : ControllerBase
             _ => "CE"
         },
         result.CheckIn.Identity.MaskedNumber, result.CheckIn.Nationality, result.AccessCode?.Value,
-        result.CheckIn.AccessCodeValidUntil, result.CheckIn.CompletedAt);
+        result.CheckIn.AccessCodeValidUntil, result.CheckIn.SubmittedAt, result.CheckIn.CompletedAt);
 }

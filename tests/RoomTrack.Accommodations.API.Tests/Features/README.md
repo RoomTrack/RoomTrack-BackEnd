@@ -36,7 +36,7 @@ dotnet test tests/RoomTrack.Accommodations.API.Tests --filter "Category=US30"
 | US-20 / E01–E02 | **Ejecutable** | Chat huésped ↔ recepción en la misma conversación y push de la respuesta. |
 | US-12 / E01–E03 | **Ejecutable** | Comentarios por tarea (push al responsable), canal del área e historial de comentarios y estados. |
 | US-32 / E01–E03 | **Ejecutable** | `POST /shift-handovers`, `GET /shift-handovers/latest`, `POST /shift-handovers/{id}/acknowledge`. |
-| US-23 / E01 | Omitido | La alerta por checkout próximo sin limpiar requiere cruzar llegadas/salidas (Bookings) con la limpieza. |
+| US-23 / E01 | **Ejecutable** | Job `POST /rooms/arrival-readiness-alerts`: si la habitación de una llegada de hoy no está lista 2 h antes del check-in, administración y recepción reciben push y correo (una alerta por llegada). |
 | US-23 / E02 | **Ejecutable** | Incidencia crítica no atendida a tiempo → escalamiento automático (job `POST /incidents/escalations`). |
 | US-23 / E03 | **Ejecutable** | `GET /incidents/alerts`: alertas (escalamientos y recurrencias) con su resolución. |
 

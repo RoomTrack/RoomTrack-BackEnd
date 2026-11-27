@@ -360,6 +360,10 @@ namespace RoomTrack.Bookings.API.Infrastructure.Persistence.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("payment_due_at");
 
+                    b.Property<DateTimeOffset?>("PreArrivalCheckInAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("pre_arrival_check_in_at");
+
                     b.Property<decimal>("PricePerNight")
                         .HasColumnType("decimal(18,2)")
                         .HasColumnName("price_per_night");
@@ -406,7 +410,7 @@ namespace RoomTrack.Bookings.API.Infrastructure.Persistence.Migrations
                         .HasColumnType("varchar(1024)")
                         .HasColumnName("access_code_protected");
 
-                    b.Property<DateTimeOffset>("AccessCodeValidUntil")
+                    b.Property<DateTimeOffset?>("AccessCodeValidUntil")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("access_code_valid_until");
 
@@ -414,7 +418,7 @@ namespace RoomTrack.Bookings.API.Infrastructure.Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("booking_id");
 
-                    b.Property<DateTimeOffset>("CompletedAt")
+                    b.Property<DateTimeOffset?>("CompletedAt")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("completed_at");
 
@@ -461,6 +465,10 @@ namespace RoomTrack.Bookings.API.Infrastructure.Persistence.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)")
                         .HasColumnName("status");
+
+                    b.Property<DateTimeOffset>("SubmittedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("submitted_at");
 
                     b.HasKey("Id")
                         .HasName("p_k_digital_check_ins");

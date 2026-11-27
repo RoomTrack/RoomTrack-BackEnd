@@ -5,6 +5,7 @@ using RoomTrack.Shared.Infrastructure.Authentication.ScheduledJobs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using RoomTrack.Shared.Infrastructure.Documentation.OpenApi.Configuration;
 
 namespace RoomTrack.Bookings.Interfaces.REST;
 
@@ -28,6 +29,7 @@ public class BookingJobsController(IBookingCommandService bookingCommandService)
     [Authorize(Policy = ScheduledJobsAuthenticationExtensions.RunScheduledJobsPolicy)]
     [SwaggerOperation(Summary = "Expire unpaid bookings", OperationId = "ExpireUnpaidBookings")]
     [ProducesResponseType(typeof(ExpiredBookingsResource), StatusCodes.Status200OK)]
+    [OpenApiResponseExample(StatusCodes.Status200OK, """{ "expired": 3 }""")]
     public async Task<IActionResult> ExpireUnpaidBookings()
     {
         var expired = await bookingCommandService.Handle(new ExpireUnpaidBookingsCommand());

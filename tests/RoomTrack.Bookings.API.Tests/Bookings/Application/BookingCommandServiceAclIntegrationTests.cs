@@ -71,6 +71,8 @@ public class BookingCommandServiceAclIntegrationTests
 
         public Task<IReadOnlyList<int>> ListIdsByHotelAsync(int hotelId) => Task.FromResult<IReadOnlyList<int>>([]);
 
+        public Task<IReadOnlyList<Booking>> ListArrivalsAsync(DateTime day) => throw new NotSupportedException();
+
         public Task<IReadOnlyList<Booking>> ListAtFrontDeskAsync(int hotelId, DateTime today) =>
             Task.FromResult<IReadOnlyList<Booking>>([]);
     }

@@ -28,9 +28,9 @@ namespace RoomTrack.Bookings.API.Tests.Features.Sprint2
                 "Sprint2",
                 "US15"};
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("es"), "Features/Sprint2", "US-15 — Pago de reserva durante el check-in", "  Criterios de aceptación del informe (TF1, corte 25/11/2026).\r\n  Los escenarios " +
-                "con @ignore aún no tienen implementación en la API (ver README.md): Reqnroll los" +
-                " reporta como\r\n  omitidos, no como aprobados.", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("es"), "Features/Sprint2", "US-15 — Pago de reserva durante el check-in", "  Criterios de aceptación del informe (TF1, corte 25/11/2026).\r\n  La pasarela de " +
+                "pagos integrada corre en modo sandbox (SandboxCardPaymentGateway): sus tokens de" +
+                " prueba aprueban o\r\n  rechazan la tarjeta como lo haría la pasarela real.", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
         private global::Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
@@ -139,20 +139,17 @@ namespace RoomTrack.Bookings.API.Tests.Features.Sprint2
             await this.TestTearDownAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Pago con tarjeta", Skip="Ignored")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="Pago con tarjeta")]
         [global::Xunit.TraitAttribute("FeatureTitle", "US-15 — Pago de reserva durante el check-in")]
         [global::Xunit.TraitAttribute("Description", "Pago con tarjeta")]
         [global::Xunit.TraitAttribute("Category", "US15_E01")]
-        [global::Xunit.TraitAttribute("Category", "pendiente_implementacion")]
         public async global::System.Threading.Tasks.Task PagoConTarjeta()
         {
             string[] tagsOfScenario = new string[] {
-                    "US15_E01",
-                    "pendiente_implementacion",
-                    "ignore"};
+                    "US15_E01"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Pago con tarjeta", "", tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Pago con tarjeta", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 9
@@ -165,13 +162,13 @@ namespace RoomTrack.Bookings.API.Tests.Features.Sprint2
             else
             {
                 await this.ScenarioStartAsync();
-#line 11
+#line 10
     await testRunner.GivenAsync("que estoy completando mi check-in", ((string)(null)), ((global::Reqnroll.Table)(null)), "Dado ");
 #line hidden
-#line 12
+#line 11
     await testRunner.WhenAsync("ingreso los datos de mi tarjeta", ((string)(null)), ((global::Reqnroll.Table)(null)), "Cuando ");
 #line hidden
-#line 13
+#line 12
     await testRunner.ThenAsync("el sistema procesa el pago de forma segura mediante la pasarela de pagos integrad" +
                         "a", ((string)(null)), ((global::Reqnroll.Table)(null)), "Entonces ");
 #line hidden
@@ -179,23 +176,20 @@ namespace RoomTrack.Bookings.API.Tests.Features.Sprint2
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Pago rechazado", Skip="Ignored")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="Pago rechazado")]
         [global::Xunit.TraitAttribute("FeatureTitle", "US-15 — Pago de reserva durante el check-in")]
         [global::Xunit.TraitAttribute("Description", "Pago rechazado")]
         [global::Xunit.TraitAttribute("Category", "US15_E02")]
-        [global::Xunit.TraitAttribute("Category", "pendiente_implementacion")]
         public async global::System.Threading.Tasks.Task PagoRechazado()
         {
             string[] tagsOfScenario = new string[] {
-                    "US15_E02",
-                    "pendiente_implementacion",
-                    "ignore"};
+                    "US15_E02"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "1";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Pago rechazado", "", tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Pago rechazado", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 16
+#line 15
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -205,13 +199,13 @@ namespace RoomTrack.Bookings.API.Tests.Features.Sprint2
             else
             {
                 await this.ScenarioStartAsync();
-#line 18
+#line 16
     await testRunner.GivenAsync("que mi método de pago es rechazado", ((string)(null)), ((global::Reqnroll.Table)(null)), "Dado ");
 #line hidden
-#line 19
+#line 17
     await testRunner.WhenAsync("esto ocurre", ((string)(null)), ((global::Reqnroll.Table)(null)), "Cuando ");
 #line hidden
-#line 20
+#line 18
     await testRunner.ThenAsync("el sistema me notifica el motivo y me permite intentar otro medio de pago", ((string)(null)), ((global::Reqnroll.Table)(null)), "Entonces ");
 #line hidden
             }
@@ -231,7 +225,7 @@ namespace RoomTrack.Bookings.API.Tests.Features.Sprint2
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Depósito de garantía", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 23
+#line 21
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -241,13 +235,13 @@ namespace RoomTrack.Bookings.API.Tests.Features.Sprint2
             else
             {
                 await this.ScenarioStartAsync();
-#line 24
+#line 22
     await testRunner.GivenAsync("que el hotel requiere un depósito reembolsable", ((string)(null)), ((global::Reqnroll.Table)(null)), "Dado ");
 #line hidden
-#line 25
+#line 23
     await testRunner.WhenAsync("completo el pago", ((string)(null)), ((global::Reqnroll.Table)(null)), "Cuando ");
 #line hidden
-#line 26
+#line 24
     await testRunner.ThenAsync("el monto queda retenido y visible en mi folio de huésped", ((string)(null)), ((global::Reqnroll.Table)(null)), "Entonces ");
 #line hidden
             }
@@ -267,7 +261,7 @@ namespace RoomTrack.Bookings.API.Tests.Features.Sprint2
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Confirmación de pago", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 29
+#line 27
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -277,13 +271,13 @@ namespace RoomTrack.Bookings.API.Tests.Features.Sprint2
             else
             {
                 await this.ScenarioStartAsync();
-#line 30
+#line 28
     await testRunner.GivenAsync("que el pago se procesa correctamente", ((string)(null)), ((global::Reqnroll.Table)(null)), "Dado ");
 #line hidden
-#line 31
+#line 29
     await testRunner.WhenAsync("finaliza", ((string)(null)), ((global::Reqnroll.Table)(null)), "Cuando ");
 #line hidden
-#line 32
+#line 30
     await testRunner.ThenAsync("recibo una confirmación y mi check-in queda habilitado para completarse", ((string)(null)), ((global::Reqnroll.Table)(null)), "Entonces ");
 #line hidden
             }

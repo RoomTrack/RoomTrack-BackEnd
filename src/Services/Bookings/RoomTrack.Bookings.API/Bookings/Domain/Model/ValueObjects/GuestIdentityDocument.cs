@@ -61,6 +61,13 @@ public sealed partial record GuestIdentityDocument
     public string Number { get; }
     public string Nationality { get; }
 
+    /// <summary>
+    ///     True when <paramref name="number"/> is this document's number, written with or without spaces, dots or dashes
+    ///     and in any case (the guest confirming their identity at the hotel, US-13).
+    /// </summary>
+    public bool HasNumber(string? number) =>
+        Separators().Replace(number?.Trim() ?? string.Empty, string.Empty).ToUpperInvariant() == Number;
+
     /// <summary>The number with all but the last 3 characters hidden, for staff views.</summary>
     public string MaskedNumber => new string('•', Math.Max(0, Number.Length - 3)) + Number[^Math.Min(3, Number.Length)..];
 

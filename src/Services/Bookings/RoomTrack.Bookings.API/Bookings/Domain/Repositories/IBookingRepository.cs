@@ -51,4 +51,7 @@ public interface IBookingRepository : IBaseRepository<Booking>
     ///     <paramref name="today"/> and are not checked in yet (arrivals), and every checked-in one (guests in house).
     /// </summary>
     Task<IReadOnlyList<Booking>> ListAtFrontDeskAsync(int hotelId, DateTime today);
+
+    /// <summary>The paid bookings of every hotel whose check-in day is <paramref name="day"/> and are not checked in yet.</summary>
+    Task<IReadOnlyList<Booking>> ListArrivalsAsync(DateTime day);
 }

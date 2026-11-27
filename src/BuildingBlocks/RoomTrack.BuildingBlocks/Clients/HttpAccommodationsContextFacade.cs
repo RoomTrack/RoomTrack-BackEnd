@@ -20,6 +20,9 @@ public class HttpAccommodationsContextFacade(HttpClient httpClient)
     public Task<RoomOffer?> FetchRoomAsync(int roomId) =>
         roomId <= 0 ? Task.FromResult<RoomOffer?>(null) : GetOrDefaultAsync<RoomOffer>($"internal/v1/rooms/{roomId}/offer");
 
+    public Task<RoomReadiness?> EstimateRoomReadinessAsync(int roomId) =>
+        roomId <= 0 ? Task.FromResult<RoomReadiness?>(null) : GetOrDefaultAsync<RoomReadiness>($"internal/v1/rooms/{roomId}/readiness");
+
     public Task<HotelSummary?> FetchHotelAsync(int hotelId) =>
         hotelId <= 0 ? Task.FromResult<HotelSummary?>(null) : GetOrDefaultAsync<HotelSummary>($"internal/v1/hotels/{hotelId}/summary");
 

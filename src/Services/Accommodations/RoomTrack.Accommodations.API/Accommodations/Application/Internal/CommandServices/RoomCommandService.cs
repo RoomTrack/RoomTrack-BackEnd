@@ -161,6 +161,19 @@ public class RoomCommandService(
             throw new InvalidFieldException("roomTypeId", AccommodationErrorCodes.RoomTypeNotFound, $"Room type {roomTypeId} does not exist.");
     }
 
+    public async Task<int> Handle(RaiseArrivalReadinessAlertsCommand command)
+    {
+        var now = timeProvider.GetUtcNow();
+        var alerted = 0;
+        foreach (var arrival in await roomReservationsFacade.ListExpectedArrivalsAsync(now + settings.Value.ArrivalAlertLead))
+        {
+            var room = await roomRepository.FindByIdAsync(arrival.RoomId);
+            if (room is not null && room.RaiseArrivalNotReadyAlert(arrival.BookingId, arrival.Code, arrival.ExpectedAt, now)) alerted++;
+        }
+        await unitOfWork.CompleteAsync();
+        return alerted;
+    }
+
     public async Task<int> Handle(RaiseMaintenanceAlertsCommand command)
     {
         var now = timeProvider.GetUtcNow();

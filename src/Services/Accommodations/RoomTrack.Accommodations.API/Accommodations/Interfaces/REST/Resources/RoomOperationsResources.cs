@@ -33,3 +33,7 @@ public record RoomStatusChangeResource(long Id, int RoomId, string FromStatus, s
 /// <summary>Result of the maintenance alert job.</summary>
 /// <param name="Alerted">Rooms whose administrators were alerted in this run.</param>
 public record MaintenanceAlertsResultResource(int Alerted);
+
+/// <summary>Result of the arrival readiness alert job (US-23).</summary>
+/// <param name="Alerted">Rooms not ready for an arriving guest alerted in this run.</param>
+public record ArrivalReadinessAlertsResultResource(int Alerted);

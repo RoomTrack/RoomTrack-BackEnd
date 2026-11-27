@@ -287,6 +287,9 @@ internal static class FolioMoney
 
     public static string? OperationNumber(PaymentMethod method, string? operationNumber)
     {
+        if (method == PaymentMethod.OnlineCard)
+            throw new InvalidFieldException("method", PaymentErrorCodes.OnlineCardNotRegistrable,
+                "An online card payment is made by the guest from the app; register the method the guest actually used.");
         var operation = string.IsNullOrWhiteSpace(operationNumber) ? null : operationNumber.Trim();
         if (method == PaymentMethod.Cash) return null;
         if (operation is null)

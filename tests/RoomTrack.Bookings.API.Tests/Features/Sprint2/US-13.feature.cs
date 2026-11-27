@@ -28,9 +28,7 @@ namespace RoomTrack.Bookings.API.Tests.Features.Sprint2
                 "Sprint2",
                 "US13"};
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("es"), "Features/Sprint2", "US-13 — Check-in digital del huésped", "  Criterios de aceptación del informe (TF1, corte 25/11/2026).\r\n  Los escenarios " +
-                "con @ignore aún no tienen implementación en la API (ver README.md): Reqnroll los" +
-                " reporta como\r\n  omitidos, no como aprobados.", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("es"), "Features/Sprint2", "US-13 — Check-in digital del huésped", "  Criterios de aceptación del informe (TF1, corte 25/11/2026).", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
         private global::Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
@@ -139,23 +137,20 @@ namespace RoomTrack.Bookings.API.Tests.Features.Sprint2
             await this.TestTearDownAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Check-in previo a la llegada", Skip="Ignored")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="Check-in previo a la llegada")]
         [global::Xunit.TraitAttribute("FeatureTitle", "US-13 — Check-in digital del huésped")]
         [global::Xunit.TraitAttribute("Description", "Check-in previo a la llegada")]
         [global::Xunit.TraitAttribute("Category", "US13_E01")]
-        [global::Xunit.TraitAttribute("Category", "pendiente_implementacion")]
         public async global::System.Threading.Tasks.Task Check_InPrevioALaLlegada()
         {
             string[] tagsOfScenario = new string[] {
-                    "US13_E01",
-                    "pendiente_implementacion",
-                    "ignore"};
+                    "US13_E01"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Check-in previo a la llegada", "", tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Check-in previo a la llegada", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 9
+#line 7
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -165,36 +160,33 @@ namespace RoomTrack.Bookings.API.Tests.Features.Sprint2
             else
             {
                 await this.ScenarioStartAsync();
-#line 11
+#line 8
     await testRunner.GivenAsync("que tengo una reserva confirmada", ((string)(null)), ((global::Reqnroll.Table)(null)), "Dado ");
 #line hidden
-#line 12
+#line 9
     await testRunner.WhenAsync("completo el check-in digital antes de llegar", ((string)(null)), ((global::Reqnroll.Table)(null)), "Cuando ");
 #line hidden
-#line 13
+#line 10
     await testRunner.ThenAsync("mi reserva queda marcada como \"check-in en proceso\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Entonces ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Confirmación al llegar", Skip="Ignored")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="Confirmación al llegar")]
         [global::Xunit.TraitAttribute("FeatureTitle", "US-13 — Check-in digital del huésped")]
         [global::Xunit.TraitAttribute("Description", "Confirmación al llegar")]
         [global::Xunit.TraitAttribute("Category", "US13_E02")]
-        [global::Xunit.TraitAttribute("Category", "pendiente_implementacion")]
         public async global::System.Threading.Tasks.Task ConfirmacionAlLlegar()
         {
             string[] tagsOfScenario = new string[] {
-                    "US13_E02",
-                    "pendiente_implementacion",
-                    "ignore"};
+                    "US13_E02"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "1";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Confirmación al llegar", "", tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Confirmación al llegar", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 16
+#line 13
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -204,13 +196,13 @@ namespace RoomTrack.Bookings.API.Tests.Features.Sprint2
             else
             {
                 await this.ScenarioStartAsync();
-#line 18
+#line 14
     await testRunner.GivenAsync("que hice el check-in digital", ((string)(null)), ((global::Reqnroll.Table)(null)), "Dado ");
 #line hidden
-#line 19
+#line 15
     await testRunner.WhenAsync("llego al hotel", ((string)(null)), ((global::Reqnroll.Table)(null)), "Cuando ");
 #line hidden
-#line 20
+#line 16
     await testRunner.ThenAsync("solo debo confirmar mi identidad para recibir la llave o código de acceso a mi ha" +
                         "bitación", ((string)(null)), ((global::Reqnroll.Table)(null)), "Entonces ");
 #line hidden
@@ -218,23 +210,20 @@ namespace RoomTrack.Bookings.API.Tests.Features.Sprint2
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Habitación aún no disponible", Skip="Ignored")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="Habitación aún no disponible")]
         [global::Xunit.TraitAttribute("FeatureTitle", "US-13 — Check-in digital del huésped")]
         [global::Xunit.TraitAttribute("Description", "Habitación aún no disponible")]
         [global::Xunit.TraitAttribute("Category", "US13_E03")]
-        [global::Xunit.TraitAttribute("Category", "pendiente_implementacion")]
         public async global::System.Threading.Tasks.Task HabitacionAunNoDisponible()
         {
             string[] tagsOfScenario = new string[] {
-                    "US13_E03",
-                    "pendiente_implementacion",
-                    "ignore"};
+                    "US13_E03"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "2";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Habitación aún no disponible", "", tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Habitación aún no disponible", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 23
+#line 19
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -244,13 +233,13 @@ namespace RoomTrack.Bookings.API.Tests.Features.Sprint2
             else
             {
                 await this.ScenarioStartAsync();
-#line 25
+#line 20
     await testRunner.GivenAsync("que mi habitación no está lista al momento de mi llegada", ((string)(null)), ((global::Reqnroll.Table)(null)), "Dado ");
 #line hidden
-#line 26
+#line 21
     await testRunner.WhenAsync("intento completar el check-in", ((string)(null)), ((global::Reqnroll.Table)(null)), "Cuando ");
 #line hidden
-#line 27
+#line 22
     await testRunner.ThenAsync("el sistema me informa el tiempo estimado de espera", ((string)(null)), ((global::Reqnroll.Table)(null)), "Entonces ");
 #line hidden
             }
@@ -270,7 +259,7 @@ namespace RoomTrack.Bookings.API.Tests.Features.Sprint2
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Asistencia de recepción", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 30
+#line 25
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -280,13 +269,13 @@ namespace RoomTrack.Bookings.API.Tests.Features.Sprint2
             else
             {
                 await this.ScenarioStartAsync();
-#line 31
+#line 26
     await testRunner.GivenAsync("que tengo un problema durante el check-in digital", ((string)(null)), ((global::Reqnroll.Table)(null)), "Dado ");
 #line hidden
-#line 32
+#line 27
     await testRunner.WhenAsync("solicito ayuda", ((string)(null)), ((global::Reqnroll.Table)(null)), "Cuando ");
 #line hidden
-#line 33
+#line 28
     await testRunner.ThenAsync("puedo contactar directamente a recepción desde la misma pantalla", ((string)(null)), ((global::Reqnroll.Table)(null)), "Entonces ");
 #line hidden
             }

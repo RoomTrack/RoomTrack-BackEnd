@@ -32,6 +32,18 @@ public static class BookingErrorCodes
     public const string CheckInAlreadyCompleted = "check_in.already_completed";
     public const string CheckInBookingNotConfirmed = "check_in.booking_not_confirmed";
     public const string CheckInNotOpenYet = "check_in.not_open_yet";
+
+    /// <summary>The digital check-in was done before the arrival: the guest confirms their identity at the hotel instead (US-13).</summary>
+    public const string CheckInAwaitingArrival = "check_in.awaiting_arrival";
+
+    /// <summary>There is no digital check-in waiting for the arrival of the guest (US-13).</summary>
+    public const string CheckInNotAwaitingArrival = "check_in.not_awaiting_arrival";
+
+    /// <summary>The document number given at the arrival is not the one of the document sent (US-13).</summary>
+    public const string CheckInIdentityMismatch = "check_in.identity_mismatch";
+
+    /// <summary>The room is not ready for the guest yet; <c>params</c> carries the estimated wait (US-13).</summary>
+    public const string CheckInRoomNotReady = "check_in.room_not_ready";
     public const string CheckInDocumentRequired = "check_in.document_required";
     public const string CheckInDocumentTooLarge = "check_in.document_too_large";
     public const string CheckInDocumentFileType = "check_in.document_file_type";

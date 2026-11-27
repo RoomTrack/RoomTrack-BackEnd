@@ -22,6 +22,17 @@ public class BookingPolicySettings : IValidatableObject
     [Required, RegularExpression(@"^([01]\d|2[0-3]):[0-5]\d$", ErrorMessage = "Bookings:CheckOutTime must be HH:mm.")]
     public string CheckOutTime { get; set; } = "12:00";
 
+    /// <summary>Check-in time (hotel time, HH:mm): the arriving guests expect their room ready from then on (US-23).</summary>
+    [Required, RegularExpression(@"^([01]\d|2[0-3]):[0-5]\d$", ErrorMessage = "Bookings:CheckInTime must be HH:mm.")]
+    public string CheckInTime { get; set; } = "15:00";
+
+    /// <summary>
+    ///     Days before the check-in day a guest can already do the digital check-in (US-13, "check-in en proceso"): at
+    ///     the hotel they only confirm their identity. 0 turns it off.
+    /// </summary>
+    [Range(0, 30)]
+    public int PreArrivalCheckInDays { get; set; } = 3;
+
     public TimeSpan PaymentHold => TimeSpan.FromHours(PaymentHoldHours);
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

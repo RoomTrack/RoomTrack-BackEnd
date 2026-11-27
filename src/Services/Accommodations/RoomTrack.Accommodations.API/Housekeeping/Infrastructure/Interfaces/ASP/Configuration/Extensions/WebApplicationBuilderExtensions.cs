@@ -1,4 +1,6 @@
+using RoomTrack.Accommodations.Application.OutboundServices;
 using RoomTrack.Accommodations.Domain.Model.Events;
+using RoomTrack.Housekeeping.Application.ACL;
 using RoomTrack.Housekeeping.Application.Internal.CommandServices;
 using RoomTrack.Housekeeping.Application.Internal.EventHandlers;
 using RoomTrack.Housekeeping.Application.Internal.QueryServices;
@@ -20,6 +22,9 @@ public static class WebApplicationBuilderExtensions
     public static void AddHousekeepingContextServices(this WebApplicationBuilder builder)
     {
         builder.Services.AddScoped<ICleaningTaskRepository, CleaningTaskRepository>();
+
+        // Port of the Accommodations context: when a room being cleaned will be ready for its guest (US-13)
+        builder.Services.AddScoped<IRoomCleaningEstimates, RoomCleaningEstimates>();
         builder.Services.AddScoped<IHotelHousekeepingSettingsRepository, HotelHousekeepingSettingsRepository>();
         builder.Services.AddScoped<ICleaningChecklistTemplateRepository, CleaningChecklistTemplateRepository>();
         builder.Services.AddScoped<ICleaningTaskAssignmentStrategy, LeastWorkloadAssignmentStrategy>();

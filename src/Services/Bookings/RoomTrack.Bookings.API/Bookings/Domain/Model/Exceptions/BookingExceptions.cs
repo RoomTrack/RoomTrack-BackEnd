@@ -13,6 +13,35 @@ public class BookingNotFoundException(int bookingId) : EntityNotFoundException("
 public class RoomNotAvailableException(int roomId, DateRange dates)
     : BusinessRuleViolationException(BookingErrorCodes.RoomUnavailable, $"Room {roomId} is no longer available for {dates}: another booking holds some of those nights. Search again for available rooms.");
 
+/// <summary>
+///     The guest arrived but their room is not ready yet (US-13): it is still being cleaned, the previous guest has not
+///     left, or it is under maintenance. <c>params</c>: <c>roomId</c>, <c>roomStatus</c>, <c>estimatedReadyAt</c> and
+///     <c>estimatedWaitMinutes</c> (null when it cannot be estimated: then the front desk offers another room, US-27).
+/// </summary>
+public class RoomNotReadyForCheckInException : BusinessRuleViolationException
+{
+    public RoomNotReadyForCheckInException(int roomId, string roomStatus, DateTimeOffset? estimatedReadyAt, int? estimatedWaitMinutes)
+        : base(BookingErrorCodes.CheckInRoomNotReady, estimatedWaitMinutes is { } minutes
+            ? $"Your room is not ready yet: it should be ready in about {minutes} minutes."
+            : "Your room is not ready yet. Ask the front desk for help.")
+    {
+        RoomStatus = roomStatus;
+        EstimatedReadyAt = estimatedReadyAt;
+        EstimatedWaitMinutes = estimatedWaitMinutes;
+        Parameters = new Dictionary<string, object?>
+        {
+            ["roomId"] = roomId,
+            ["roomStatus"] = roomStatus,
+            ["estimatedReadyAt"] = estimatedReadyAt,
+            ["estimatedWaitMinutes"] = estimatedWaitMinutes
+        };
+    }
+
+    public string RoomStatus { get; }
+    public DateTimeOffset? EstimatedReadyAt { get; }
+    public int? EstimatedWaitMinutes { get; }
+}
+
 /// <summary>A room under maintenance is never booked.</summary>
 public class RoomUnderMaintenanceException(int roomId)
     : BusinessRuleViolationException(BookingErrorCodes.RoomUnderMaintenance, $"Room {roomId} is under maintenance and cannot be booked. Search again for available rooms.");
