@@ -678,6 +678,14 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("room_id");
 
+                    b.Property<int?>("ServiceItemId")
+                        .HasColumnType("int")
+                        .HasColumnName("service_item_id");
+
+                    b.Property<decimal?>("ServicePrice")
+                        .HasColumnType("decimal(10,2)")
+                        .HasColumnName("service_price");
+
                     b.Property<DateTimeOffset?>("StartedAt")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("started_at");
@@ -712,6 +720,65 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                         .HasDatabaseName("i_x_guest_requests__hotel_id__area__status");
 
                     b.ToTable("guest_requests", (string)null);
+                });
+
+            modelBuilder.Entity("RoomTrack.GuestRequests.Domain.Model.Aggregates.ServiceCatalogItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Area")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("area");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)")
+                        .HasColumnName("description");
+
+                    b.Property<int?>("EstimatedMinutes")
+                        .HasColumnType("int")
+                        .HasColumnName("estimated_minutes");
+
+                    b.Property<int>("HotelId")
+                        .HasColumnType("int")
+                        .HasColumnName("hotel_id");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("is_available");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("varchar(80)")
+                        .HasColumnName("name");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(10,2)")
+                        .HasColumnName("price");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_service_catalog_items");
+
+                    b.HasIndex("HotelId", "IsAvailable")
+                        .HasDatabaseName("i_x_service_catalog_items__hotel_id__is_available");
+
+                    b.ToTable("service_catalog_items", (string)null);
                 });
 
             modelBuilder.Entity("RoomTrack.GuestRequests.Domain.Model.Entities.GuestRequestHistoryEntry", b =>
@@ -1584,6 +1651,71 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                         .HasDatabaseName("i_x_shift_handover_items__shift_handover_id");
 
                     b.ToTable("shift_handover_items", (string)null);
+                });
+
+            modelBuilder.Entity("RoomTrack.StaffPerformance.Domain.Model.Aggregates.ReportSchedule", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<string>("Frequency")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("frequency");
+
+                    b.Property<int>("HotelId")
+                        .HasColumnType("int")
+                        .HasColumnName("hotel_id");
+
+                    b.Property<bool>("IncludeProductivity")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("include_productivity");
+
+                    b.Property<bool>("IncludeServiceTimes")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("include_service_times");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("is_active");
+
+                    b.Property<DateTimeOffset?>("LastSentAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("last_sent_at");
+
+                    b.Property<DateTimeOffset>("NextRunAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("next_run_at");
+
+                    b.Property<string>("RecipientList")
+                        .IsRequired()
+                        .HasMaxLength(2550)
+                        .HasColumnType("varchar(2550)")
+                        .HasColumnName("recipient_list");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_report_schedules");
+
+                    b.HasIndex("HotelId")
+                        .HasDatabaseName("i_x_report_schedules__hotel_id");
+
+                    b.HasIndex("IsActive", "NextRunAt")
+                        .HasDatabaseName("i_x_report_schedules__is_active__next_run_at");
+
+                    b.ToTable("report_schedules", (string)null);
                 });
 
             modelBuilder.Entity("MassTransit.EntityFrameworkCoreIntegration.OutboxMessage", b =>

@@ -36,8 +36,9 @@ public class GuestRequest : IHasDomainEvents, IHasConcurrencyVersion
         Title = string.Empty;
     }
 
-    private GuestRequest(int hotelId, int roomId, int? bookingId, int? guestUserId, string title, string? description,
-        ServiceArea area, GuestRequestActor creator, DateTimeOffset estimatedAttentionBy, DateTimeOffset now)
+    private GuestRequest(int hotelId, int roomId, int? bookingId, int? guestUserId, string? title, string? description,
+        ServiceArea area, GuestRequestActor creator, DateTimeOffset estimatedAttentionBy, DateTimeOffset now,
+        RequestedService? service)
     {
         HotelId = hotelId;
         RoomId = roomId;
@@ -51,25 +52,33 @@ public class GuestRequest : IHasDomainEvents, IHasConcurrencyVersion
         CreatedByGuest = creator.IsGuest;
         CreatedAt = now;
         EstimatedAttentionBy = estimatedAttentionBy;
+        ServiceItemId = service?.ServiceItemId;
+        ServicePrice = service?.Price;
         Record(GuestRequestHistoryAction.Created, $"For {area}", creator, now);
         _creationPending = true;
     }
 
-    /// <summary>The guest sends a request during their stay (it arrives at the front desk unless they chose the area).</summary>
-    public static GuestRequest SendByGuest(int hotelId, int roomId, int bookingId, string title, string? description,
-        ServiceArea? area, GuestRequestActor guest, DateTimeOffset estimatedAttentionBy, DateTimeOffset now)
+    /// <summary>
+    ///     The guest sends a request during their stay (it arrives at the front desk unless they chose the area). For a
+    ///     <paramref name="service"/> of the catalog (US-33) it keeps its name and price.
+    /// </summary>
+    public static GuestRequest SendByGuest(int hotelId, int roomId, int bookingId, string? title, string? description,
+        ServiceArea? area, GuestRequestActor guest, DateTimeOffset estimatedAttentionBy, DateTimeOffset now,
+        RequestedService? service = null)
     {
         if (!guest.IsGuest) throw new GuestRequestNotAllowedException("send as a guest");
         return new GuestRequest(hotelId, roomId, bookingId, guest.UserId, title, description, area ?? ServiceArea.Reception,
-            guest, estimatedAttentionBy, now);
+            guest, estimatedAttentionBy, now, service);
     }
 
     /// <summary>The front desk registers what a guest asked for (in person or by phone) for the area that attends it.</summary>
-    public static GuestRequest RegisterByFrontDesk(int hotelId, int roomId, int? bookingId, int? guestUserId, string title,
-        string? description, ServiceArea area, GuestRequestActor frontDesk, DateTimeOffset estimatedAttentionBy, DateTimeOffset now)
+    public static GuestRequest RegisterByFrontDesk(int hotelId, int roomId, int? bookingId, int? guestUserId, string? title,
+        string? description, ServiceArea area, GuestRequestActor frontDesk, DateTimeOffset estimatedAttentionBy, DateTimeOffset now,
+        RequestedService? service = null)
     {
         if (!frontDesk.CanManage) throw new GuestRequestNotAllowedException("register");
-        return new GuestRequest(hotelId, roomId, bookingId, guestUserId, title, description, area, frontDesk, estimatedAttentionBy, now);
+        return new GuestRequest(hotelId, roomId, bookingId, guestUserId, title, description, area, frontDesk, estimatedAttentionBy,
+            now, service);
     }
 
     public int Id { get; private set; }
@@ -92,6 +101,12 @@ public class GuestRequest : IHasDomainEvents, IHasConcurrencyVersion
 
     /// <summary>When the guest was told it would be attended (US-19, "tiempo estimado de atención").</summary>
     public DateTimeOffset EstimatedAttentionBy { get; private set; }
+
+    /// <summary>The service of the catalog it asks for (US-33), or null for a free-text request.</summary>
+    public int? ServiceItemId { get; private set; }
+
+    /// <summary>The price of that service when the request was sent (the catalog may change later).</summary>
+    public decimal? ServicePrice { get; private set; }
 
     public int? AssigneeUserId { get; private set; }
     public DateTimeOffset? StartedAt { get; private set; }

@@ -67,7 +67,7 @@ public class GuestRequestsControllerTests : IDisposable
         var requests = new GuestRequestRepository(_context);
         _roomQueries = new RoomQueryService(new RoomRepository(_context), new RoomStatusChangeRepository(_context));
         _queryService = new GuestRequestQueryService(requests);
-        _commandService = new GuestRequestCommandService(requests, _reservations, _roomQueries, new FakeIam(),
+        _commandService = new GuestRequestCommandService(requests, new ServiceCatalogRepository(_context), _reservations, _roomQueries, new FakeIam(),
             new UnitOfWork(_context, new NoEvents()), Options.Create(new GuestRequestSettings()), TimeProvider.System);
         Seed();
     }
@@ -297,6 +297,8 @@ public class GuestRequestsControllerTests : IDisposable
 
         public Task<GuestStay?> FetchCurrentStayOfRoomAsync(int roomId) =>
             Task.FromResult(Stays.FirstOrDefault(stay => stay.RoomId == roomId));
+
+        public Task<FrontDeskSummary> FetchFrontDeskSummaryAsync(int hotelId) => throw new NotSupportedException();
 
         public Task<IReadOnlyDictionary<int, int>> CountActiveBookingsAsync(IReadOnlyCollection<int> roomIds) =>
             throw new NotSupportedException();

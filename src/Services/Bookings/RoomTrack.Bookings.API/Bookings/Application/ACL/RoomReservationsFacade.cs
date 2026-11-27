@@ -9,9 +9,12 @@ using RoomTrack.Bookings.Interfaces.ACL;
 namespace RoomTrack.Bookings.Application.ACL;
 
 public class RoomReservationsFacade(IBookingRepository bookingRepository, IBookingQueryService bookingQueryService,
-    HotelCalendar calendar)
+    IStayReviewRepository reviewRepository, HotelCalendar calendar)
     : IRoomReservationsFacade
 {
+    /// <summary>How many of the latest evaluations the panel shows.</summary>
+    public const int LatestReviewsShown = 3;
+
     public Task<IReadOnlyDictionary<int, int>> CountActiveBookingsAsync(IReadOnlyCollection<int> roomIds) =>
         bookingRepository.CountActiveByRoomAsync(roomIds);
 
@@ -28,6 +31,24 @@ public class RoomReservationsFacade(IBookingRepository bookingRepository, IBooki
 
     public async Task<GuestStay?> FetchCurrentStayOfRoomAsync(int roomId) =>
         CurrentStayOf(await bookingRepository.FindByRoomIdAsync(roomId));
+
+    public async Task<FrontDeskSummary> FetchFrontDeskSummaryAsync(int hotelId)
+    {
+        var today = calendar.Today;
+        var now = calendar.Now;
+        var bookings = await bookingRepository.ListAtFrontDeskAsync(hotelId, today);
+        var reviews = await reviewRepository.ListAsync(hotelId, now.AddDays(-30), now.AddTicks(1));
+        return new FrontDeskSummary(
+            bookings.Count(booking => booking.Status == BookingStatus.Confirmed),
+            bookings.Count(booking => booking.Status == BookingStatus.CheckedIn),
+            bookings.Count(booking => booking.Status == BookingStatus.CheckedIn && booking.CheckOutDate.Date <= today),
+            reviews.Count,
+            reviews.Count == 0 ? null : Math.Round(reviews.Average(review => review.OverallRating), 2, MidpointRounding.AwayFromZero),
+            reviews.Take(LatestReviewsShown)
+                .Select(review => new ReviewSnippet(review.BookingId, review.RoomId, review.OverallRating, review.FrontDeskRating,
+                    review.HousekeepingRating, review.MaintenanceRating, review.Comment, review.SubmittedAt))
+                .ToList());
+    }
 
     /// <summary>The stay in progress first; otherwise a paid booking that covers today (not checked in yet).</summary>
     private GuestStay? CurrentStayOf(IEnumerable<Booking> bookings)

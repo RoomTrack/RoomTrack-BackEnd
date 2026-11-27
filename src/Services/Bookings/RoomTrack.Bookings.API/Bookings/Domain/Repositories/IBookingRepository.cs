@@ -45,4 +45,10 @@ public interface IBookingRepository : IBaseRepository<Booking>
 
     /// <summary>The ids of every booking of the hotel.</summary>
     Task<IReadOnlyList<int>> ListIdsByHotelAsync(int hotelId);
+
+    /// <summary>
+    ///     The bookings of the front desk of the hotel today (US-18): the paid ones whose stay covers
+    ///     <paramref name="today"/> and are not checked in yet (arrivals), and every checked-in one (guests in house).
+    /// </summary>
+    Task<IReadOnlyList<Booking>> ListAtFrontDeskAsync(int hotelId, DateTime today);
 }

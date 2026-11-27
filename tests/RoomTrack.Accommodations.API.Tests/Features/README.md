@@ -6,6 +6,7 @@ Los `.feature` (Gherkin en español) se ejecutan con **Reqnroll** como tests de 
 | --- | --- | --- |
 | `Sprint1/` | US-05, US-06 (limpieza), US-07 (checklist), US-08, US-09 (incidencias) | `Steps/HousekeepingSteps.cs`, `Steps/IncidentSteps.cs`, `Steps/OperationsSteps.cs` |
 | `Sprint3/` | US-10, US-30, US-11, US-19, US-20, US-12, US-32, US-23 | `Steps/OperationsSteps.cs` |
+| `Sprint4/` | US-18 (panel del administrador), US-24 (productividad del personal), US-25 (tiempos de atención), US-33 (catálogo de servicios), US-34 (exportación y envío de reportes) | `Steps/AdminDashboardSteps.cs`, `Steps/StaffPerformanceSteps.cs`, `Steps/ServiceCatalogSteps.cs` |
 
 `Steps/OperationsSteps.cs` usa `Support/OperationsWorld.cs`: el servicio Accommodations **cableado como en producción**
 (los mismos `Add…ContextServices` de `Program.cs`: casos de uso, repositorios, manejadores de eventos y notificaciones
@@ -40,3 +41,29 @@ dotnet test tests/RoomTrack.Accommodations.API.Tests --filter "Category=US30"
 | US-23 / E03 | **Ejecutable** | `GET /incidents/alerts`: alertas (escalamientos y recurrencias) con su resolución. |
 
 US-31 (turnos) vive en el servicio Profiles: `tests/RoomTrack.Profiles.API.Tests/Features/Sprint3/US-31.feature`.
+
+## Trazabilidad del Sprint 4 (US-18, US-24, US-25, US-33, US-34)
+
+Ambos reportes se calculan con las limpiezas completadas, las incidencias resueltas y las solicitudes de huésped
+resueltas que ya registra Accommodations (contexto `StaffPerformance`, sin tablas propias). Requieren `Admin` o
+`ChainAdmin` (`ViewAnalytics`); sin fechas cubren los últimos 30 días (máximo 366).
+
+| US / escenario | Estado | Evidencia |
+| --- | --- | --- |
+| US-18 / E01 | **Ejecutable** | `GET /hotels/{id}/dashboard`: habitaciones por estado y ocupación, limpieza, incidencias y lo que requiere atención en una sola respuesta. |
+| US-18 / E02 | **Ejecutable** | Tareas de limpieza atrasadas (abiertas más de `overdueAfterMinutes`, 60 por defecto). |
+| US-18 / E03 | **Ejecutable** | `frontDesk`: llegadas, alojados y salidas de hoy y las últimas evaluaciones (API interna de Bookings). |
+| US-18 / E04 | **Ejecutable** | Si Bookings no responde, el panel igual responde con `frontDesk: null`. |
+| US-24 / E01 | **Ejecutable** | `GET /staff-performance/productivity`: tareas completadas por colaborador, el más productivo primero. |
+| US-24 / E02 | **Ejecutable** | `areas`: recepción, limpieza y mantenimiento siempre presentes, con colaboradores y promedio por colaborador. |
+| US-24 / E03 | **Ejecutable** | Solo cuenta lo terminado dentro de `from`–`to`. |
+| US-25 / E01 | **Ejecutable** | `GET /staff-performance/service-times`: espera, trabajo y tiempo total promedio de limpieza. |
+| US-25 / E02 | **Ejecutable** | Lo mismo para incidencias correctivas (las preventivas se generan por adelantado y no se miden). |
+| US-25 / E03 | **Ejecutable** | Sin actividad: cantidad 0 y promedios `null`. |
+| US-33 / E01 | **Ejecutable** | `GET /service-catalog`: el huésped ve los servicios disponibles de su hotel con precio, área y tiempo estimado. |
+| US-33 / E02 | **Ejecutable** | `POST /guest-requests` con `serviceItemId`: la solicitud va al área del servicio con su nombre, precio y tiempo. |
+| US-33 / E03 | **Ejecutable** | Un servicio retirado (`isAvailable: false`) → 409 `service_catalog.not_available`. |
+| US-33 / E04 | **Ejecutable** | La solicitud guarda el precio del momento; cambiar el catálogo (`PUT /service-catalog/{id}`) no la altera. |
+| US-34 / E01 | **Ejecutable** | `GET /staff-performance/productivity/export` (también `service-times/export`; en Bookings, `stay-reviews/export` y `stay-reviews/satisfaction/export`). |
+| US-34 / E02 | **Ejecutable** | `POST /staff-performance/report-schedules` + job `POST /staff-performance/report-schedules/runs`: correo semanal o mensual con el resumen. |
+| US-34 / E03 | **Ejecutable** | Antes de `nextRunAt` el job no envía nada. |

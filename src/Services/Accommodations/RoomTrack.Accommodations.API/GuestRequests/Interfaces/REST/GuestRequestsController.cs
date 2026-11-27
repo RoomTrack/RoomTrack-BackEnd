@@ -49,17 +49,20 @@ public class GuestRequestsController(
         var actor = Actor();
         GuestRequest request;
         if (actor.IsGuest)
-            request = await commandService.Handle(new SendGuestRequestCommand(resource.Title!, resource.Description, resource.Area, actor));
+            request = await commandService.Handle(new SendGuestRequestCommand(resource.Title, resource.Description, resource.Area,
+                actor, resource.ServiceItemId));
         else if (actor.CanManage)
         {
             if (resource.RoomId is not { } roomId)
                 throw new InvalidFieldException("roomId", GuestRequestErrorCodes.RoomRequired, "Send the roomId of the guest.");
-            if (resource.Area is not { } area)
+            // A service of the catalog goes to its own area.
+            if (resource.Area is null && resource.ServiceItemId is null)
                 throw new InvalidFieldException("area", GuestRequestErrorCodes.AreaRequired, "Send the area that attends the request.");
             var room = await roomQueryService.Handle(new GetRoomByIdQuery(roomId));
             if (room is null) return NotFound();
             if (!InHotel(room.HotelId)) return Forbid();
-            request = await commandService.Handle(new RegisterGuestRequestCommand(roomId, resource.Title!, resource.Description, area, actor));
+            request = await commandService.Handle(new RegisterGuestRequestCommand(roomId, resource.Title, resource.Description,
+                resource.Area ?? ServiceArea.Reception, actor, resource.ServiceItemId));
         }
         else return Forbid();
 

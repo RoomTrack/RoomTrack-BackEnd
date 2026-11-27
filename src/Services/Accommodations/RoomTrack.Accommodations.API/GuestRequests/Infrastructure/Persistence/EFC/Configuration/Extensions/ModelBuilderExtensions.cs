@@ -26,6 +26,8 @@ public static class ModelBuilderExtensions
         builder.Entity<GuestRequest>().HasIndex(r => new { r.HotelId, r.Status });
         builder.Entity<GuestRequest>().HasIndex(r => new { r.HotelId, r.Area, r.Status });
         builder.Entity<GuestRequest>().HasIndex(r => r.GuestUserId);
+        // US-33: the service of the catalog is a reference; the request keeps its price even if the service is removed.
+        builder.Entity<GuestRequest>().Property(r => r.ServicePrice).HasColumnType("decimal(10,2)");
 
         builder.Entity<GuestRequest>().HasMany(r => r.History).WithOne().HasForeignKey(h => h.GuestRequestId)
             .OnDelete(DeleteBehavior.Cascade);
@@ -40,5 +42,16 @@ public static class ModelBuilderExtensions
         builder.Entity<GuestRequestHistoryEntry>().Property(h => h.Detail).HasMaxLength(GuestRequestHistoryEntry.MaxDetailLength);
         builder.Entity<GuestRequestHistoryEntry>().Property(h => h.ActorEmail).HasMaxLength(GuestRequestHistoryEntry.MaxEmailLength);
         builder.Entity<GuestRequestHistoryEntry>().HasIndex(h => new { h.GuestRequestId, h.OccurredAt });
+
+        // Service catalog of each hotel (US-33)
+        builder.Entity<ServiceCatalogItem>().ToTable("service_catalog_items");
+        builder.Entity<ServiceCatalogItem>().HasKey(i => i.Id);
+        builder.Entity<ServiceCatalogItem>().Property(i => i.Id).ValueGeneratedOnAdd();
+        builder.Entity<ServiceCatalogItem>().Property(i => i.Name).HasMaxLength(ServiceCatalogItem.NameMaxLength).IsRequired();
+        builder.Entity<ServiceCatalogItem>().Property(i => i.Description).HasMaxLength(ServiceCatalogItem.DescriptionMaxLength);
+        builder.Entity<ServiceCatalogItem>().Property(i => i.Area).HasConversion<string>().HasMaxLength(20).IsRequired();
+        builder.Entity<ServiceCatalogItem>().Property(i => i.Price).HasColumnType("decimal(10,2)").IsRequired();
+        builder.Entity<ServiceCatalogItem>().Ignore(i => i.IsIncluded);
+        builder.Entity<ServiceCatalogItem>().HasIndex(i => new { i.HotelId, i.IsAvailable });
     }
 }

@@ -30,6 +30,7 @@ public static class WebApplicationBuilderExtensions
         // Repositories
         builder.Services.AddScoped<IBookingRepository, BookingRepository>();
         builder.Services.AddScoped<IDigitalCheckInRepository, DigitalCheckInRepository>();
+        builder.Services.AddScoped<IStayReviewRepository, StayReviewRepository>();
 
         // Digital check-in: documents stored encrypted in the database, staff e-mails through the outbox
         builder.Services.AddScoped<IDocumentStorage, DatabaseDocumentStorage>();
@@ -53,10 +54,12 @@ public static class WebApplicationBuilderExtensions
 
         // Command Services
         builder.Services.AddScoped<IBookingCommandService, BookingCommandService>();
+        builder.Services.AddScoped<IStayReviewCommandService, StayReviewCommandService>();
 
         // Query Services
         builder.Services.AddScoped<IBookingQueryService, BookingQueryService>();
         builder.Services.AddScoped<IRoomAvailabilityQueryService, RoomAvailabilityQueryService>();
+        builder.Services.AddScoped<IStayReviewQueryService, StayReviewQueryService>();
 
         // ACL Facade
         builder.Services.AddScoped<IBookingsContextFacade, BookingsContextFacade>();

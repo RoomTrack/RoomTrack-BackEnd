@@ -7,13 +7,16 @@ namespace RoomTrack.GuestRequests.Interfaces.REST.Resources;
 
 /// <summary>
 ///     A request: a guest sends it for the room of their stay (<c>roomId</c> is not sent; <c>area</c> is optional, the
-///     front desk by default); the front desk registers it for a room and chooses the <c>area</c>.
+///     front desk by default); the front desk registers it for a room and chooses the <c>area</c>. With
+///     <c>serviceItemId</c> it asks for a service of the catalog (US-33): it goes to the area of the service and the
+///     <c>title</c> may be left out (the name of the service is used).
 /// </summary>
 public record CreateGuestRequestResource(
-    [Required] string? Title,
+    string? Title,
     string? Description,
     ServiceArea? Area,
-    int? RoomId);
+    int? RoomId,
+    int? ServiceItemId = null);
 
 public record RouteGuestRequestResource([Required] ServiceArea? Area);
 
@@ -38,6 +41,8 @@ public record GuestRequestResource(
     bool CreatedByGuest,
     DateTimeOffset CreatedAt,
     DateTimeOffset EstimatedAttentionBy,
+    int? ServiceItemId,
+    decimal? ServicePrice,
     int? AssigneeUserId,
     DateTimeOffset? StartedAt,
     DateTimeOffset? ResolvedAt,
@@ -50,7 +55,7 @@ public static class GuestRequestResourceAssembler
     public static GuestRequestResource ToResource(GuestRequest request, bool withHistory = true) => new(
         request.Id, request.HotelId, request.RoomId, request.BookingId, request.GuestUserId, request.Title,
         request.Description, request.Area, request.Status, request.CreatedByUserId, request.CreatedByGuest,
-        request.CreatedAt, request.EstimatedAttentionBy, request.AssigneeUserId, request.StartedAt, request.ResolvedAt,
+        request.CreatedAt, request.EstimatedAttentionBy, request.ServiceItemId, request.ServicePrice, request.AssigneeUserId, request.StartedAt, request.ResolvedAt,
         request.CancelledAt, request.ClosingNote,
         withHistory ? request.History.Select(ToResource).ToList() : null);
 

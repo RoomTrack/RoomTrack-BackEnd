@@ -31,6 +31,22 @@ internal static class BookingTestData
         Booking.Place(BookingRequester.Guest(GuestUserId, "Alice").WithGuestProfile(guestProfileId), Room(roomId),
             Stay(Today), Contact(), GuestUserId, guestProfileId: null, Today, Now, PaymentHold);
 
+    /// <summary>
+    ///     A stay of the guest <paramref name="guestUserId"/> that is checked out (<c>Completed</c>) at
+    ///     <paramref name="checkedOutAt"/>, or only checked in when <paramref name="checkedOut"/> is false.
+    /// </summary>
+    public static Booking FinishedStay(DateTimeOffset checkedOutAt, int guestUserId = GuestUserId, int roomId = 101,
+        bool checkedOut = true)
+    {
+        var guest = BookingRequester.Guest(guestUserId, $"guest{guestUserId}@example.com");
+        var stay = Stay(Today);
+        var booking = Booking.Place(guest, Room(roomId), stay, Contact(), guestUserId, guestProfileId: null, Today, Now, PaymentHold);
+        booking.Confirm(Now);
+        booking.CheckIn(stay.CheckIn, checkedOutAt.AddDays(-1));
+        if (checkedOut) booking.CheckOut(guest, stay.CheckIn.AddDays(1), checkedOutAt);
+        return booking;
+    }
+
     /// <summary>A Pending booking taken by the staff of <see cref="HotelId"/> for a guest without an account.</summary>
     public static Booking PlaceByStaff(Guid? guestProfileId = null, int roomId = 101) =>
         Booking.Place(BookingRequester.HotelStaff(userId: 7, HotelId), Room(roomId), Stay(Today), Contact(),

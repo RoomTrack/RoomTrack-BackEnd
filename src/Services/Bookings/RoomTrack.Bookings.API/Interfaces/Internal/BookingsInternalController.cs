@@ -30,4 +30,8 @@ public class BookingsInternalController(IRoomReservationsFacade roomReservations
     [HttpGet("rooms/{roomId:int}/stay")]
     public async Task<IActionResult> GetCurrentStayOfRoom(int roomId) =>
         await roomReservationsFacade.FetchCurrentStayOfRoomAsync(roomId) is { } stay ? Ok(stay) : NotFound();
+
+    [HttpGet("hotels/{hotelId:int}/front-desk-summary")]
+    public async Task<IActionResult> GetFrontDeskSummary(int hotelId) =>
+        Ok(await roomReservationsFacade.FetchFrontDeskSummaryAsync(hotelId));
 }

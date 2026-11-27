@@ -207,6 +207,8 @@ public class ConversationsControllerTests : IDisposable
         public Task<GuestStay?> FetchCurrentStayOfRoomAsync(int roomId) =>
             Task.FromResult(Stays.FirstOrDefault(stay => stay.RoomId == roomId));
 
+        public Task<FrontDeskSummary> FetchFrontDeskSummaryAsync(int hotelId) => throw new NotSupportedException();
+
         public Task<IReadOnlyDictionary<int, int>> CountActiveBookingsAsync(IReadOnlyCollection<int> roomIds) =>
             throw new NotSupportedException();
 

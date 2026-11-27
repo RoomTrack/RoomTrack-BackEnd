@@ -10,3 +10,8 @@ public record GetGuestRequestsQuery(int HotelId, ServiceArea? Area = null, Guest
 
 /// <summary>The requests a guest sent or that were registered for them, newest first.</summary>
 public record GetGuestRequestsOfGuestQuery(int GuestUserId, int Limit = 100);
+
+/// <summary>The service catalog of a hotel, by area and name (US-33); only the available services for the guests.</summary>
+public record GetServiceCatalogQuery(int HotelId, bool OnlyAvailable);
+
+public record GetServiceCatalogItemByIdQuery(int ServiceItemId);

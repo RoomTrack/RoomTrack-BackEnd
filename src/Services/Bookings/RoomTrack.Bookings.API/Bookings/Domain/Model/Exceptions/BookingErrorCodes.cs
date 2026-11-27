@@ -43,6 +43,14 @@ public static class BookingErrorCodes
     public const string CheckInForeignerCardOnlyForForeigners = "check_in.foreigner_card_only_for_foreigners";
     public const string CheckInDocumentTypeUnknown = "check_in.document_type_unknown";
 
+    public const string ReviewStayNotFinished = "stay_review.stay_not_finished";
+    public const string ReviewWindowClosed = "stay_review.window_closed";
+    public const string ReviewAlreadySubmitted = "stay_review.already_submitted";
+    public const string ReviewRatingOutOfRange = "stay_review.rating_out_of_range";
+    public const string ReviewCommentTooLong = "stay_review.comment_too_long";
+    public const string ReviewPeriodInvalid = "stay_review.period_invalid";
+    public const string ReviewHotelRequired = "stay_review.hotel_required";
+
     public const string PageInvalid = "booking.page_invalid";
     public const string PageSizeInvalid = "booking.page_size_invalid";
 

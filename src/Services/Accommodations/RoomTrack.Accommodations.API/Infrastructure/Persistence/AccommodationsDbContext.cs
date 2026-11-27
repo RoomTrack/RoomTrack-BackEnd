@@ -1,4 +1,5 @@
 using RoomTrack.ShiftHandovers.Infrastructure.Persistence.EFC;
+using RoomTrack.StaffPerformance.Infrastructure.Persistence.EFC;
 using RoomTrack.Messaging.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using RoomTrack.GuestRequests.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using RoomTrack.Accommodations.Infrastructure.Persistence.EFC.Configuration.Extensions;
@@ -24,6 +25,7 @@ public class AccommodationsDbContext(DbContextOptions<AccommodationsDbContext> o
         builder.ApplyGuestRequestsConfiguration();
         builder.ApplyMessagingConfiguration();
         builder.ApplyShiftHandoversConfiguration();
+        builder.ApplyStaffPerformanceConfiguration();
     }
 }
 

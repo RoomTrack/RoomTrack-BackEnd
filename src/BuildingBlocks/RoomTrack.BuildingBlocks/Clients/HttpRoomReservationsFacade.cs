@@ -24,4 +24,7 @@ public class HttpRoomReservationsFacade(HttpClient httpClient)
 
     public Task<GuestStay?> FetchCurrentStayOfRoomAsync(int roomId) =>
         GetOrDefaultAsync<GuestStay>($"internal/v1/rooms/{roomId}/stay");
+
+    public Task<FrontDeskSummary> FetchFrontDeskSummaryAsync(int hotelId) =>
+        GetAsync<FrontDeskSummary>($"internal/v1/hotels/{hotelId}/front-desk-summary");
 }

@@ -472,6 +472,69 @@ namespace RoomTrack.Bookings.API.Infrastructure.Persistence.Migrations
                     b.ToTable("digital_check_ins", (string)null);
                 });
 
+            modelBuilder.Entity("RoomTrack.Bookings.Domain.Model.Aggregates.StayReview", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BookingId")
+                        .HasColumnType("int")
+                        .HasColumnName("booking_id");
+
+                    b.Property<string>("Comment")
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)")
+                        .HasColumnName("comment");
+
+                    b.Property<int?>("FrontDeskRating")
+                        .HasColumnType("int")
+                        .HasColumnName("front_desk_rating");
+
+                    b.Property<int>("GuestUserId")
+                        .HasColumnType("int")
+                        .HasColumnName("guest_user_id");
+
+                    b.Property<int>("HotelId")
+                        .HasColumnType("int")
+                        .HasColumnName("hotel_id");
+
+                    b.Property<int?>("HousekeepingRating")
+                        .HasColumnType("int")
+                        .HasColumnName("housekeeping_rating");
+
+                    b.Property<int?>("MaintenanceRating")
+                        .HasColumnType("int")
+                        .HasColumnName("maintenance_rating");
+
+                    b.Property<int>("OverallRating")
+                        .HasColumnType("int")
+                        .HasColumnName("overall_rating");
+
+                    b.Property<int>("RoomId")
+                        .HasColumnType("int")
+                        .HasColumnName("room_id");
+
+                    b.Property<DateTimeOffset>("SubmittedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("submitted_at");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_stay_reviews");
+
+                    b.HasIndex("BookingId")
+                        .IsUnique()
+                        .HasDatabaseName("i_x_stay_reviews__booking_id");
+
+                    b.HasIndex("HotelId", "SubmittedAt")
+                        .HasDatabaseName("i_x_stay_reviews__hotel_id__submitted_at");
+
+                    b.ToTable("stay_reviews", (string)null);
+                });
+
             modelBuilder.Entity("RoomTrack.Bookings.Infrastructure.Storage.StoredDocument", b =>
                 {
                     b.Property<Guid>("Id")
@@ -909,6 +972,16 @@ namespace RoomTrack.Bookings.API.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("f_k_digital_check_ins_bookings__booking_id");
+                });
+
+            modelBuilder.Entity("RoomTrack.Bookings.Domain.Model.Aggregates.StayReview", b =>
+                {
+                    b.HasOne("RoomTrack.Bookings.Domain.Model.Aggregates.Booking", null)
+                        .WithMany()
+                        .HasForeignKey("BookingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("f_k_stay_reviews_bookings__booking_id");
                 });
 
             modelBuilder.Entity("RoomTrack.Payments.Domain.Model.Aggregates.FolioCharge", b =>

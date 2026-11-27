@@ -42,8 +42,8 @@ de reenviar. Cada servicio tarda ~20–25 s en arrancar, así que el primer uso 
 | Servicio | Bounded contexts | Base de datos | Rutas públicas (`/api/v1/...`) |
 |---|---|---|---|
 | `identity-service` | IAM, Audit, Notifications (dispositivos y preferencias de push) | `roomtrack_identity` | `authentication`, `users` (incluye `users/me/push-devices` y `users/me/notification-preferences`), `audit-logs` |
-| `accommodations-service` | Accommodations, Media, emulador IoT, Housekeeping, Incidents (con mantenimiento preventivo), GuestRequests, Messaging, ShiftHandovers | `roomtrack_accommodations` | `hotels`, `rooms` (incluye `rooms/{id}/maintenance-history`), `room-types`, `accommodations/options`, `media`, `io-t-emulator`, `cleaning-tasks` (incluye `checklists`), `incidents` (incluye `alerts`), `preventive-maintenance-plans`, `guest-requests`, `conversations`, `shift-handovers` |
-| `bookings-service` | Bookings (con check-in y check-out), Payments (pago de reserva, folio y comprobantes) | `roomtrack_bookings` | `bookings` (incluye `bookings/{id}/folio` y `bookings/{id}/receipts`), `payments` (incluye `payments/history`), `receipts`, `rooms/available` |
+| `accommodations-service` | Accommodations, Media, emulador IoT, Housekeeping, Incidents (con mantenimiento preventivo), GuestRequests, Messaging, ShiftHandovers, StaffPerformance, Dashboard | `roomtrack_accommodations` | `hotels` (incluye `hotels/{id}/dashboard`, el panel del administrador), `rooms` (incluye `rooms/{id}/maintenance-history`), `room-types`, `accommodations/options`, `media`, `io-t-emulator`, `cleaning-tasks` (incluye `checklists`), `incidents` (incluye `alerts`), `preventive-maintenance-plans`, `guest-requests`, `service-catalog`, `conversations`, `shift-handovers`, `staff-performance` (incluye `report-schedules` y las descargas `…/export`) |
+| `bookings-service` | Bookings (con check-in, check-out y evaluación de la estadía), Payments (pago de reserva, folio y comprobantes) | `roomtrack_bookings` | `bookings` (incluye `bookings/{id}/folio`, `bookings/{id}/receipts` y `bookings/{id}/review`), `payments` (incluye `payments/history`), `receipts`, `stay-reviews` (incluye `stay-reviews/satisfaction` y las descargas `…/export`), `rooms/available` |
 | `profiles-service` | Profiles, Shifts, Marketing | `roomtrack_profiles` | `guests`, `staff`, `shifts`, `shift-swaps`, `demo-requests` |
 | `analytics-service` | Analytics | `roomtrack_analytics` | `analytics` |
 | `notifications-worker` | entrega de correos y notificaciones push | — (solo RabbitMQ) | — |
@@ -333,8 +333,9 @@ corta vida (`POST /api/v1/media/hotel-images/signature`, solo administradores). 
 los registra para su hotel desde la aplicación (`PUT /api/v1/hotels/{id}/payment-settings`).
 
 **Tareas programadas.** `POST /api/v1/bookings/expire-pending`, `/rooms/maintenance-alerts`,
-`/incidents/escalations` y `/demo-requests/follow-ups` se invocan a través del gateway con la cabecera `X-Cron-Key`
-(`.github/workflows/scheduler.yml`).
+`/incidents/escalations`, `/preventive-maintenance-plans/runs`, `/staff-performance/report-schedules/runs` (envío
+automático de reportes, US-34) y `/demo-requests/follow-ups` se invocan a través del gateway con la cabecera
+`X-Cron-Key` (`.github/workflows/scheduler.yml`).
 
 **IP del cliente** (rate limiting y auditoría). El gateway agrega `X-Forwarded-For` y cada servicio lo procesa
 saltando solo proxies de confianza: loopback, rangos privados (las redes de Docker incluidas) y los rangos de

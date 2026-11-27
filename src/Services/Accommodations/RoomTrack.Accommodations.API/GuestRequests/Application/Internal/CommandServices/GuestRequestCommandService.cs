@@ -22,6 +22,7 @@ namespace RoomTrack.GuestRequests.Application.Internal.CommandServices;
 /// </summary>
 public class GuestRequestCommandService(
     IGuestRequestRepository requestRepository,
+    IServiceCatalogRepository catalogRepository,
     IRoomReservationsFacade roomReservationsFacade,
     IRoomQueryService roomQueryService,
     IIamContextFacade iamContextFacade,
@@ -34,9 +35,10 @@ public class GuestRequestCommandService(
         // The request is about the room of the guest's stay today.
         var stay = await roomReservationsFacade.FetchCurrentStayAsync(command.Guest.UserId) ?? throw new NoCurrentStayException();
         var now = timeProvider.GetUtcNow();
-        var area = command.Area ?? ServiceArea.Reception;
-        var request = GuestRequest.SendByGuest(stay.HotelId, stay.RoomId, stay.BookingId, command.Title, command.Description,
-            area, command.Guest, now + settings.Value.AttentionTimeOf(area), now);
+        var service = await RequestedServiceAsync(command.ServiceItemId, stay.HotelId);
+        var area = service?.Area ?? command.Area ?? ServiceArea.Reception;
+        var request = GuestRequest.SendByGuest(stay.HotelId, stay.RoomId, stay.BookingId, TitleOf(command.Title, service),
+            command.Description, area, command.Guest, now + AttentionTime(area, service), now, Snapshot(service));
         return await AddAsync(request);
     }
 
@@ -47,8 +49,11 @@ public class GuestRequestCommandService(
         var now = timeProvider.GetUtcNow();
         // The guest staying in the room today: when their booking has an account, they follow it in the app.
         var stay = await roomReservationsFacade.FetchCurrentStayOfRoomAsync(room.Id);
+        var service = await RequestedServiceAsync(command.ServiceItemId, room.HotelId);
+        var area = service?.Area ?? command.Area;
         var request = GuestRequest.RegisterByFrontDesk(room.HotelId, room.Id, stay?.BookingId, stay?.GuestUserId,
-            command.Title, command.Description, command.Area, command.FrontDesk, now + settings.Value.AttentionTimeOf(command.Area), now);
+            TitleOf(command.Title, service), command.Description, area, command.FrontDesk, now + AttentionTime(area, service),
+            now, Snapshot(service));
         return await AddAsync(request);
     }
 
@@ -91,6 +96,29 @@ public class GuestRequestCommandService(
             request.Cancel(command.Reason, command.Actor, timeProvider.GetUtcNow());
             return Task.CompletedTask;
         });
+
+    /// <summary>The available service of the catalog of the hotel the request asks for (US-33), if any.</summary>
+    private async Task<ServiceCatalogItem?> RequestedServiceAsync(int? serviceItemId, int hotelId)
+    {
+        if (serviceItemId is not { } id) return null;
+        var item = await catalogRepository.FindByIdAsync(id);
+        if (item is null || item.HotelId != hotelId)
+            throw new InvalidFieldException("serviceItemId", GuestRequestErrorCodes.ServiceOfOtherHotel,
+                $"Service {id} is not in the catalog of hotel {hotelId}.");
+        item.EnsureAvailable();
+        return item;
+    }
+
+    /// <summary>The title the guest wrote, or the name of the service when they wrote none.</summary>
+    private static string? TitleOf(string? title, ServiceCatalogItem? service) =>
+        string.IsNullOrWhiteSpace(title) ? service?.Name : title;
+
+    /// <summary>The time of the service when the catalog says it, otherwise that of the area.</summary>
+    private TimeSpan AttentionTime(ServiceArea area, ServiceCatalogItem? service) =>
+        service?.EstimatedMinutes is { } minutes ? TimeSpan.FromMinutes(minutes) : settings.Value.AttentionTimeOf(area);
+
+    private static RequestedService? Snapshot(ServiceCatalogItem? service) =>
+        service is null ? null : RequestedService.Of(service);
 
     private async Task<GuestRequest> AddAsync(GuestRequest request)
     {
