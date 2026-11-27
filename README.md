@@ -268,6 +268,21 @@ Copy-Item deploy\azure\roomtrack.azure.env.example deploy\azure\roomtrack.azure.
 al repositorio y no hay que regenerarlo. El scheduler (`scheduler.yml`) usa la variable `API_BASE_URL`
 (`https://gateway.bravepond-f06cc29c.chilecentral.azurecontainerapps.io/api/v1`) y el secret `CRON_API_KEY` (el mismo valor que en `roomtrack.azure.env`).
 
+**Datos demo.** `deploy\azure\seed-demo.ps1` carga el hotel, las habitaciones, el personal, los huéspedes y las reservas
+que usa la app móvil, con el `tool/seed_backend.py` de RoomTrack-App:
+
+```powershell
+pip install pymysql
+.\deploy\azure\seed-demo.ps1 -AppDir C:\ruta\a\RoomTrack-App
+```
+
+Antes de la primera ejecución, el administrador de cadena crea `admin@roomtrack.pe` con rol `admin` (`POST /users`).
+Un administrador de cadena no puede crear otro. Si la cuenta quedó con un `hotelId`, también hay que crear ese hotel
+(`POST /hotels`, con una imagen de Cloudinary de la cuenta). Los correos `@roomtrack.pe` no reciben el enlace de
+verificación, así que `verify-demo-email.py` los marca como verificados en `roomtrack_identity`. Para eso el script
+abre una regla de firewall de MySQL solo para tu IP y la borra al terminar, también si falla. Se puede repetir: lo que
+ya existe se salta.
+
 `render.yaml` describe el despliegue anterior en el plan gratuito de Render.
 
 ## Configuración y secretos
