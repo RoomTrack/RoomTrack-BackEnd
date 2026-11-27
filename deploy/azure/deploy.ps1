@@ -47,12 +47,26 @@ function Find-AzCli {
 
 $script:Az = Find-AzCli
 
+# Windows PowerShell 5.1 turns every stderr line of a native command into an error record, and with
+# $ErrorActionPreference = 'Stop' the first one aborts the script although the command succeeds: az writes its
+# "Running .." progress there, the mysql client its password warning. Native commands run with 'Continue' and are
+# judged by their exit code; their stderr (without the progress lines) goes into the error message.
+function Invoke-Native([scriptblock]$Command, [string]$What) {
+    $ErrorActionPreference = 'Continue'
+    $output = & $Command 2>&1
+    $code = $LASTEXITCODE
+    $stdout = @($output | Where-Object { $_ -isnot [System.Management.Automation.ErrorRecord] } | ForEach-Object { "$_" })
+    $stderr = @($output | Where-Object { $_ -is [System.Management.Automation.ErrorRecord] } | ForEach-Object { "$_".Trim() } |
+        Where-Object { $_ -and $_ -notmatch 'Running \.\.' })
+    if ($code -ne 0) { throw "$What failed (exit code $code): $($stderr -join ' ')" }
+    return ($stdout -join "`n").Trim()
+}
+
 # Simple function (no param block) so that az flags such as -o or -n are passed through instead of being bound
 # as PowerShell parameters (-o would clash with -OutVariable).
 function Invoke-Az {
-    $output = & $script:Az @args --only-show-errors
-    if ($LASTEXITCODE -ne 0) { throw "az $($args[0..2] -join ' ') failed (exit code $LASTEXITCODE)" }
-    return ($output -join "`n").Trim()
+    $azArgs = $args
+    return Invoke-Native { & $script:Az @azArgs --only-show-errors } "az $($args[0..2] -join ' ')"
 }
 
 function Write-Step([string]$Message) { Write-Host "==> $Message" -ForegroundColor Cyan }
@@ -193,12 +207,13 @@ $sqlLines += 'FLUSH PRIVILEGES;'
 # The mysql client runs in a local Docker container, so this machine's public IP is allowed only while it runs.
 $clientIp = (Invoke-RestMethod -Uri 'https://api.ipify.org').ToString().Trim()
 $firewallRule = 'deploy-client'
-Invoke-Az mysql flexible-server firewall-rule create -g $group -n $mysqlServer --rule-name $firewallRule `
-    --start-ip-address $clientIp --end-ip-address $clientIp | Out-Null
 try {
-    ($sqlLines -join "`n") | & docker run --rm -i -e "MYSQL_PWD=$mysqlAdminPassword" mysql:8.0 `
-        mysql -h $mysqlHost -u $mysqlAdminUser --ssl-mode=REQUIRED
-    if ($LASTEXITCODE -ne 0) { throw "mysql client failed (exit code $LASTEXITCODE). Is Docker Desktop running?" }
+    # Opened inside the try: if anything fails from here on, the finally still removes the rule.
+    Invoke-Az mysql flexible-server firewall-rule create -g $group -n $mysqlServer --rule-name $firewallRule `
+        --start-ip-address $clientIp --end-ip-address $clientIp | Out-Null
+    $sql = $sqlLines -join "`n"
+    Invoke-Native { $sql | & docker run --rm -i -e "MYSQL_PWD=$mysqlAdminPassword" mysql:8.0 `
+            mysql -h $mysqlHost -u $mysqlAdminUser --ssl-mode=REQUIRED } 'mysql client (is Docker Desktop running?)' | Out-Null
 } finally {
     Invoke-Az mysql flexible-server firewall-rule delete -g $group -n $mysqlServer --rule-name $firewallRule --yes | Out-Null
 }
