@@ -6,7 +6,9 @@ la documentación de todos los servicios está en `http://localhost:8080/docs`.
 
 **Producción (Azure Container Apps, Chile Central):** API en `https://gateway.bravepond-f06cc29c.chilecentral.azurecontainerapps.io/api/v1/...` y Swagger UI de
 todos los servicios en [https://gateway.bravepond-f06cc29c.chilecentral.azurecontainerapps.io/docs](https://gateway.bravepond-f06cc29c.chilecentral.azurecontainerapps.io/docs) (el gateway y
-algunos servicios escalan a cero: la primera petición tras un rato sin uso tarda ~10–20 s). Ver
+varios servicios escalan a cero, y el gateway los despierta de uno en uno, esperando hasta 90 s por cada uno, antes
+de reenviar. Cada servicio tarda ~20–25 s en arrancar, así que el primer uso tras un rato sin tráfico puede tardar
+1–2 minutos). Ver
 [Despliegue en Azure](#despliegue-en-azure).
 
 ## Arquitectura
