@@ -28,16 +28,16 @@ dotnet test tests/RoomTrack.Bookings.API.Tests --filter "Category=Sprint2"
 
 | US / escenario | Estado | Evidencia o brecha |
 | --- | --- | --- |
-| US-13 / E01 | Omitido | La API pasa directamente a CheckedIn al aprobar el documento; no persiste el estado «check-in en proceso». |
-| US-13 / E02 | Omitido | No existe una segunda confirmación de identidad al llegar. |
-| US-13 / E03 | Omitido | La API rechaza el check-in con la habitación no lista, pero no calcula el tiempo estimado de espera. |
+| US-13 / E01 | **Ejecutable** | Check-in digital hasta 3 días antes de la llegada: queda `PendingArrival` y la reserva muestra `checkInStage` `InProgress` («check-in en proceso»), sin código de acceso ni habitación ocupada. |
+| US-13 / E02 | **Ejecutable** | `POST /bookings/{id}/check-in/arrival`: al llegar solo confirma el número del documento enviado y recibe el código de acceso; la reserva pasa a CheckedIn. |
+| US-13 / E03 | **Ejecutable** | Habitación no lista → 409 `check_in.room_not_ready` con `estimatedWaitMinutes` y `estimatedReadyAt` (estimado por Housekeeping a partir de la limpieza en curso). |
 | US-13 / E04 | **Ejecutable** | `RequestCheckInAssistanceCommand` registra la solicitud para recepción del hotel (evento que notifica al personal). |
 | US-14 / E01 | **Ejecutable** | Check-out del huésped: la reserva queda Completed y la habitación pasa a Cleaning («pendiente de limpieza»). |
 | US-14 / E02 | **Ejecutable** | Con consumos sin pagar el check-out se rechaza con `folio.balance_pending`, el saldo y el detalle de los cargos. |
 | US-14 / E03 | **Ejecutable** | Al hacer check-out el folio se cierra y el huésped recibe el estado de cuenta con sus comprobantes. |
 | US-14 / E04 | Omitido | El huésped no puede extender la estancia desde la app conectada. |
-| US-15 / E01 | Omitido | El adaptador registrado es `ManualPaymentGateway`: no hay pasarela de tarjetas. |
-| US-15 / E02 | Omitido | Sin pasarela no hay rechazo del emisor. |
+| US-15 / E01 | **Ejecutable** | `POST /bookings/{id}/payments/card` con el token de la tarjeta: la pasarela integrada (`ICardPaymentGateway`, modo sandbox) cobra el total, el pago queda `OnlineCard` (solo marca y últimos dígitos) y la reserva se confirma. |
+| US-15 / E02 | **Ejecutable** | Tarjeta rechazada → 409 `payment.card_declined` con el motivo y los medios alternativos; el intento fallido queda registrado, la reserva sigue Pending y se puede pagar con otra tarjeta. |
 | US-15 / E03 | **Ejecutable** | `POST /bookings/{id}/folio/deposit` retiene el depósito y queda visible en el folio (no suma al saldo). |
 | US-15 / E04 | **Ejecutable** | El pago completado confirma la reserva (evento de confirmación → correo) y habilita el check-in. |
 | US-16 / E01 | **Ejecutable** | `GET /bookings/{id}/folio` muestra cada cargo, el total y el saldo antes de pagar. |
@@ -52,5 +52,5 @@ dotnet test tests/RoomTrack.Bookings.API.Tests --filter "Category=Sprint2"
 | US-27 / E02 | **Ejecutable** | Recepción cobra el saldo y hace el check-out en el mismo flujo: folio saldado y habitación «pendiente de limpieza». |
 | US-27 / E03 | **Ejecutable** | Con la habitación aún en limpieza el check-in se rechaza sin dejar cambios y se sugieren habitaciones listas. |
 
-Resultado actual: **17 escenarios ejecutables aprobados y 6 omitidos** (US-13 E01–E03, US-14 E04, US-15 E01–E02).
-US-16 y US-17 quedan completas; US-13, US-14 y US-15 siguen parciales.
+Resultado actual: **22 escenarios ejecutables aprobados y 1 omitido** (US-14 E04, extender la estancia).
+US-13, US-15, US-16 y US-17 quedan completas; US-14 sigue parcial.

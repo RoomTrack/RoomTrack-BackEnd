@@ -1,4 +1,7 @@
+using System.Globalization;
 using RoomTrack.Accommodations.Application.OutboundServices;
+using RoomTrack.Contracts.Messaging;
+using RoomTrack.Shared.Application.OutboundServices;
 using RoomTrack.Accommodations.Domain.Model.Events;
 using RoomTrack.Accommodations.Domain.Model.ValueObjects;
 using RoomTrack.Accommodations.Domain.Repositories;
@@ -22,10 +25,32 @@ public class RoomStaffNotificationHandler(
     IRoomRepository roomRepository,
     IHotelRepository hotelRepository,
     IIamContextFacade iamContextFacade,
-    IRoomNotificationService notifications) :
+    IRoomNotificationService notifications,
+    IPushSender pushSender) :
     IDomainEventHandler<RoomStatusChangedEvent>,
-    IDomainEventHandler<RoomMaintenanceOverdueEvent>
+    IDomainEventHandler<RoomMaintenanceOverdueEvent>,
+    IDomainEventHandler<RoomNotReadyForArrivalEvent>
 {
+    /// <summary>
+    ///     US-23: the administrators decide and the front desk receives the guest, so both learn that the room of a guest
+    ///     arriving soon is not ready (push and e-mail).
+    /// </summary>
+    public async Task HandleAsync(RoomNotReadyForArrivalEvent e, CancellationToken cancellationToken)
+    {
+        var recipients = await iamContextFacade.ListHotelStaffAsync(e.HotelId, [UserRoles.Admin, UserRoles.Reception]);
+        if (recipients.Count == 0)
+            recipients = await iamContextFacade.ListHotelStaffAsync(e.HotelId, [UserRoles.ChainAdmin]);
+        if (recipients.Count == 0) return;
+
+        var room = await NoticeAsync(e.RoomId, e.HotelId);
+        await notifications.SendNotReadyForArrivalAsync(recipients, room, e.Status, e.BookingCode, e.ExpectedAt);
+        await pushSender.SendAsync(new PushMessage(recipients.Select(contact => contact.UserId).ToList(),
+            PushCategories.IncidentEscalated, "Habitación no lista para una llegada",
+            $"La habitación {room.RoomNumber} sigue sin estar lista y su huésped (reserva {e.BookingCode}) llega pronto.",
+            new Dictionary<string, string> { ["screen"] = "room", ["id"] = e.RoomId.ToString(CultureInfo.InvariantCulture) },
+            Urgent: true), cancellationToken);
+    }
+
     public static IReadOnlyList<string> RolesInChargeOf(RoomStatus status) => status switch
     {
         RoomStatus.Cleaning or RoomStatus.Occupied => [UserRoles.Housekeeping],

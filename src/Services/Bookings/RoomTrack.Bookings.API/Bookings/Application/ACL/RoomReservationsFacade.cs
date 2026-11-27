@@ -32,6 +32,16 @@ public class RoomReservationsFacade(IBookingRepository bookingRepository, IBooki
     public async Task<GuestStay?> FetchCurrentStayOfRoomAsync(int roomId) =>
         CurrentStayOf(await bookingRepository.FindByRoomIdAsync(roomId));
 
+    public async Task<IReadOnlyList<ExpectedArrival>> ListExpectedArrivalsAsync(DateTimeOffset until)
+    {
+        var today = calendar.Today;
+        var expectedAt = calendar.CheckInInstant(today);
+        if (expectedAt > until) return [];
+        return (await bookingRepository.ListArrivalsAsync(today))
+            .Select(booking => new ExpectedArrival(booking.Id, booking.Code.Value, booking.HotelId, booking.RoomId, expectedAt))
+            .ToList();
+    }
+
     public async Task<FrontDeskSummary> FetchFrontDeskSummaryAsync(int hotelId)
     {
         var today = calendar.Today;

@@ -12,6 +12,15 @@ public static class PaymentErrorCodes
     public const string CannotComplete = "payment.cannot_complete";
     public const string CannotFail = "payment.cannot_fail";
 
+    /// <summary>An online card payment is made by the guest through the card gateway, never registered by hand.</summary>
+    public const string OnlineCardNotRegistrable = "payment.online_card_not_registrable";
+
+    /// <summary>The card gateway rejected the card (US-15): the booking stays pending and can be paid another way.</summary>
+    public const string CardDeclined = "payment.card_declined";
+
+    /// <summary>The card token is missing or too long.</summary>
+    public const string CardTokenInvalid = "payment.card_token_invalid";
+
     /// <summary>An invariant of the Payment aggregate that only a programming error can break.</summary>
     public const string InternalInvariant = "payment.internal_invariant";
 }

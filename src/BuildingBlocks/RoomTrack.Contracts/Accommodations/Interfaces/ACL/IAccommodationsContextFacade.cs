@@ -42,8 +42,32 @@ public sealed record HotelPaymentInstructions(
     string? BankAccountNumber,
     string? BankAccountCci);
 
+/// <summary>
+///     When a room will be ready for its guest to move in (US-13): now when it is Available; while it is being cleaned,
+///     an estimate from its cleaning task and how long the hotel's recent cleanings took; unknown (null) when it is
+///     occupied or under maintenance.
+/// </summary>
+/// <param name="RoomId">The room.</param>
+/// <param name="Status">Its current status (Available, Occupied, Cleaning or Maintenance).</param>
+/// <param name="EstimatedReadyAt">When it is expected to be ready (UTC), or null when it cannot be estimated.</param>
+public sealed record RoomReadiness(int RoomId, string Status, DateTimeOffset? EstimatedReadyAt)
+{
+    public bool IsReady => Status == "Available";
+
+    /// <summary>Whole minutes from <paramref name="now"/> until the estimate (at least 1), or null without one.</summary>
+    public int? EstimatedWaitMinutes(DateTimeOffset now) =>
+        IsReady ? 0 : EstimatedReadyAt is { } at ? Math.Max(1, (int)Math.Ceiling((at - now).TotalMinutes)) : null;
+}
+
 public interface IAccommodationsContextFacade
 {
+    /// <summary>
+    ///     Whether the room is ready for its guest and, when it is not, when it is expected to be (US-13), or null when the
+    ///     room does not exist. Implementations that cannot estimate report the status without an estimate.
+    /// </summary>
+    async Task<RoomReadiness?> EstimateRoomReadinessAsync(int roomId) =>
+        await FetchRoomAsync(roomId) is { } room ? new RoomReadiness(roomId, room.Status, null) : null;
+
     /// <summary>Number of each of <paramref name="roomIds"/> (one query; unknown ids are omitted).</summary>
     Task<IReadOnlyDictionary<int, string>> FetchRoomNumbersAsync(IReadOnlyCollection<int> roomIds);
 

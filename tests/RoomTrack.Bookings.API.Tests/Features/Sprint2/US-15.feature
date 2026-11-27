@@ -2,19 +2,17 @@
 @Sprint2 @US15
 Característica: US-15 — Pago de reserva durante el check-in
   Criterios de aceptación del informe (TF1, corte 25/11/2026).
-  Los escenarios con @ignore aún no tienen implementación en la API (ver README.md): Reqnroll los reporta como
-  omitidos, no como aprobados.
+  La pasarela de pagos integrada corre en modo sandbox (SandboxCardPaymentGateway): sus tokens de prueba aprueban o
+  rechazan la tarjeta como lo haría la pasarela real.
 
-  @US15_E01 @pendiente_implementacion @ignore
+  @US15_E01
   Escenario: Pago con tarjeta
-    # El adaptador registrado es ManualPaymentGateway: no hay pasarela de tarjetas integrada.
     Dado que estoy completando mi check-in
     Cuando ingreso los datos de mi tarjeta
     Entonces el sistema procesa el pago de forma segura mediante la pasarela de pagos integrada
 
-  @US15_E02 @pendiente_implementacion @ignore
+  @US15_E02
   Escenario: Pago rechazado
-    # Sin pasarela no hay rechazo del emisor.
     Dado que mi método de pago es rechazado
     Cuando esto ocurre
     Entonces el sistema me notifica el motivo y me permite intentar otro medio de pago

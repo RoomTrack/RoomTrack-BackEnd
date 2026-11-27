@@ -59,7 +59,10 @@ Lo que cubre cada contexto nuevo de `accommodations-service` (las historias de u
 | Messaging | US-12, US-20 | Conversaciones dentro de la plataforma: huésped con recepción, canal de cada área y comentarios sobre una tarea. |
 | ShiftHandovers | US-32 | Entrega de turno: resumen con notas y las tareas e incidencias abiertas del área; el turno siguiente lo lee y confirma (quién y cuándo). |
 
-En `bookings-service`, **Payments** cubre US-15/16/17: el pago que confirma la reserva, el **folio** de la estancia
+En `bookings-service`, el **check-in digital** (US-13) puede hacerse hasta 3 días antes de llegar («check-in en proceso»):
+al llegar el huésped solo confirma su documento para recibir el código de acceso, y si la habitación aún no está lista se
+le informa el tiempo estimado de espera. **Payments** cubre US-15/16/17: el pago que confirma la reserva (registrado por
+el hotel o con tarjeta desde la app a través de la pasarela integrada, en modo sandbox), el **folio** de la estancia
 (cargos adicionales, depósito de garantía, pago del saldo dividido entre varios medios; el check-out se rechaza con saldo
 pendiente y libera el depósito) y los **comprobantes** (boleta o factura con IGV, emitidos y enviados por correo en cada
 pago, reenviables, e historial de pagos del hotel). En `profiles-service`, **Shifts** cubre US-31: turnos por área y
@@ -232,15 +235,17 @@ tests de xUnit, dentro del mismo `dotnet test`:
 | 3 | US-22 (entrega de push y correo) | `RoomTrack.Notifications.Worker.Tests` |
 | 4 | US-18 (indicadores del panel) | `RoomTrack.Analytics.API.Tests` |
 
-Resultado al 25/11/2026: **486 pruebas aprobadas y 7 omitidas** en 6 proyectos de pruebas. Los escenarios cuya
-funcionalidad aún no existe en la API llevan `@ignore` y salen como *omitidos*, nunca como aprobados (US-13 E01–E03,
-US-14 E04, US-15 E01–E02 y US-23 E01). La trazabilidad escenario → evidencia está en
+Resultado al 27/11/2026: **577 pruebas aprobadas y 1 omitida** en 6 proyectos de pruebas. Los escenarios cuya
+funcionalidad aún no existe en la API llevan `@ignore` y salen como *omitidos*, nunca como aprobados (solo queda
+US-14 E04, extender la estancia). La trazabilidad escenario → evidencia está en
 `tests/RoomTrack.Bookings.API.Tests/Features/Sprint2/README.md` y `tests/RoomTrack.Accommodations.API.Tests/Features/README.md`.
 Para correr solo los de una historia: `dotnet test --filter "Category=US05"`.
 
 **Documentación de la API.** Cada servicio publica su propio documento OpenAPI (descripción de sus contextos, no la del
 producto completo) con ejemplos JSON de request y response en las operaciones principales
-(`[OpenApiRequestExample]`/`[OpenApiResponseExample]`) y un ejemplo ProblemDetails en cada respuesta de error.
+(`[OpenApiRequestExample]`/`[OpenApiResponseExample]`), un ejemplo ProblemDetails en cada respuesta de error, y para
+todo lo demás un ejemplo completo construido desde el esquema y los `<example>` de los recursos (`SchemaExamples`): todos
+los cuerpos JSON de request y response del documento tienen ejemplo.
 
 **CI** (`.github/workflows/ci.yml`): en cada push y pull request a `develop` y `main` compila la solución y corre
 todos los tests, con un MySQL 8 como servicio del job. Los resultados quedan como artefacto `test-results` del run.
@@ -333,6 +338,7 @@ corta vida (`POST /api/v1/media/hotel-images/signature`, solo administradores). 
 los registra para su hotel desde la aplicación (`PUT /api/v1/hotels/{id}/payment-settings`).
 
 **Tareas programadas.** `POST /api/v1/bookings/expire-pending`, `/rooms/maintenance-alerts`,
+`/rooms/arrival-readiness-alerts` (habitación no lista para un huésped que llega hoy, US-23),
 `/incidents/escalations`, `/preventive-maintenance-plans/runs`, `/staff-performance/report-schedules/runs` (envío
 automático de reportes, US-34) y `/demo-requests/follow-ups` se invocan a través del gateway con la cabecera
 `X-Cron-Key` (`.github/workflows/scheduler.yml`).

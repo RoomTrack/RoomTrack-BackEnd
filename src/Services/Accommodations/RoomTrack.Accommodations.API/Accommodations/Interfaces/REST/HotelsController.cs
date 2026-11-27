@@ -9,6 +9,7 @@ using RoomTrack.IAM.Interfaces.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using RoomTrack.Shared.Infrastructure.Documentation.OpenApi.Configuration;
 
 namespace RoomTrack.Accommodations.Interfaces.REST;
 
@@ -40,6 +41,12 @@ public class HotelsController(
     [SwaggerResponse(StatusCodes.Status200OK, "The hotel resource list was successfully fetched.", typeof(IEnumerable<HotelResource>))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, "The request lacks a valid identity identification token.")]
     [SwaggerResponse(StatusCodes.Status403Forbidden, "The authenticated identity has insufficient privilege levels.")]
+    [OpenApiResponseExample(StatusCodes.Status200OK, """
+        [ { "id": 1, "hostId": 3, "name": "Hotel Miraflores", "location": "Av. Larco 345, Miraflores, Lima, Perú",
+        "imageUrl": "https://res.cloudinary.com/roomtrack/image/upload/hotels/1/fachada.jpg",
+        "description": "Hotel boutique a dos cuadras del malecón", "basePrice": 180.00, "type": "Boutique",
+        "amenities": ["WiFi", "Desayuno", "Piscina"], "acceptsBookings": true } ]
+        """)]
     public async Task<IActionResult> GetAllHotels()
     {
         var hotels = await hotelQueryService.Handle(new GetAllHotelsQuery());
@@ -61,6 +68,12 @@ public class HotelsController(
     [SwaggerResponse(StatusCodes.Status401Unauthorized, "The request lacks a valid identity identification token.")]
     [SwaggerResponse(StatusCodes.Status403Forbidden, "The authenticated identity has insufficient privilege levels.")]
     [SwaggerResponse(StatusCodes.Status404NotFound, "No hotel aggregate matched the supplied structural query identifier.")]
+    [OpenApiResponseExample(StatusCodes.Status200OK, """
+        { "id": 1, "hostId": 3, "name": "Hotel Miraflores", "location": "Av. Larco 345, Miraflores, Lima, Perú",
+        "imageUrl": "https://res.cloudinary.com/roomtrack/image/upload/hotels/1/fachada.jpg",
+        "description": "Hotel boutique a dos cuadras del malecón", "basePrice": 180.00, "type": "Boutique",
+        "amenities": ["WiFi", "Desayuno", "Piscina"], "acceptsBookings": true }
+        """)]
     public async Task<IActionResult> GetHotelById(int hotelId)
     {
         var hotel = await hotelQueryService.Handle(new GetHotelByIdQuery(hotelId));
@@ -85,6 +98,11 @@ public class HotelsController(
     [SwaggerResponse(StatusCodes.Status401Unauthorized, "The request lacks a valid identity identification token.")]
     [SwaggerResponse(StatusCodes.Status403Forbidden, "Access denied. Only Admin or ChainAdmin operators are cleared to execute infrastructure initialization.")]
     [SwaggerResponse(StatusCodes.Status409Conflict, "A hotel administrator already has a hotel (an admin registers only their own hotel).")]
+    [OpenApiRequestExample("""
+        { "hostId": 3, "name": "Hotel Miraflores", "address": "Av. Larco 345, Miraflores", "city": "Lima", "country": "Perú",
+        "imageUrl": "https://res.cloudinary.com/roomtrack/image/upload/hotels/1/fachada.jpg",
+        "description": "Hotel boutique a dos cuadras del malecón", "type": "Boutique", "amenities": ["WiFi", "Desayuno", "Piscina"] }
+        """)]
     public async Task<IActionResult> CreateHotel([FromBody] CreateHotelResource resource)
     {
         var registrant = new HotelRegistrant(User.GetUserId(), User.IsChainAdmin(), User.GetHotelId());
@@ -117,6 +135,18 @@ public class HotelsController(
     [SwaggerResponse(StatusCodes.Status401Unauthorized, "The request lacks a valid identity identification token.")]
     [SwaggerResponse(StatusCodes.Status403Forbidden, "The authenticated identity has insufficient administrative privilege levels.")]
     [SwaggerResponse(StatusCodes.Status404NotFound, "The targeted hotel aggregate could not be extracted for state alteration.")]
+    [OpenApiRequestExample("""
+        { "name": "Hotel Miraflores", "address": "Av. Larco 345, Miraflores", "city": "Lima", "country": "Perú",
+        "imageUrl": "https://res.cloudinary.com/roomtrack/image/upload/hotels/1/fachada.jpg",
+        "description": "Hotel boutique frente al malecón, renovado en 2026", "type": "Boutique",
+        "amenities": ["WiFi", "Desayuno", "Piscina", "Gimnasio"] }
+        """)]
+    [OpenApiResponseExample(StatusCodes.Status200OK, """
+        { "id": 1, "hostId": 3, "name": "Hotel Miraflores", "location": "Av. Larco 345, Miraflores, Lima, Perú",
+        "imageUrl": "https://res.cloudinary.com/roomtrack/image/upload/hotels/1/fachada.jpg",
+        "description": "Hotel boutique frente al malecón, renovado en 2026", "basePrice": 180.00, "type": "Boutique",
+        "amenities": ["WiFi", "Desayuno", "Piscina", "Gimnasio"], "acceptsBookings": true }
+        """)]
     public async Task<IActionResult> UpdateHotel(int hotelId, [FromBody] UpdateHotelResource resource)
     {
         var notAllowed = await EnsureCanManageHotelAsync(hotelId);
@@ -146,6 +176,11 @@ public class HotelsController(
     [SwaggerResponse(StatusCodes.Status401Unauthorized, "The request lacks a valid identity identification token.")]
     [SwaggerResponse(StatusCodes.Status403Forbidden, "The requesting identity lacks the extreme corporate validation depth to delete property nodes.")]
     [SwaggerResponse(StatusCodes.Status404NotFound, "The targeted hotel index node was not present in the structural cluster tree.")]
+    [OpenApiResponseExample(StatusCodes.Status200OK, """
+        { "id": 1, "hostId": 3, "name": "Hotel Miraflores", "location": "Av. Larco 345, Miraflores, Lima, Perú",
+        "imageUrl": null, "description": "Hotel boutique a dos cuadras del malecón", "basePrice": 0, "type": "Boutique",
+        "amenities": [], "acceptsBookings": false }
+        """)]
     public async Task<IActionResult> DeleteHotel(int hotelId)
     {
         var notAllowed = await EnsureCanManageHotelAsync(hotelId);
@@ -172,6 +207,10 @@ public class HotelsController(
     [ProducesResponseType(typeof(HotelPaymentSettingsResource), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [OpenApiResponseExample(StatusCodes.Status200OK, """
+        { "hotelId": 1, "acceptsBookings": true, "accountHolder": "Hotel Miraflores SAC", "yapeNumber": "987654321",
+        "plinNumber": null, "bankName": "BCP", "bankAccountNumber": "193-2345678-0-12", "bankAccountCci": "00219300234567801214" }
+        """)]
     public async Task<IActionResult> GetPaymentSettings(int hotelId)
     {
         var hotel = await hotelQueryService.Handle(new GetHotelByIdQuery(hotelId));
@@ -197,6 +236,14 @@ public class HotelsController(
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [OpenApiRequestExample("""
+        { "accountHolder": "Hotel Miraflores SAC", "yapeNumber": "987654321", "plinNumber": null, "bankName": "BCP",
+        "bankAccountNumber": "193-2345678-0-12", "bankAccountCci": "00219300234567801214" }
+        """)]
+    [OpenApiResponseExample(StatusCodes.Status200OK, """
+        { "hotelId": 1, "acceptsBookings": true, "accountHolder": "Hotel Miraflores SAC", "yapeNumber": "987654321",
+        "plinNumber": null, "bankName": "BCP", "bankAccountNumber": "193-2345678-0-12", "bankAccountCci": "00219300234567801214" }
+        """)]
     public async Task<IActionResult> UpdatePaymentSettings(int hotelId, [FromBody] UpdateHotelPaymentSettingsResource resource)
     {
         var notAllowed = await EnsureCanManageHotelAsync(hotelId);

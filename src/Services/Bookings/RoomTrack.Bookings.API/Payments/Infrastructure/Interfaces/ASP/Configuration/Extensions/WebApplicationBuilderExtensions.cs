@@ -26,6 +26,10 @@ public static class WebApplicationBuilderExtensions
         // Payment gateway port: payments received by the hotel (an online gateway adapter would replace it here)
         builder.Services.AddScoped<IPaymentGateway, ManualPaymentGateway>();
 
+        // Card gateway port (US-15): the guest pays from the app with a tokenized card. The sandbox simulates the
+        // gateway; a real provider's adapter (Culqi, Mercado Pago, Niubiz) replaces it here.
+        builder.Services.AddSingleton<ICardPaymentGateway, SandboxCardPaymentGateway>();
+
         // Subscriptions (R2: a cancelled paid booking gets its payment refunded)
         builder.Services.AddScoped<IDomainEventHandler<BookingCancelledEvent>, RefundPaymentOnBookingCancelledHandler>();
 

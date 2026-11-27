@@ -1,3 +1,4 @@
+using RoomTrack.Accommodations.Application.OutboundServices;
 using RoomTrack.Accommodations.Domain.Model.Commands;
 using RoomTrack.Accommodations.Domain.Model.Queries;
 using RoomTrack.Accommodations.Domain.Repositories;
@@ -11,8 +12,27 @@ public class AccommodationsContextFacade(
     IRoomQueryService roomQueryService,
     IRoomCommandService roomCommandService,
     IRoomRepository roomRepository,
-    IHotelRepository hotelRepository) : IAccommodationsContextFacade
+    IHotelRepository hotelRepository,
+    IRoomCleaningEstimates cleaningEstimates,
+    TimeProvider timeProvider) : IAccommodationsContextFacade
 {
+    /// <summary>
+    ///     Ready now when Available; while it is being cleaned, the estimate of Housekeeping; occupied (the previous guest
+    ///     has not left) or under maintenance, no estimate.
+    /// </summary>
+    public async Task<RoomReadiness?> EstimateRoomReadinessAsync(int roomId)
+    {
+        var room = await FetchRoomAsync(roomId);
+        if (room is null) return null;
+        DateTimeOffset? readyAt = room.Status switch
+        {
+            "Available" => timeProvider.GetUtcNow(),
+            "Cleaning" => await cleaningEstimates.EstimateCleanAtAsync(roomId, room.HotelId),
+            _ => null
+        };
+        return new RoomReadiness(roomId, room.Status, readyAt);
+    }
+
     public Task OccupyRoomForCheckInAsync(int roomId, int? guestUserId, string? guestEmail) =>
         roomCommandService.Handle(new OccupyRoomForCheckInCommand(roomId, guestUserId, guestEmail));
 

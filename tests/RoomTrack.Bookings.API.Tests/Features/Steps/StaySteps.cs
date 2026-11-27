@@ -15,6 +15,7 @@ using RoomTrack.Bookings.Application.OutboundServices;
 using RoomTrack.Bookings.Domain.Model.Aggregates;
 using RoomTrack.Bookings.Domain.Model.Commands;
 using RoomTrack.Bookings.Domain.Model.Events;
+using RoomTrack.Bookings.Domain.Model.Exceptions;
 using RoomTrack.Bookings.Domain.Model.Queries;
 using RoomTrack.Bookings.Domain.Model.ValueObjects;
 using RoomTrack.Bookings.Domain.Services;
@@ -69,7 +70,31 @@ public sealed class StaySteps : IDisposable
 
     public void Dispose() => _contexts.ForEach(context => context.Dispose());
 
+    private CheckInResult? _checkIn;
+
     // ── Given ───────────────────────────────────────────────────────
+
+    [Given("que tengo una reserva confirmada")]
+    public void GivenAConfirmedBooking()
+    {
+        AConfirmedBookingInARoom("Available");
+        _clock.Now = ArrivalAt.AddDays(-2);
+    }
+
+    [Given("que hice el check-in digital")]
+    public async Task GivenIDidTheDigitalCheckIn()
+    {
+        GivenAConfirmedBooking();
+        await CheckIn(Guest);
+    }
+
+    [Given("que mi habitación no está lista al momento de mi llegada")]
+    public void GivenMyRoomIsNotReadyWhenIArrive()
+    {
+        AConfirmedBookingInARoom("Cleaning");
+        // Housekeeping expects to finish the cleaning in 25 minutes.
+        _accommodations.ReadyAt[RoomId] = ArrivalAt.AddMinutes(25);
+    }
 
     [Given("que tengo un problema durante el check-in digital")]
     public void GivenAProblemDuringTheCheckIn() => AConfirmedBookingInARoom("Available");
@@ -101,6 +126,24 @@ public sealed class StaySteps : IDisposable
     }
 
     // ── When ────────────────────────────────────────────────────────
+
+    [When("completo el check-in digital antes de llegar")]
+    public async Task WhenICheckInBeforeArriving() => _checkIn = await CheckIn(Guest);
+
+    [When("llego al hotel")]
+    public async Task WhenIArriveAtTheHotel()
+    {
+        _clock.Now = ArrivalAt;
+        // Only the number of the document sent with the digital check-in, written as the guest likes.
+        _checkIn = await Service().Handle(new ConfirmArrivalCommand(_bookingId, Guest, "45.678.912"));
+    }
+
+    [When("intento completar el check-in")]
+    public async Task WhenITryToCheckIn()
+    {
+        try { await CheckIn(Guest); }
+        catch (DomainException e) { _error = e; }
+    }
 
     [When("solicito ayuda")]
     public Task WhenIAskForHelp() =>
@@ -134,6 +177,41 @@ public sealed class StaySteps : IDisposable
     }
 
     // ── Then ────────────────────────────────────────────────────────
+
+    [Then("mi reserva queda marcada como {string}")]
+    public void ThenMyBookingIsMarkedAs(string stage)
+    {
+        stage.Should().Be("check-in en proceso");
+        var booking = StoredBooking();
+        booking.CheckInStage.Should().Be("InProgress");
+        booking.Status.Should().Be(BookingStatus.Confirmed, "the guest is not in yet");
+        _checkIn!.CheckIn.Status.Should().Be(CheckInStatus.PendingArrival);
+        _checkIn.AccessCode.Should().BeNull("the room is not the guest's until they arrive");
+        _accommodations.Rooms[RoomId].Should().Be("Available", "the room is not occupied before the arrival");
+    }
+
+    [Then("solo debo confirmar mi identidad para recibir la llave o código de acceso a mi habitación")]
+    public async Task ThenIOnlyConfirmMyIdentityToGetTheKey()
+    {
+        _checkIn!.AccessCode!.Value.Should().MatchRegex(@"^\d{6}$");
+        _checkIn.CheckIn.Status.Should().Be(CheckInStatus.Approved);
+        StoredBooking().Status.Should().Be(BookingStatus.CheckedIn);
+        StoredBooking().CheckInStage.Should().Be("Completed");
+        _accommodations.Rooms[RoomId].Should().Be("Occupied");
+        // The guest reads it back from the app.
+        (await Service().FindAsync(_bookingId, Guest))!.AccessCode!.Value.Should().Be(_checkIn.AccessCode.Value);
+    }
+
+    [Then("el sistema me informa el tiempo estimado de espera")]
+    public void ThenIAmToldHowLongToWait()
+    {
+        var notReady = _error.Should().BeOfType<RoomNotReadyForCheckInException>().Subject;
+        notReady.Code.Should().Be("check_in.room_not_ready");
+        notReady.EstimatedWaitMinutes.Should().Be(25);
+        notReady.EstimatedReadyAt.Should().Be(ArrivalAt.AddMinutes(25));
+        notReady.Parameters["estimatedWaitMinutes"].Should().Be(25);
+        StoredBooking().Status.Should().Be(BookingStatus.Confirmed, "the refused check-in leaves nothing half-done");
+    }
 
     [Then("puedo contactar directamente a recepción desde la misma pantalla")]
     public void ThenTheFrontDeskIsContacted()
@@ -193,7 +271,7 @@ public sealed class StaySteps : IDisposable
         _accommodations.Rooms[RoomId] = roomStatus;
     }
 
-    private Task CheckIn(BookingRequester requester) =>
+    private Task<CheckInResult> CheckIn(BookingRequester requester) =>
         Service().Handle(new CompleteDigitalCheckInCommand(_bookingId, requester, IdentityDocumentType.Dni, "45678912", "PE",
             [0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10]));
 
@@ -221,7 +299,7 @@ public sealed class StaySteps : IDisposable
         return new CheckInService(new BookingRepository(context), new DigitalCheckInRepository(context), new FakeDocumentStorage(),
             _accommodations, new NoGuestProfiles(), new FakeAvailability(_accommodations), new PlainSecretProtector(),
             new HotelCalendar(Options.Create(new BookingPolicySettings()), _clock), new ContextUnitOfWork(context),
-            new StayFolioGate(new GuestFolioRepository(context)));
+            new StayFolioGate(new GuestFolioRepository(context)), Options.Create(new BookingPolicySettings()));
     }
 
     private sealed class FixedClock(DateTimeOffset now) : TimeProvider
@@ -272,6 +350,14 @@ public sealed class StaySteps : IDisposable
     private sealed class FakeAccommodations : IAccommodationsContextFacade
     {
         public Dictionary<int, string> Rooms { get; } = [];
+
+        /// <summary>When Housekeeping expects each room being cleaned to be ready.</summary>
+        public Dictionary<int, DateTimeOffset> ReadyAt { get; } = [];
+
+        public Task<RoomReadiness?> EstimateRoomReadinessAsync(int roomId) =>
+            Task.FromResult<RoomReadiness?>(Rooms.TryGetValue(roomId, out var status)
+                ? new RoomReadiness(roomId, status, status == "Available" ? null : ReadyAt.TryGetValue(roomId, out var at) ? at : null)
+                : null);
 
         public RoomOffer Offer(int roomId) => Room(roomId) with { Status = Rooms[roomId] };
 

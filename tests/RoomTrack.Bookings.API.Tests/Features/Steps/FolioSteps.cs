@@ -418,7 +418,7 @@ public sealed class FolioSteps : IDisposable
         var service = new CheckInService(new BookingRepository(_context), new DigitalCheckInRepository(_context), null!,
             _accommodations, new NoGuestProfiles(), null!, null!,
             new HotelCalendar(Options.Create(new BookingPolicySettings()), _clock), _services.GetRequiredService<IUnitOfWork>(),
-            new StayFolioGate(_services.GetRequiredService<IGuestFolioRepository>()));
+            new StayFolioGate(_services.GetRequiredService<IGuestFolioRepository>()), Options.Create(new BookingPolicySettings()));
         await service.Handle(new CheckOutCommand(_bookingId, requester));
     }
 

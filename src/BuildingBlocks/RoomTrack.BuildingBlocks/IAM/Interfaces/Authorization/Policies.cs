@@ -103,6 +103,8 @@ public static class Policies
     public const string ReadPayments = nameof(ReadPayments);
     /// <summary>Register the payment of a booking received by the hotel (D1).</summary>
     public const string RegisterPayments = nameof(RegisterPayments);
+    /// <summary>Pay one's own booking from the app with a card through the card gateway (guests, US-15).</summary>
+    public const string PayBookingsByCard = nameof(PayBookingsByCard);
 
     /// <summary>Read the folio of a stay and the receipts of its payments (guests only of their own bookings).</summary>
     public const string ReadFolios = nameof(ReadFolios);
@@ -225,6 +227,7 @@ public static class Policies
 
         [ReadPayments] = GuestOrFrontDesk,
         [RegisterPayments] = FrontDesk,
+        [PayBookingsByCard] = [UserRoles.Guest],
         [ReadFolios] = GuestOrFrontDesk,
         [ManageFolios] = FrontDesk,
         [SettleFolios] = GuestOrFrontDesk,

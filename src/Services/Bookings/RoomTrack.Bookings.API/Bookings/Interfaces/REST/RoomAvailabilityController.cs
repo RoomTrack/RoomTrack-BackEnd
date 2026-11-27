@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Swashbuckle.AspNetCore.Annotations;
+using RoomTrack.Shared.Infrastructure.Documentation.OpenApi.Configuration;
 
 namespace RoomTrack.Bookings.Interfaces.REST;
 
@@ -30,6 +31,11 @@ public class RoomAvailabilityController(IRoomAvailabilityQueryService roomAvaila
     [SwaggerOperation(Summary = "Get available rooms for a stay", OperationId = "GetAvailableRooms")]
     [ProducesResponseType(typeof(IEnumerable<AvailableRoomResource>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [OpenApiResponseExample(StatusCodes.Status200OK, """
+        [ { "id": 101, "hotelId": 1, "roomTypeId": 2, "roomTypeName": "Doble", "description": "Doble con vista al parque",
+        "amenities": ["WiFi", "TV", "Aire acondicionado"], "status": "Available", "available": true, "pricePerNight": 180.00,
+        "nights": 2, "totalPrice": 360.00, "checkInDate": "2026-11-24", "checkOutDate": "2026-11-26", "number": "204" } ]
+        """)]
     public async Task<IActionResult> GetAvailableRooms(
         [FromQuery, BindRequired] DateOnly checkIn,
         [FromQuery, BindRequired] DateOnly checkOut,

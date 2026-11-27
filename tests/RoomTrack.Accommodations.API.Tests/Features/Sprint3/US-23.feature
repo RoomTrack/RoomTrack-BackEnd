@@ -6,16 +6,16 @@ Característica: US-23 — Alertas automáticas por demoras
   para intervenir antes de que afecte la experiencia del huésped.
   Criterios de aceptación del informe (TF1, corte 25/11/2026), ejecutados con Reqnroll contra los casos de uso,
   repositorios y manejadores de eventos reales del servicio Accommodations (base de datos en memoria).
-  Los escenarios con @ignore aún no tienen implementación en la API: Reqnroll los reporta como omitidos.
+  "Checkout inminente" es la salida del huésped anterior: la habitación debe estar limpia antes de la llegada del
+  siguiente (hora de check-in del hotel, Bookings__CheckInTime).
 
   Antecedentes:
     Dado un hotel con la habitación 204
     Y "Mario" trabaja en mantenimiento
     Y "Elena" es administradora del hotel
 
-  @US23_E01 @pendiente_implementacion @ignore
+  @US23_E01
   Escenario: Alerta por checkout próximo
-    # Requiere cruzar las salidas/llegadas del día (Bookings) con el estado de limpieza: pendiente.
     Dado que una habitación con checkout inminente no está limpia
     Cuando se acerca la hora
     Entonces recibo una alerta

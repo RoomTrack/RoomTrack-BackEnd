@@ -42,7 +42,8 @@ public static class BookingResourceFromEntityAssembler
         entity.CheckedInAt,
         entity.GuestProfileId,
         entity.GuestId?.Value,
-        CheckedOutAt: entity.CheckedOutAt);
+        CheckedOutAt: entity.CheckedOutAt,
+        CheckInStage: entity.CheckInStage);
 
     private static string RoomNumber(int roomId, IReadOnlyDictionary<int, string> roomNumbers) =>
         roomNumbers.TryGetValue(roomId, out var number) ? number : roomId.ToString();

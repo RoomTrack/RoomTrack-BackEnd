@@ -75,6 +75,9 @@ public partial class Room : IHasDomainEvents
     /// <summary>When the overdue-maintenance alert of the current maintenance period was sent.</summary>
     public DateTimeOffset? MaintenanceAlertSentAt { get; private set; }
 
+    /// <summary>The arriving booking whose "room not ready" alert was sent (US-23): one alert per arrival.</summary>
+    public int? ArrivalAlertBookingId { get; private set; }
+
     /// <summary>A room under maintenance is never offered for booking.</summary>
     public bool IsOfferedForBooking => Status != RoomStatus.Maintenance;
 
@@ -178,6 +181,19 @@ public partial class Room : IHasDomainEvents
     /// </summary>
     public bool IsMaintenanceAlertDue(DateTimeOffset now, TimeSpan threshold) =>
         Status == RoomStatus.Maintenance && now - StatusChangedAt >= threshold && MaintenanceAlertSentAt is null;
+
+    /// <summary>
+    ///     A guest arrives soon and the room is still not ready (US-23: being cleaned, the previous guest has not left, or
+    ///     under maintenance): the hotel is alerted once for that arrival. Returns false when the room is ready or the
+    ///     arrival was already alerted.
+    /// </summary>
+    public bool RaiseArrivalNotReadyAlert(int bookingId, string bookingCode, DateTimeOffset expectedAt, DateTimeOffset now)
+    {
+        if (Status == RoomStatus.Available || ArrivalAlertBookingId == bookingId) return false;
+        ArrivalAlertBookingId = bookingId;
+        _domainEvents.Add(new RoomNotReadyForArrivalEvent(Id, HotelId, bookingId, bookingCode, Status, expectedAt, now));
+        return true;
+    }
 
     /// <summary>Records the overdue-maintenance alert (once per maintenance period).</summary>
     public bool RaiseMaintenanceAlert(DateTimeOffset now, TimeSpan threshold)

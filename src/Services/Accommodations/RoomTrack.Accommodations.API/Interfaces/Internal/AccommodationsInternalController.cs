@@ -28,6 +28,10 @@ public class AccommodationsInternalController(IAccommodationsContextFacade accom
     public async Task<IActionResult> GetRoom(int roomId) =>
         await accommodationsContextFacade.FetchRoomAsync(roomId) is { } room ? Ok(room) : NotFound();
 
+    [HttpGet("rooms/{roomId:int}/readiness")]
+    public async Task<IActionResult> GetRoomReadiness(int roomId) =>
+        await accommodationsContextFacade.EstimateRoomReadinessAsync(roomId) is { } readiness ? Ok(readiness) : NotFound();
+
     [HttpGet("rooms/{roomId:int}/exists")]
     public async Task<IActionResult> RoomExists(int roomId) => Ok(await accommodationsContextFacade.RoomExistsAsync(roomId));
 

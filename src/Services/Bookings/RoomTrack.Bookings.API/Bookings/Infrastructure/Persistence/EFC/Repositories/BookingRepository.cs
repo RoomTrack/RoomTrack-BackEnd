@@ -94,6 +94,15 @@ public class BookingRepository(AppDbContext context) : BaseRepository<Booking>(c
             .ToListAsync();
     }
 
+    public async Task<IReadOnlyList<Booking>> ListArrivalsAsync(DateTime day)
+    {
+        var date = day.Date;
+        return await Context.Set<Booking>()
+            .Where(b => b.Status == BookingStatus.Confirmed && b.CheckInDate == date)
+            .OrderBy(b => b.HotelId).ThenBy(b => b.RoomId)
+            .ToListAsync();
+    }
+
     public async Task<IReadOnlyList<Booking>> ListPendingPaymentDueAsync(DateTimeOffset now) =>
         await Context.Set<Booking>()
             .Where(b => b.Status == BookingStatus.Pending && b.PaymentDueAt != null && b.PaymentDueAt <= now)

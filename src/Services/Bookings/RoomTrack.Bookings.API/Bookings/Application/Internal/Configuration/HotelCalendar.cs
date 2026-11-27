@@ -19,6 +19,10 @@ public class HotelCalendar(IOptions<BookingPolicySettings> settings, TimeProvide
         return new DateTimeOffset(local, Zone.GetUtcOffset(local)).ToUniversalTime();
     }
 
+    /// <summary>The check-in instant of a stay that starts on <paramref name="checkInDate"/> (the guest can ask for the room).</summary>
+    public DateTimeOffset CheckInInstant(DateTime checkInDate) =>
+        At(checkInDate, TimeOnly.ParseExact(settings.Value.CheckInTime, "HH:mm"));
+
     /// <summary>The check-out instant of a stay that ends on <paramref name="checkOutDate"/>.</summary>
     public DateTimeOffset CheckOutInstant(DateTime checkOutDate) =>
         At(checkOutDate, TimeOnly.ParseExact(settings.Value.CheckOutTime, "HH:mm"));

@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using RoomTrack.Accommodations.Application.ACL;
 using RoomTrack.Accommodations.Application.Internal.Configuration;
 using RoomTrack.Accommodations.Application.Internal.EventHandlers;
@@ -36,6 +37,7 @@ public static class WebApplicationBuilderExtensions
         builder.Services.AddScoped<RoomStaffNotificationHandler>();
         builder.Services.AddScoped<IDomainEventHandler<RoomStatusChangedEvent>>(sp => sp.GetRequiredService<RoomStaffNotificationHandler>());
         builder.Services.AddScoped<IDomainEventHandler<RoomMaintenanceOverdueEvent>>(sp => sp.GetRequiredService<RoomStaffNotificationHandler>());
+        builder.Services.AddScoped<IDomainEventHandler<RoomNotReadyForArrivalEvent>>(sp => sp.GetRequiredService<RoomStaffNotificationHandler>());
         builder.Services.AddScoped<IRoomTypeRepository, RoomTypeRepository>();
         builder.Services.AddScoped<IHotelRepository, HotelRepository>();
 
@@ -51,6 +53,8 @@ public static class WebApplicationBuilderExtensions
 
         // ACL Facade
         builder.Services.AddScoped<IAccommodationsContextFacade, AccommodationsContextFacade>();
+        // When a room being cleaned will be ready (US-13): Housekeeping registers the real estimate over this one.
+        builder.Services.TryAddScoped<IRoomCleaningEstimates, TypicalRoomCleaningEstimates>();
 
         // Resource-based authorization (hotel scope)
         builder.Services.AddSingleton<IAuthorizationHandler, HotelManagementAuthorizationHandler>();

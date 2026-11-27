@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using RoomTrack.Shared.Infrastructure.Documentation.OpenApi.Configuration;
 
 namespace RoomTrack.Accommodations.Interfaces.REST;
 
@@ -46,6 +47,10 @@ public class RoomsController(
     [SwaggerResponse(StatusCodes.Status401Unauthorized, "The request lacks a valid identity identification token.")]
     [SwaggerResponse(StatusCodes.Status403Forbidden, "The authenticated identity has insufficient privilege levels.")]
     [SwaggerResponse(StatusCodes.Status404NotFound, "No room aggregate matched the supplied structural identifier.")]
+    [OpenApiResponseExample(StatusCodes.Status200OK, """
+        { "id": 101, "hotelId": 1, "roomTypeId": 2, "roomTypeName": "Doble", "price": 180.00,
+        "description": "Doble con vista al parque", "amenities": ["WiFi", "TV", "Aire acondicionado"], "status": "Available", "number": "204" }
+        """)]
     public async Task<IActionResult> GetRoomById(int roomId)
     {
         var getRoomByIdQuery = new GetRoomByIdQuery(roomId);
@@ -70,6 +75,14 @@ public class RoomsController(
     [SwaggerResponse(StatusCodes.Status400BadRequest, "The provided construction resource layout contains invalid fields or broken constraints.")]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, "The request lacks a valid identity identification token.")]
     [SwaggerResponse(StatusCodes.Status403Forbidden, "Access denied. Only Admin or ChainAdmin entities are cleared to mutate property assets.")]
+    [OpenApiRequestExample("""
+        { "hotelId": 1, "number": "204", "roomTypeId": 2, "price": 180.00, "description": "Doble con vista al parque",
+        "amenities": ["WiFi", "TV", "Aire acondicionado"] }
+        """)]
+    [OpenApiResponseExample(StatusCodes.Status201Created, """
+        { "id": 101, "hotelId": 1, "roomTypeId": 2, "roomTypeName": "Doble", "price": 180.00,
+        "description": "Doble con vista al parque", "amenities": ["WiFi", "TV", "Aire acondicionado"], "status": "Available", "number": "204" }
+        """)]
     public async Task<IActionResult> CreateRoom([FromBody] CreateRoomResource resource)
     {
         var hotel = await hotelQueryService.Handle(new GetHotelByIdQuery(resource.HotelId));
@@ -97,6 +110,12 @@ public class RoomsController(
     [SwaggerResponse(StatusCodes.Status200OK, "The room resource list was fetched successfully.", typeof(IEnumerable<RoomResource>))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, "The request lacks a valid identity identification token.")]
     [SwaggerResponse(StatusCodes.Status403Forbidden, "The authenticated identity has insufficient privilege levels.")]
+    [OpenApiResponseExample(StatusCodes.Status200OK, """
+        [ { "id": 101, "hotelId": 1, "roomTypeId": 2, "roomTypeName": "Doble", "price": 180.00,
+        "description": "Doble con vista al parque", "amenities": ["WiFi", "TV"], "status": "Occupied", "number": "204" },
+        { "id": 102, "hotelId": 1, "roomTypeId": 3, "roomTypeName": "Suite", "price": 320.00,
+        "description": "Suite con jacuzzi", "amenities": ["WiFi", "TV", "Jacuzzi"], "status": "Cleaning", "number": "301" } ]
+        """)]
     public async Task<IActionResult> GetAllRooms()
     {
         var rooms = await roomQueryService.Handle(new GetAllRoomsQuery());
@@ -117,6 +136,10 @@ public class RoomsController(
     [SwaggerResponse(StatusCodes.Status200OK, "The filtered room resource sub-list was fetched successfully.", typeof(IEnumerable<RoomResource>))]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, "The request lacks a valid identity identification token.")]
     [SwaggerResponse(StatusCodes.Status403Forbidden, "The authenticated identity has insufficient privilege levels.")]
+    [OpenApiResponseExample(StatusCodes.Status200OK, """
+        [ { "id": 101, "hotelId": 1, "roomTypeId": 2, "roomTypeName": "Doble", "price": 180.00,
+        "description": "Doble con vista al parque", "amenities": ["WiFi", "TV"], "status": "Available", "number": "204" } ]
+        """)]
     public async Task<IActionResult> GetRoomsByType(int roomTypeId)
     {
         var rooms = await roomQueryService.Handle(new GetRoomsByTypeQuery(roomTypeId));
@@ -140,6 +163,14 @@ public class RoomsController(
     [SwaggerResponse(StatusCodes.Status401Unauthorized, "The request lacks a valid identity identification token.")]
     [SwaggerResponse(StatusCodes.Status403Forbidden, "The requesting identity lacks administrative authorization parameters.")]
     [SwaggerResponse(StatusCodes.Status404NotFound, "The targeted room aggregate node could not be pulled for state alteration.")]
+    [OpenApiRequestExample("""
+        { "roomTypeId": 2, "price": 195.00, "description": "Doble con vista al parque, renovada", "amenities": ["WiFi", "TV", "Minibar"],
+        "number": "204" }
+        """)]
+    [OpenApiResponseExample(StatusCodes.Status200OK, """
+        { "id": 101, "hotelId": 1, "roomTypeId": 2, "roomTypeName": "Doble", "price": 195.00,
+        "description": "Doble con vista al parque, renovada", "amenities": ["WiFi", "TV", "Minibar"], "status": "Available", "number": "204" }
+        """)]
     public async Task<IActionResult> UpdateRoom(int roomId, [FromBody] UpdateRoomResource resource)
     {
         var notAllowed = await EnsureCanManageRoomAsync(roomId);
@@ -169,6 +200,10 @@ public class RoomsController(
     [SwaggerResponse(StatusCodes.Status401Unauthorized, "The request lacks a valid identity identification token.")]
     [SwaggerResponse(StatusCodes.Status403Forbidden, "The requesting entity lacks the high administrative clearance levels required to execute asset deletion.")]
     [SwaggerResponse(StatusCodes.Status404NotFound, "The targeted room asset node was not present in the structural system cluster tree.")]
+    [OpenApiResponseExample(StatusCodes.Status200OK, """
+        { "id": 101, "hotelId": 1, "roomTypeId": 2, "roomTypeName": "Doble", "price": 180.00,
+        "description": "Doble con vista al parque", "amenities": [], "status": "Available", "number": "204" }
+        """)]
     public async Task<IActionResult> DeleteRoom(int roomId)
     {
         var notAllowed = await EnsureCanManageRoomAsync(roomId);
@@ -201,6 +236,15 @@ public class RoomsController(
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    [OpenApiRequestExample("""{ "status": "Cleaning" }""")]
+    [OpenApiResponseExample(StatusCodes.Status200OK, """
+        { "id": 101, "hotelId": 1, "roomTypeId": 2, "roomTypeName": "Doble", "price": 180.00,
+        "description": "Doble con vista al parque", "amenities": ["WiFi", "TV"], "status": "Cleaning", "number": "204" }
+        """)]
+    [OpenApiResponseExample(StatusCodes.Status409Conflict, """
+        { "type": "https://tools.ietf.org/html/rfc9110#section-15.5.10", "title": "Business rule violation", "status": 409,
+        "code": "room.invalid_status_transition", "detail": "Room 101 cannot change from Occupied to Available. Allowed from Occupied: Cleaning, Maintenance." }
+        """)]
     public async Task<IActionResult> ChangeRoomStatus(int roomId, [FromBody] ChangeRoomStatusResource resource)
     {
         var room = await roomQueryService.Handle(new GetRoomByIdQuery(roomId));
@@ -227,6 +271,16 @@ public class RoomsController(
     [ProducesResponseType(typeof(RoomMapResource), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [OpenApiResponseExample(StatusCodes.Status200OK, """
+        { "hotelId": 1, "hotelName": "Hotel Miraflores", "generatedAt": "2026-11-24T20:00:00+00:00",
+        "summary": { "total": 2, "available": 0, "occupied": 1, "cleaning": 1, "maintenance": 0, "occupancyPercent": 50.0 },
+        "rooms": [ { "id": 101, "number": "204", "roomTypeName": "Doble", "description": "Doble con vista al parque", "price": 180.00,
+        "status": "Occupied", "statusSince": "2026-11-24T15:05:00+00:00", "maintenanceOverdue": false,
+        "allowedNextStatuses": ["Cleaning", "Maintenance"], "blockedByIncident": false },
+        { "id": 102, "number": "301", "roomTypeName": "Suite", "description": "Suite con jacuzzi", "price": 320.00,
+        "status": "Cleaning", "statusSince": "2026-11-24T12:20:00+00:00", "maintenanceOverdue": false,
+        "allowedNextStatuses": ["Available", "Maintenance"], "blockedByIncident": false } ] }
+        """)]
     public async Task<IActionResult> GetRoomMap([FromQuery] int? hotelId)
     {
         var targetHotelId = hotelId ?? (User.IsChainAdmin() ? null : User.GetHotelId());
@@ -247,6 +301,12 @@ public class RoomsController(
     [SwaggerOperation(Summary = "Status history of a room", OperationId = "GetRoomStatusHistory")]
     [ProducesResponseType(typeof(IEnumerable<RoomStatusChangeResource>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [OpenApiResponseExample(StatusCodes.Status200OK, """
+        [ { "id": 310, "roomId": 101, "fromStatus": "Available", "toStatus": "Occupied", "origin": "CheckIn",
+        "changedAt": "2026-11-24T15:05:00+00:00", "changedByUserId": 25, "changedByEmail": "ana.torres@example.com" },
+        { "id": 298, "roomId": 101, "fromStatus": "Cleaning", "toStatus": "Available", "origin": "Staff",
+        "changedAt": "2026-11-24T11:40:00+00:00", "changedByUserId": 14, "changedByEmail": "rosa.quispe@roomtrack.pe" } ]
+        """)]
     public async Task<IActionResult> GetStatusHistory(int roomId)
     {
         var room = await roomQueryService.Handle(new GetRoomByIdQuery(roomId));

@@ -24,6 +24,10 @@ namespace RoomTrack.Bookings.Interfaces.REST.Resources;
 /// <param name="CheckedOutAt">When the guest checked out (the booking is Completed).</param>
 /// <param name="GuestProfileId">The associated guest profile, if any.</param>
 /// <param name="UserId">The guest account that owns the booking, if any.</param>
+/// <param name="CheckInStage">
+///     InProgress ("check-in en proceso": the digital check-in was done before arriving, US-13), Completed, or null
+///     (not done yet).
+/// </param>
 /// <param name="PaymentInstructions">
 ///     How to pay it (the hotel's payment methods): only on the booking detail and the create response while
 ///     the booking is Pending; null otherwise.
@@ -52,7 +56,8 @@ public record BookingResource(
     Guid? GuestProfileId = null,
     int? UserId = null,
     BookingPaymentInstructionsResource? PaymentInstructions = null,
-    DateTimeOffset? CheckedOutAt = null);
+    DateTimeOffset? CheckedOutAt = null,
+    string? CheckInStage = null);
 
 /// <summary>How the guest pays a Pending booking: the payment methods of its hotel. Null members are not offered.</summary>
 /// <param name="AccountHolder">Name the guest pays to.</param>

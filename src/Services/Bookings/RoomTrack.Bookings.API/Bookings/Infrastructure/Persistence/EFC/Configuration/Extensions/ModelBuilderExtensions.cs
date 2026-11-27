@@ -26,6 +26,7 @@ public static class ModelBuilderExtensions
         builder.Entity<Booking>().Ignore(b => b.Nights);
         builder.Entity<Booking>().Ignore(b => b.CanBePaid);
         builder.Entity<Booking>().Ignore(b => b.TotalPrice);
+        builder.Entity<Booking>().Ignore(b => b.CheckInStage);
         builder.Entity<Booking>().Ignore(b => b.DomainEvents);
         builder.Entity<Booking>().Property(b => b.Code)
             .HasMaxLength(BookingCode.MaxLength)
@@ -69,6 +70,7 @@ public static class ModelBuilderExtensions
         builder.Entity<DigitalCheckIn>().Property(c => c.Status).HasConversion<string>().HasMaxLength(20).IsRequired();
         builder.Entity<DigitalCheckIn>().Property(c => c.AccessCodeProtected).HasMaxLength(1024).IsRequired();
         builder.Entity<DigitalCheckIn>().Ignore(c => c.Identity);
+        builder.Entity<DigitalCheckIn>().Ignore(c => c.IsAwaitingArrival);
 
         // Identity documents stored by DatabaseDocumentStorage (encrypted content)
         builder.Entity<StoredDocument>().ToTable("stored_documents");

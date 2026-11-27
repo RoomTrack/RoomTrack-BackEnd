@@ -341,6 +341,10 @@ namespace RoomTrack.Accommodations.API.Infrastructure.Persistence.Migrations
                         .HasColumnType("json")
                         .HasColumnName("amenities");
 
+                    b.Property<int?>("ArrivalAlertBookingId")
+                        .HasColumnType("int")
+                        .HasColumnName("arrival_alert_booking_id");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(1000)

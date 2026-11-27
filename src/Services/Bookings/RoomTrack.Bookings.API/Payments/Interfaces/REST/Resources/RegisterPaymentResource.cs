@@ -34,3 +34,13 @@ public record RegisterPaymentResource : IValidatableObject
                 new Dictionary<string, object?> { ["allowed"] = Enum.GetNames<PaymentMethod>() });
     }
 }
+
+/// <summary>A card payment from the app (US-15): only the token the card gateway issued for the card.</summary>
+public record CardPaymentResource
+{
+    /// <summary>Token of the card, issued by the card gateway's SDK in the app. Sandbox: tok_visa, tok_mastercard, tok_declined_*.</summary>
+    /// <example>tok_visa</example>
+    [Required(ErrorMessage = "Send the token of the card issued by the card gateway.")]
+    [MaxLength(100)]
+    public string? CardToken { get; init; }
+}

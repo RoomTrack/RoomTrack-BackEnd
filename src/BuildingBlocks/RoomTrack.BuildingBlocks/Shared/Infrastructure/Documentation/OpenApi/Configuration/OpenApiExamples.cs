@@ -32,7 +32,8 @@ public sealed class OpenApiResponseExampleAttribute(int statusCode, string json)
 /// <summary>
 ///     Writes the <see cref="OpenApiRequestExampleAttribute"/> and <see cref="OpenApiResponseExampleAttribute"/> of each
 ///     action into its operation, and gives every error response without its own example the RFC 7807 ProblemDetails
-///     the API returns, so each documented response has a concrete body.
+///     the API returns, and builds the body of every other request and response from its schema
+///     (<see cref="SchemaExamples"/>), so each documented request and response has a concrete body.
 /// </summary>
 public class OpenApiExamplesOperationFilter : IOperationFilter
 {
@@ -66,6 +67,14 @@ public class OpenApiExamplesOperationFilter : IOperationFilter
             if (int.TryParse(status, out var code) && ProblemExamples.TryGetValue(code, out var problem))
                 foreach (var media in documented.Content.Values.Where(media => media.Example is null))
                     media.Example = Parse(problem, context);
+
+        // Whatever has no hand-written example gets one built from its schema (and the <example> of its properties).
+        if (operation.RequestBody is not null)
+            foreach (var media in operation.RequestBody.Content.Values.Where(media => media.Example is null))
+                media.Example = SchemaExamples.Build(media.Schema, context.SchemaRepository);
+        foreach (var documented in operation.Responses.Values)
+            foreach (var media in documented.Content.Values.Where(media => media.Example is null))
+                media.Example = SchemaExamples.Build(media.Schema, context.SchemaRepository);
     }
 
     private static IOpenApiAny Parse(string json, OperationFilterContext context)

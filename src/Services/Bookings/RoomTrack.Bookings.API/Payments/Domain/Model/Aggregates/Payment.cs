@@ -78,6 +78,9 @@ public class Payment : IHasDomainEvents
         if (bookingId <= 0) throw new DomainValidationException(PaymentErrorCodes.InternalInvariant, "A payment must reference a booking.");
         if (amount <= 0) throw new DomainValidationException(PaymentErrorCodes.InternalInvariant, "The amount to pay must be positive.");
 
+        if (method == PaymentMethod.OnlineCard)
+            throw new InvalidFieldException("method", PaymentErrorCodes.OnlineCardNotRegistrable,
+                "An online card payment is made by the guest from the app; register the method the guest actually used.");
         var operation = string.IsNullOrWhiteSpace(operationNumber) ? null : operationNumber.Trim();
         if (method != PaymentMethod.Cash && operation is null)
             throw new InvalidFieldException("operationNumber", PaymentErrorCodes.OperationNumberRequired, $"Enter the operation number of the {method} payment.");
@@ -100,11 +103,35 @@ public class Payment : IHasDomainEvents
         };
     }
 
+    /// <summary>
+    ///     The guest pays a booking from the app with a card (US-15). Nobody of the staff records it and no card data
+    ///     is kept: the gateway charges the card behind its token and answers with its reference and the card's brand
+    ///     and last digits (<see cref="Complete"/>).
+    /// </summary>
+    public static Payment RegisterOnlineCard(int bookingId, decimal amount, DateTimeOffset now)
+    {
+        if (bookingId <= 0) throw new DomainValidationException(PaymentErrorCodes.InternalInvariant, "A payment must reference a booking.");
+        if (amount <= 0) throw new DomainValidationException(PaymentErrorCodes.InternalInvariant, "The amount to pay must be positive.");
+        return new Payment
+        {
+            BookingId = bookingId,
+            Amount = amount,
+            Method = PaymentMethod.OnlineCard,
+            PaymentDate = now.UtcDateTime,
+            Status = PaymentStatus.Pending
+        };
+    }
+
     /// <summary>The gateway approved it. Raises <see cref="PaymentCompletedEvent"/> once the payment has its id.</summary>
-    public void Complete(string transactionReference, DateTimeOffset now)
+    /// <param name="transactionReference">The reference of the gateway.</param>
+    /// <param name="now">When.</param>
+    /// <param name="cardLabel">For an online card payment, the card the gateway charged (e.g. "VISA •••• 4242").</param>
+    public void Complete(string transactionReference, DateTimeOffset now, string? cardLabel = null)
     {
         if (Status != PaymentStatus.Pending)
             throw new BusinessRuleViolationException(PaymentErrorCodes.CannotComplete, $"A {Status.ToString().ToLowerInvariant()} payment cannot be completed.");
+        if (Method == PaymentMethod.OnlineCard && !string.IsNullOrWhiteSpace(cardLabel))
+            OperationNumber = cardLabel.Trim()[..Math.Min(cardLabel.Trim().Length, MaxOperationNumberLength)];
         TransactionId = transactionReference;
         Status = PaymentStatus.Completed;
         _completedAt = now;

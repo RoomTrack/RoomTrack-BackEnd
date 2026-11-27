@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Swashbuckle.AspNetCore.Annotations;
+using RoomTrack.Shared.Infrastructure.Documentation.OpenApi.Configuration;
 
 namespace RoomTrack.Bookings.Interfaces.REST;
 
@@ -38,6 +39,16 @@ public class BookingsController(
     [SwaggerOperation(Summary = "Get a booking", OperationId = "GetBookingById")]
     [ProducesResponseType(typeof(BookingResource), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [OpenApiResponseExample(StatusCodes.Status200OK, """
+        { "id": 42, "code": "RT-7K2M9Q", "hotelId": 1, "roomId": 101, "roomNumber": "204", "guestName": "Ana Torres",
+        "guestEmail": "ana.torres@example.com", "guestPhone": "+51987654321", "checkInDate": "2026-11-24T00:00:00",
+        "checkOutDate": "2026-11-26T00:00:00", "nights": 2, "pricePerNight": 180.00, "totalPrice": 360.00, "status": "Pending",
+        "createdAt": "2026-11-20T15:12:00+00:00", "paymentDueAt": "2026-11-21T15:12:00+00:00", "confirmedAt": null, "cancelledAt": null,
+        "cancellationReason": null, "checkedInAt": null, "guestProfileId": null, "userId": 25,
+        "paymentInstructions": { "accountHolder": "Hotel Miraflores SAC", "yapeNumber": "987654321", "plinNumber": null,
+        "bankName": "BCP", "bankAccountNumber": "193-2345678-0-12", "bankAccountCci": "00219300234567801214" },
+        "checkedOutAt": null, "checkInStage": null }
+        """)]
     public async Task<IActionResult> GetBookingById(int bookingId)
     {
         var booking = await bookingQueryService.Handle(new GetBookingByIdQuery(bookingId, User.ToBookingRequester()));
@@ -68,6 +79,24 @@ public class BookingsController(
     [ProducesResponseType(typeof(BookingResource), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    [OpenApiRequestExample("""
+        { "roomId": 101, "checkInDate": "2026-11-24", "checkOutDate": "2026-11-26", "guestName": "Ana Torres",
+        "guestEmail": "ana.torres@example.com", "guestPhone": "+51987654321" }
+        """)]
+    [OpenApiResponseExample(StatusCodes.Status201Created, """
+        { "id": 42, "code": "RT-7K2M9Q", "hotelId": 1, "roomId": 101, "roomNumber": "204", "guestName": "Ana Torres",
+        "guestEmail": "ana.torres@example.com", "guestPhone": "+51987654321", "checkInDate": "2026-11-24T00:00:00",
+        "checkOutDate": "2026-11-26T00:00:00", "nights": 2, "pricePerNight": 180.00, "totalPrice": 360.00, "status": "Pending",
+        "createdAt": "2026-11-20T15:12:00+00:00", "paymentDueAt": "2026-11-21T15:12:00+00:00", "confirmedAt": null, "cancelledAt": null,
+        "cancellationReason": null, "checkedInAt": null, "guestProfileId": null, "userId": 25,
+        "paymentInstructions": { "accountHolder": "Hotel Miraflores SAC", "yapeNumber": "987654321", "plinNumber": null,
+        "bankName": null, "bankAccountNumber": null, "bankAccountCci": null }, "checkedOutAt": null, "checkInStage": null }
+        """)]
+    [OpenApiResponseExample(StatusCodes.Status409Conflict, """
+        { "type": "https://tools.ietf.org/html/rfc9110#section-15.5.10", "title": "Business rule violation", "status": 409,
+        "code": "booking.room_unavailable",
+        "detail": "Room 101 is no longer available for 2026-11-24..2026-11-26: another booking holds some of those nights. Search again for available rooms." }
+        """)]
     public async Task<IActionResult> CreateBooking([FromBody] CreateBookingResource resource)
     {
         var booking = await bookingCommandService.Handle(
@@ -86,6 +115,14 @@ public class BookingsController(
     [SwaggerOperation(Summary = "List bookings", OperationId = "GetAllBookings")]
     [ProducesResponseType(typeof(IEnumerable<BookingResource>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [OpenApiResponseExample(StatusCodes.Status200OK, """
+        [ { "id": 42, "code": "RT-7K2M9Q", "hotelId": 1, "roomId": 101, "roomNumber": "204", "guestName": "Ana Torres",
+        "guestEmail": "ana.torres@example.com", "guestPhone": null, "checkInDate": "2026-11-24T00:00:00", "checkOutDate": "2026-11-26T00:00:00",
+        "nights": 2, "pricePerNight": 180.00, "totalPrice": 360.00, "status": "Confirmed", "createdAt": "2026-11-20T15:12:00+00:00",
+        "paymentDueAt": null, "confirmedAt": "2026-11-20T18:40:00+00:00", "cancelledAt": null, "cancellationReason": null,
+        "checkedInAt": null, "guestProfileId": null, "userId": 25, "paymentInstructions": null, "checkedOutAt": null,
+        "checkInStage": "InProgress" } ]
+        """)]
     public async Task<IActionResult> GetAllBookings([FromQuery] int? page = null, [FromQuery] int? pageSize = null)
     {
         if (page is null && pageSize is null)
@@ -108,6 +145,14 @@ public class BookingsController(
     [Authorize(Policy = Policies.ReadRoomBookings)]
     [SwaggerOperation(Summary = "List the bookings of a room", OperationId = "GetBookingsByRoomId")]
     [ProducesResponseType(typeof(IEnumerable<BookingResource>), StatusCodes.Status200OK)]
+    [OpenApiResponseExample(StatusCodes.Status200OK, """
+        [ { "id": 42, "code": "RT-7K2M9Q", "hotelId": 1, "roomId": 101, "roomNumber": "204", "guestName": "Ana Torres",
+        "guestEmail": "ana.torres@example.com", "guestPhone": null, "checkInDate": "2026-11-24T00:00:00", "checkOutDate": "2026-11-26T00:00:00",
+        "nights": 2, "pricePerNight": 180.00, "totalPrice": 360.00, "status": "CheckedIn", "createdAt": "2026-11-20T15:12:00+00:00",
+        "paymentDueAt": null, "confirmedAt": "2026-11-20T18:40:00+00:00", "cancelledAt": null, "cancellationReason": null,
+        "checkedInAt": "2026-11-24T20:05:00+00:00", "guestProfileId": null, "userId": 25, "paymentInstructions": null,
+        "checkedOutAt": null, "checkInStage": "Completed" } ]
+        """)]
     public async Task<IActionResult> GetBookingsByRoomId(int roomId)
     {
         var bookings = await bookingQueryService.Handle(new GetBookingsByRoomIdQuery(roomId, User.ToBookingRequester()));
@@ -129,6 +174,14 @@ public class BookingsController(
     [SwaggerOperation(Summary = "Booking calendar of a hotel", OperationId = "GetBookingCalendar")]
     [ProducesResponseType(typeof(BookingCalendarResource), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [OpenApiResponseExample(StatusCodes.Status200OK, """
+        { "hotelId": 1, "from": "2026-11-24", "to": "2026-11-26",
+        "bookings": [ { "id": 42, "code": "RT-7K2M9Q", "roomId": 101, "roomNumber": "204", "guestName": "Ana Torres",
+        "guestEmail": "ana.torres@example.com", "guestPhone": null, "checkInDate": "2026-11-24", "checkOutDate": "2026-11-26",
+        "nights": 2, "status": "Confirmed", "totalPrice": 360.00, "paymentDueAt": null } ],
+        "days": [ { "date": "2026-11-24", "arrivals": [42], "departures": [], "inHouse": [42], "occupiedRooms": 1 },
+        { "date": "2026-11-25", "arrivals": [], "departures": [], "inHouse": [42], "occupiedRooms": 1 } ] }
+        """)]
     public async Task<IActionResult> GetCalendar([FromQuery, BindRequired] DateOnly from, [FromQuery, BindRequired] DateOnly to,
         [FromQuery] int? hotelId)
     {
@@ -152,6 +205,14 @@ public class BookingsController(
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    [OpenApiRequestExample("""{ "checkInDate": "2026-11-25", "checkOutDate": "2026-11-27", "roomId": 102 }""")]
+    [OpenApiResponseExample(StatusCodes.Status200OK, """
+        { "id": 42, "code": "RT-7K2M9Q", "hotelId": 1, "roomId": 102, "roomNumber": "205", "guestName": "Ana Torres",
+        "guestEmail": "ana.torres@example.com", "guestPhone": null, "checkInDate": "2026-11-25T00:00:00", "checkOutDate": "2026-11-27T00:00:00",
+        "nights": 2, "pricePerNight": 180.00, "totalPrice": 360.00, "status": "Confirmed", "createdAt": "2026-11-20T15:12:00+00:00",
+        "paymentDueAt": null, "confirmedAt": "2026-11-20T18:40:00+00:00", "cancelledAt": null, "cancellationReason": null,
+        "checkedInAt": null, "guestProfileId": null, "userId": 25, "paymentInstructions": null, "checkedOutAt": null, "checkInStage": null }
+        """)]
     public async Task<IActionResult> RescheduleBooking(int bookingId, [FromBody] RescheduleBookingResource resource)
     {
         if (resource.CheckInDate is null && resource.CheckOutDate is null && resource.RoomId is null)
@@ -176,6 +237,13 @@ public class BookingsController(
     [ProducesResponseType(typeof(BookingResource), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    [OpenApiResponseExample(StatusCodes.Status200OK, """
+        { "id": 42, "code": "RT-7K2M9Q", "hotelId": 1, "roomId": 101, "roomNumber": "204", "guestName": "Ana Torres",
+        "guestEmail": "ana.torres@example.com", "guestPhone": null, "checkInDate": "2026-11-24T00:00:00", "checkOutDate": "2026-11-26T00:00:00",
+        "nights": 2, "pricePerNight": 180.00, "totalPrice": 360.00, "status": "Cancelled", "createdAt": "2026-11-20T15:12:00+00:00",
+        "paymentDueAt": null, "confirmedAt": null, "cancelledAt": "2026-11-21T09:30:00+00:00", "cancellationReason": "GuestRequest",
+        "checkedInAt": null, "guestProfileId": null, "userId": 25, "paymentInstructions": null, "checkedOutAt": null, "checkInStage": null }
+        """)]
     public async Task<IActionResult> CancelBooking(int bookingId)
     {
         var booking = await bookingCommandService.Handle(new CancelBookingCommand(bookingId, User.ToBookingRequester()));
